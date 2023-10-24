@@ -9,11 +9,10 @@ import {
   Animated,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
-import Home from '../Home';
 import {getImages} from '@/assets/Images';
 import Paginator from '@/components/Paginator';
 import slides from '@/assets/data/slides';
-import NextButton from '@/components/NextButton';
+import OptionLogin from '../OptionLogin';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
@@ -88,7 +87,7 @@ const Onboarding = () => {
 
   return skip ? (
     <View>
-      <Home />
+      <OptionLogin />
     </View>
   ) : (
     <View style={styles.container}>

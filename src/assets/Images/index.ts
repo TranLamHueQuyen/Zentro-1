@@ -5,4 +5,5 @@ export const getImages = () => ({
   picture_3: require('./Onboarding/Rectangle_3.png'),
   picture_4: require('./Login/Rectangle_8.png'),
   picture_5: require('./Login/Rectangle_10.png'),
+  city: require('./Login/city.png'),
 });
