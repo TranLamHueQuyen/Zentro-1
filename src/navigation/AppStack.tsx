@@ -6,13 +6,10 @@ import {
   createStackNavigator,
 } from '@react-navigation/stack';
 import Login from '@/screens/Login';
+import {RootStackParams} from '@/utils/type';
+import Register from '@/screens/Register';
+import Location from '@/screens/AccountSetup/Location';
 
-export type RootStackParams = {
-  Login: any;
-  Home: any;
-  OnBoarding: any;
-  OptionLogin: any;
-};
 const AppStack = () => {
   const Stack = createStackNavigator<RootStackParams>();
   return (
@@ -39,6 +36,20 @@ const AppStack = () => {
       <Stack.Screen
         name="Login"
         component={Login}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="Register"
+        component={Register}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="Location"
+        component={Location}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}

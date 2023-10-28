@@ -8,7 +8,7 @@ import GoogleButton from '@/components/GoogleButton';
 import FacebookButton from '@/components/FacebookButton';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {RootStackParams} from '@/navigation/AppStack';
+import {RootStackParams} from '@/utils/type';
 
 const OptionLogin = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
@@ -70,12 +70,14 @@ const OptionLogin = () => {
         <GoogleButton />
         <FacebookButton />
       </View>
-      <View
+      <TouchableOpacity
         style={{
           flexDirection: 'row',
           justifyContent: 'center',
           marginVertical: '20%',
         }}
+        activeOpacity={0.5}
+        onPress={() => navigation.navigate('Register')}
       >
         <Text
           style={{fontSize: 14, color: '#53587A', fontFamily: 'Lato-Regular'}}
@@ -85,7 +87,7 @@ const OptionLogin = () => {
         <Text style={{fontSize: 14, color: '#1F4C6B', fontFamily: 'Lato-Bold'}}>
           Register
         </Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

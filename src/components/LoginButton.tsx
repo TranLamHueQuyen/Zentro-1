@@ -2,11 +2,16 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {screenWidth} from '@/themes/Responsive';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParams} from '@/utils/type';
 
 const LoginButton = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
   return (
     <View style={{alignItems: 'center'}}>
       <TouchableOpacity
+        onPress={() => navigation.navigate('Location')}
         style={{
           flexDirection: 'row',
           width: screenWidth - 96,

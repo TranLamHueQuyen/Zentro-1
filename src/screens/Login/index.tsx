@@ -16,8 +16,12 @@ import GoogleButton from '@/components/GoogleButton';
 import FacebookButton from '@/components/FacebookButton';
 import {screenWidth} from '@/themes/Responsive';
 import BackButton from '@/components/BackButton';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParams} from '@/utils/type';
 
 const Login = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
@@ -130,12 +134,14 @@ const Login = () => {
         <GoogleButton />
         <FacebookButton />
       </View>
-      <View
+      <TouchableOpacity
         style={{
           flexDirection: 'row',
           justifyContent: 'center',
           marginVertical: '20%',
         }}
+        activeOpacity={0.5}
+        onPress={() => navigation.navigate('Register')}
       >
         <Text
           style={{fontSize: 14, color: '#53587A', fontFamily: 'Lato-Regular'}}
@@ -145,7 +151,7 @@ const Login = () => {
         <Text style={{fontSize: 14, color: '#1F4C6B', fontFamily: 'Lato-Bold'}}>
           Register
         </Text>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };
