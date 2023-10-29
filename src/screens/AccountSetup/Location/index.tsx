@@ -4,15 +4,24 @@ import {
   View,
   PermissionsAndroid,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {screenHeight, screenWidth} from '@/themes/Responsive';
 import Geolocation from '@react-native-community/geolocation';
+import BackButton from '@/components/BackButton';
+import {ButtonCenter} from '@/assets/Svg';
+import Feather from 'react-native-vector-icons/Feather';
 
 const Location = () => {
   const [latitude, setLatitude] = useState(16.081706176409128);
   const [longitude, setLongitude] = useState(108.07812645010671);
+  const [search, setSearch] = useState('');
+  const [showView, setShowView] = useState(false);
+  const handleTextInputPress = () => {
+    setShowView(true);
+  };
 
   useEffect(() => {
     requestCameraPermission();
@@ -74,17 +83,80 @@ const Location = () => {
           />
         </MapView>
       </View>
-      <TouchableOpacity
-        style={{
-          position: 'absolute',
-          width: 100,
-          height: 100,
-          backgroundColor: 'red',
-        }}
-        onPress={requestCameraPermission}
-      >
-        <Text>OnPress</Text>
-      </TouchableOpacity>
+
+      {!showView ? (
+        <View style={styles.view2}>
+          <BackButton />
+          <View style={{position: 'absolute', zIndex: 1, top: 89}}>
+            <View style={styles.icon}>
+              <Feather
+                name="search"
+                size={20}
+                color={'#252B5C'}
+              />
+            </View>
+            <TextInput
+              placeholder="Find location"
+              style={[
+                styles.input,
+                {fontFamily: search ? 'Lato-Bold' : 'Lato-Regular'},
+              ]}
+              placeholderTextColor={'#A1A5C1'}
+              onChangeText={(text) => setSearch(text)}
+              onPressIn={handleTextInputPress}
+              value={search}
+            />
+          </View>
+          <TouchableOpacity
+            style={{
+              marginLeft: screenWidth - 74,
+              marginTop: screenHeight - 260,
+            }}
+            onPress={requestCameraPermission}
+          >
+            <ButtonCenter />
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <TouchableOpacity
+          style={{
+            backgroundColor: '#234F68',
+            position: 'absolute',
+            zIndex: 1,
+            top: 0,
+            left: 0,
+            width: screenWidth,
+            height: screenHeight,
+            opacity: 0.67,
+          }}
+          onPress={() => setShowView(false)}
+          activeOpacity={0}
+        >
+          <View style={{position: 'absolute', zIndex: 1, top: 89}}>
+            <View style={{position: 'absolute', top: 25, right: 40, zIndex: 2}}>
+              <Feather
+                name="search"
+                size={20}
+                color={'#252B5C'}
+              />
+            </View>
+            <TextInput
+              placeholder="Find location"
+              style={[
+                styles.input,
+                {
+                  fontFamily: search ? 'Lato-Bold' : 'Lato-Regular',
+                  paddingHorizontal: 24,
+                },
+              ]}
+              placeholderTextColor={'#A1A5C1'}
+              onChangeText={(text) => setSearch(text)}
+              value={search}
+              autoFocus
+            />
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -107,5 +179,28 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: '100%',
+  },
+  icon: {
+    position: 'absolute',
+    top: 25,
+    left: 40,
+    zIndex: 2,
+  },
+  input: {
+    color: '#252B5C',
+    fontSize: 15,
+    height: 70,
+    width: screenWidth - 48,
+    marginHorizontal: 24,
+    paddingHorizontal: 46,
+    borderRadius: 10,
+    backgroundColor: '#FFFFFF',
+    zIndex: 1,
+  },
+  view2: {
+    position: 'absolute',
+    zIndex: 1,
+    top: 0,
+    left: 0,
   },
 });

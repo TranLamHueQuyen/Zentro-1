@@ -1,4 +1,4 @@
-import Svg, {Path} from 'react-native-svg';
+import Svg, {Circle, Defs, G, Path, Rect} from 'react-native-svg';
 type Props = {
   color: string;
 };
@@ -65,5 +65,41 @@ export const Facebook_Icon = (props: any) => (
       d="M13.5324 23.75H9.56473V13.5035H6.25V9.48944H9.56473V6.53169C9.56473 4.84155 10.0167 3.53873 10.9208 2.62324C11.8248 1.70775 13.0301 1.25 14.5368 1.25C15.7422 1.25 16.7299 1.30282 17.5 1.40845V4.94718L15.4408 5C14.7042 5 14.202 5.15845 13.9342 5.47535C13.6663 5.79225 13.5324 6.26761 13.5324 6.90141V9.48944H17.3493L16.8471 13.5035H13.5324V23.75Z"
       fill="#1278F3"
     />
+  </Svg>
+);
+
+export const ButtonCenter = (props: any) => (
+  <Svg
+    width={50}
+    height={50}
+    viewBox="0 0 50 50"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <G filter="url(#filter0_b_2_2351)">
+      <Rect
+        width={50}
+        height={50}
+        rx={25}
+        fill="#1F4C6B"
+      />
+    </G>
+    <Circle
+      cx={25}
+      cy={25}
+      r={7.7}
+      stroke="white"
+      strokeWidth={1.6}
+    />
+    <Circle
+      cx={25}
+      cy={25}
+      r={2.7}
+      fill="white"
+      stroke="white"
+      strokeWidth={1.6}
+    />
+    <Defs></Defs>
   </Svg>
 );

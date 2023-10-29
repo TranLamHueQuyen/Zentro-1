@@ -1,6 +1,5 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -33,5 +32,6 @@ const styles = StyleSheet.create({
     left: 24,
     borderRadius: 25,
     backgroundColor: '#F5F4F8',
+    zIndex: 1,
   },
 });
