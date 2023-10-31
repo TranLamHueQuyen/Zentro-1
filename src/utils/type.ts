@@ -5,4 +5,5 @@ export type RootStackParams = {
   OptionLogin: any;
   Register: any;
   Location: any;
+  Stories: any;
 };

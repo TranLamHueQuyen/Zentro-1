@@ -1,4 +1,3 @@
-import Home from '@/screens/Home';
 import OptionLogin from '@/screens/OptionLogin';
 import Onboarding from '@/screens/Onboarding';
 import {
@@ -9,6 +8,8 @@ import Login from '@/screens/Login';
 import {RootStackParams} from '@/utils/type';
 import Register from '@/screens/Register';
 import Location from '@/screens/AccountSetup/Location';
+import Stories from '@/screens/Stories';
+import TabNavigator from './TabNavigator';
 
 const AppStack = () => {
   const Stack = createStackNavigator<RootStackParams>();
@@ -24,13 +25,16 @@ const AppStack = () => {
       />
       <Stack.Screen
         name="Home"
-        component={Home}
+        component={TabNavigator}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
       />
       <Stack.Screen
         name="OptionLogin"
         component={OptionLogin}
         options={{
-          cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
       <Stack.Screen
@@ -52,6 +56,13 @@ const AppStack = () => {
         component={Location}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="Stories"
+        component={Stories}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
         }}
       />
     </Stack.Navigator>
