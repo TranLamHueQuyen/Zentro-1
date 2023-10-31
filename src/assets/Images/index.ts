@@ -6,4 +6,6 @@ export const getImages = () => ({
   picture_4: require('./Login/Rectangle_8.png'),
   picture_5: require('./Login/Rectangle_10.png'),
   city: require('./Login/city.png'),
+  vn_flag: require('./common/vietnam_flag.jpg'),
+  en_flag: require('./common/english_flag.jpg'),
 });

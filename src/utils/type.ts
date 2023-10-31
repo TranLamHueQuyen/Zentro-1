@@ -1,6 +1,6 @@
 export type RootStackParams = {
   Login: any;
-  Home: any;
+  HomeScreen: any;
   OnBoarding: any;
   OptionLogin: any;
   Register: any;

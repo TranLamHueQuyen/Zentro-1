@@ -7,17 +7,41 @@ import {
   TouchableOpacity,
   FlatList,
   Animated,
+  Pressable,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import {getImages} from '@/assets/Images';
 import Paginator from '@/components/Paginator';
-import slides from '@/assets/data/slides';
 import OptionLogin from '../OptionLogin';
-const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
+import {useTranslation} from 'react-i18next';
+import {screenHeight, screenWidth} from '@/themes/Responsive';
+import Modal from 'react-native-modal';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const Onboarding = () => {
+  const {t} = useTranslation();
+  const slides = [
+    {
+      key: 1,
+      title: t('onboarding.description1.title'),
+      text: t('onboarding.description1.text'),
+      image: getImages().picture_1,
+    },
+    {
+      key: 2,
+      title: t('onboarding.description2.title'),
+      text: t('onboarding.description2.text'),
+      image: getImages().picture_2,
+    },
+    {
+      key: 3,
+      title: t('onboarding.description3.title'),
+      text: t('onboarding.description3.text'),
+      image: getImages().picture_3,
+    },
+  ];
   const [skip, setSkip] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
 
@@ -51,7 +75,12 @@ const Onboarding = () => {
                 item === 'lần' ||
                 item === 'chạm' ||
                 item === 'hoàn' ||
-                item === 'hảo'
+                item === 'the' ||
+                item === 'best' ||
+                item === 'one' ||
+                item === 'click' ||
+                item === 'perfect' ||
+                item === 'choice'
               ) {
                 return (
                   <Text
@@ -84,19 +113,81 @@ const Onboarding = () => {
       </View>
     );
   };
-
+  const ModelView = () => {
+    return (
+      <Modal
+        swipeDirection={'down'}
+        isVisible={modalVisible}
+        onBackdropPress={() => setModalVisible(false)}
+        onSwipeComplete={() => setModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View
+              style={{
+                width: 30,
+                height: 3,
+                borderRadius: 30,
+                backgroundColor: 'black',
+                justifyContent: 'center',
+                marginLeft: screenWidth / 2 - 40,
+              }}
+            ></View>
+            <Text
+              style={{color: 'black', fontFamily: 'Lato-Bold', fontSize: 20}}
+            >
+              {t('choose_language')}
+            </Text>
+            <TouchableOpacity style={styles.language}>
+              <Image
+                source={getImages().vn_flag}
+                style={styles.flag}
+              />
+              <Text style={styles.textLanguage}>Tiếng Việt</Text>
+              <Entypo
+                name="check"
+                size={15}
+                color={'#8BC83F'}
+                style={{position: 'absolute', right: 20}}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.language}>
+              <Image
+                source={getImages().vn_flag}
+                style={styles.flag}
+              />
+              <Text style={styles.textLanguage}>Tiếng Việt</Text>
+              <Entypo
+                name="check"
+                size={15}
+                color={'#A1A5C1'}
+                style={{position: 'absolute', right: 20}}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
   return skip ? (
     <View>
       <OptionLogin />
     </View>
   ) : (
     <View style={styles.container}>
+      <ModelView />
+
       <Image
         source={getImages().logo}
         style={styles.logo}
       />
       <View style={styles.header}>
-        <View style={{flex: 1}}></View>
+        <Pressable
+          style={{flex: 1, marginLeft: -20, justifyContent: 'center'}}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.textLanguage}>Show Modal</Text>
+        </Pressable>
         <TouchableOpacity
           style={styles.buttonSkip}
           onPress={() => setSkip(true)}
@@ -181,8 +272,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   images: {
-    width: width - 16,
-    height: height - 400,
+    width: screenWidth - 16,
+    height: screenHeight - 400,
     borderRadius: 30,
     marginBottom: 14,
   },
@@ -229,5 +320,38 @@ const styles = StyleSheet.create({
     fontFamily: 'Lato-Bold',
     color: '#204D6C',
     fontSize: 40,
+  },
+  centeredView: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    flex: 1,
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: -20,
+    width: screenWidth,
+    flexDirection: 'column',
+  },
+  language: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 0.5,
+    borderColor: '#ECEDF3',
+    width: screenWidth,
+    marginLeft: -20,
+  },
+  textLanguage: {
+    color: '#252B5C',
+    textAlign: 'center',
+    fontFamily: 'Lato-Bold',
+  },
+  flag: {
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+    marginRight: 15,
   },
 });

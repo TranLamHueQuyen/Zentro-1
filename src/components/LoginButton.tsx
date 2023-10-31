@@ -11,7 +11,7 @@ const LoginButton = () => {
   return (
     <View style={{alignItems: 'center'}}>
       <TouchableOpacity
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate('HomeScreen')}
         style={{
           flexDirection: 'row',
           width: screenWidth - 96,

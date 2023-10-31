@@ -24,7 +24,7 @@ const AppStack = () => {
         component={Onboarding}
       />
       <Stack.Screen
-        name="Home"
+        name="HomeScreen"
         component={TabNavigator}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
