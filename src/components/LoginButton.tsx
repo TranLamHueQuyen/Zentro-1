@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {memo} from 'react';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {screenWidth} from '@/themes/Responsive';
 import {useNavigation} from '@react-navigation/native';
@@ -38,6 +38,6 @@ const LoginButton = () => {
   );
 };
 
-export default LoginButton;
+export default memo(LoginButton);
 
 const styles = StyleSheet.create({});

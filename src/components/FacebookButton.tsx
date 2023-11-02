@@ -1,5 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import React, {memo} from 'react';
 import {Facebook_Icon} from '@/assets/Svg';
 import {screenWidth} from '@/themes/Responsive';
 
@@ -25,6 +25,6 @@ const FacebookButton = () => {
   );
 };
 
-export default FacebookButton;
+export default memo(FacebookButton);
 
 const styles = StyleSheet.create({});

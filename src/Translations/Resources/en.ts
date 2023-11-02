@@ -1,5 +1,6 @@
 export default {
-  skip: 'Skip',
+  skip: 'skip',
+  next: 'Next',
   login: 'Login',
   register: 'Register',
   choose_language: 'Choose Language',
@@ -17,4 +18,6 @@ export default {
       text: 'We take pride in introducing the perfect choice for your future home - guaranteed to not disappoint you.',
     },
   },
+  continue_with_email: 'Continue with Email',
+  no_account: "Don't have an account",
 };

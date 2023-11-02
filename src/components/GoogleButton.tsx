@@ -1,5 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import React, {memo} from 'react';
 import {Google_Icon} from '@/assets/Svg';
 import {screenWidth} from '@/themes/Responsive';
 
@@ -25,6 +25,6 @@ const GoogleButton = () => {
   );
 };
 
-export default GoogleButton;
+export default memo(GoogleButton);
 
 const styles = StyleSheet.create({});

@@ -3,22 +3,22 @@ import {
   StyleSheet,
   Text,
   View,
-  Dimensions,
   TouchableOpacity,
   FlatList,
   Animated,
-  Pressable,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import {getImages} from '@/assets/Images';
 import Paginator from '@/components/Paginator';
-import OptionLogin from '../OptionLogin';
 import {useTranslation} from 'react-i18next';
 import {screenHeight, screenWidth} from '@/themes/Responsive';
-import Modal from 'react-native-modal';
-import Entypo from 'react-native-vector-icons/Entypo';
+import Feather from 'react-native-vector-icons/Feather';
+import {languageStore, onboardingStore} from '@/stores';
+import {LanguageBottomSheet} from '@/components/LanguageBottomSheet';
+import {OnboardingProps} from '@/utils/interface';
+import {observer} from 'mobx-react-lite';
 
-const Onboarding = () => {
+const Onboarding = observer(() => {
   const {t} = useTranslation();
   const slides = [
     {
@@ -40,8 +40,6 @@ const Onboarding = () => {
       image: getImages().picture_3,
     },
   ];
-  const [skip, setSkip] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
 
@@ -57,7 +55,7 @@ const Onboarding = () => {
     if (currentIndex < slides.length - 1) {
       slidesRef.current?.scrollToIndex({index: currentIndex + 1});
     } else {
-      setSkip(true);
+      onboardingStore.onChangeOnBoarding();
     }
   };
 
@@ -75,6 +73,7 @@ const Onboarding = () => {
                 item === 'lần' ||
                 item === 'chạm' ||
                 item === 'hoàn' ||
+                item === 'hảo' ||
                 item === 'the' ||
                 item === 'best' ||
                 item === 'one' ||
@@ -113,86 +112,51 @@ const Onboarding = () => {
       </View>
     );
   };
-  const ModelView = () => {
-    return (
-      <Modal
-        swipeDirection={'down'}
-        isVisible={modalVisible}
-        onBackdropPress={() => setModalVisible(false)}
-        onSwipeComplete={() => setModalVisible(false)}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View
-              style={{
-                width: 30,
-                height: 3,
-                borderRadius: 30,
-                backgroundColor: 'black',
-                justifyContent: 'center',
-                marginLeft: screenWidth / 2 - 40,
-              }}
-            ></View>
-            <Text
-              style={{color: 'black', fontFamily: 'Lato-Bold', fontSize: 20}}
-            >
-              {t('choose_language')}
-            </Text>
-            <TouchableOpacity style={styles.language}>
-              <Image
-                source={getImages().vn_flag}
-                style={styles.flag}
-              />
-              <Text style={styles.textLanguage}>Tiếng Việt</Text>
-              <Entypo
-                name="check"
-                size={15}
-                color={'#8BC83F'}
-                style={{position: 'absolute', right: 20}}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.language}>
-              <Image
-                source={getImages().vn_flag}
-                style={styles.flag}
-              />
-              <Text style={styles.textLanguage}>Tiếng Việt</Text>
-              <Entypo
-                name="check"
-                size={15}
-                color={'#A1A5C1'}
-                style={{position: 'absolute', right: 20}}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    );
-  };
-  return skip ? (
-    <View>
-      <OptionLogin />
-    </View>
-  ) : (
-    <View style={styles.container}>
-      <ModelView />
 
+  return (
+    <View style={styles.container}>
+      <LanguageBottomSheet />
       <Image
         source={getImages().logo}
         style={styles.logo}
       />
       <View style={styles.header}>
-        <Pressable
-          style={{flex: 1, marginLeft: -20, justifyContent: 'center'}}
-          onPress={() => setModalVisible(true)}
+        <TouchableOpacity
+          onPress={() => {
+            languageStore.setShowLanguageSheet(true);
+          }}
         >
-          <Text style={styles.textLanguage}>Show Modal</Text>
-        </Pressable>
+          <View
+            style={{
+              flexDirection: 'row',
+              borderColor: '#ECEDF3',
+              padding: 16,
+              marginLeft: 40,
+            }}
+          >
+            <Text
+              style={{
+                color: '#252B5C',
+                fontSize: 12,
+                fontFamily: 'Lato-Regular',
+                marginHorizontal: 8,
+              }}
+            >
+              {t('choose_language')}
+            </Text>
+            <Feather
+              name="chevron-down"
+              size={12.5}
+              color={'#234F68'}
+            />
+          </View>
+        </TouchableOpacity>
+        <View style={{flex: 1}}></View>
         <TouchableOpacity
           style={styles.buttonSkip}
-          onPress={() => setSkip(true)}
+          onPress={() => onboardingStore.onChangeOnBoarding()}
         >
-          <Text style={styles.textSkip}>skip</Text>
+          <Text style={styles.textSkip}>{t('skip')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -226,7 +190,7 @@ const Onboarding = () => {
       </TouchableOpacity>
     </View>
   );
-};
+});
 
 export default Onboarding;
 
@@ -238,9 +202,9 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingRight: 24,
+    paddingHorizontal: 24,
     paddingTop: 37,
+    justifyContent: 'space-between',
   },
   textSkip: {
     color: '#2A2A2A',
@@ -320,38 +284,5 @@ const styles = StyleSheet.create({
     fontFamily: 'Lato-Bold',
     color: '#204D6C',
     fontSize: 40,
-  },
-  centeredView: {
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    flex: 1,
-  },
-  modalView: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: -20,
-    width: screenWidth,
-    flexDirection: 'column',
-  },
-  language: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 0.5,
-    borderColor: '#ECEDF3',
-    width: screenWidth,
-    marginLeft: -20,
-  },
-  textLanguage: {
-    color: '#252B5C',
-    textAlign: 'center',
-    fontFamily: 'Lato-Bold',
-  },
-  flag: {
-    width: 40,
-    height: 40,
-    borderRadius: 40,
-    marginRight: 15,
   },
 });

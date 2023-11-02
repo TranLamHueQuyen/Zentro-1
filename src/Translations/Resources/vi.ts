@@ -1,5 +1,5 @@
 export default {
-  skip: 'Bỏ qua',
+  skip: 'bỏ qua',
   login: 'Đăng Nhập',
   register: 'Đăng Ký',
   choose_language: 'Chọn Ngôn Ngữ',
