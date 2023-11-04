@@ -5,9 +5,11 @@ import {screenWidth} from '@/themes/Responsive';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParams} from '@/utils/type';
+import {useTranslation} from 'react-i18next';
 
 const LoginButton = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
+  const {t} = useTranslation();
   return (
     <View style={{alignItems: 'center'}}>
       <TouchableOpacity
@@ -31,7 +33,7 @@ const LoginButton = () => {
             padding: 6,
           }}
         >
-          Login
+          {t('login')}
         </Text>
       </TouchableOpacity>
     </View>

@@ -19,6 +19,7 @@ import BackButton from '@/components/BackButton';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParams} from '@/utils/type';
+import {useTranslation} from 'react-i18next';
 
 const Login = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
@@ -26,7 +27,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
   const [login, setLogin] = useState(false);
-
+  const {t} = useTranslation();
   return (
     <View style={styles.container}>
       <BackButton />
@@ -45,10 +46,10 @@ const Login = () => {
         <Text
           style={{color: '#252B5C', fontFamily: 'Lato-Medium', fontSize: 25}}
         >
-          Let’s{' '}
+          {t('let')}{' '}
         </Text>
         <Text style={{color: '#1F4C6B', fontFamily: 'Lato-Bold', fontSize: 25}}>
-          Sign In
+          {t('sign_in')}
         </Text>
       </View>
       {login ? (
@@ -113,14 +114,14 @@ const Login = () => {
         }}
       >
         <TouchableOpacity>
-          <Text style={styles.text}>Forgot password?</Text>
+          <Text style={styles.text}>{t('forgot_password')}?</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setShowPassword(!showPassword)}
           activeOpacity={0.6}
         >
           <Text style={styles.text}>
-            {showPassword ? 'Show ' : 'Hide '}password
+            {showPassword ? t('show_password') : t('hide_password')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -146,10 +147,10 @@ const Login = () => {
         <Text
           style={{fontSize: 14, color: '#53587A', fontFamily: 'Lato-Regular'}}
         >
-          Don’t have an account?{' '}
+          {t('no_account')}?{' '}
         </Text>
         <Text style={{fontSize: 14, color: '#1F4C6B', fontFamily: 'Lato-Bold'}}>
-          Register
+          {t('register')}
         </Text>
       </TouchableOpacity>
     </View>

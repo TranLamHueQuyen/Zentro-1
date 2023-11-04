@@ -1,8 +1,13 @@
 export default {
   skip: 'skip',
   next: 'Next',
+  sign_in: 'Sign in',
   login: 'Login',
   register: 'Register',
+  password: 'Password',
+  forgot_password: 'Forgot password',
+  show_password: 'Show password',
+  hide_password: 'Hide password',
   choose_language: 'Choose Language',
   onboarding: {
     description1: {
@@ -20,4 +25,7 @@ export default {
   },
   continue_with_email: 'Continue with Email',
   no_account: "Don't have an account",
+  ready_to: 'Ready to',
+  explore: 'explore',
+  let: "Let's",
 };

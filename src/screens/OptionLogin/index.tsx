@@ -9,9 +9,11 @@ import FacebookButton from '@/components/FacebookButton';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParams} from '@/utils/type';
+import {useTranslation} from 'react-i18next';
 
 const OptionLogin = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
+  const {t} = useTranslation();
   return (
     <View style={{backgroundColor: 'white', height: screenHeight}}>
       <View style={styles.header}>
@@ -40,10 +42,10 @@ const OptionLogin = () => {
             fontFamily: 'Lato-Regular',
           }}
         >
-          Ready to{' '}
+          {t('ready_to')}{' '}
         </Text>
         <Text style={{color: '#1F4C6B', fontSize: 25, fontFamily: 'Lato-Bold'}}>
-          explore?
+          {t('explore')}?
         </Text>
       </View>
       <View style={{alignItems: 'center'}}>
@@ -61,7 +63,7 @@ const OptionLogin = () => {
               padding: 6,
             }}
           >
-            Continue with Email
+            {t('continue_with_email')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -82,10 +84,10 @@ const OptionLogin = () => {
         <Text
           style={{fontSize: 14, color: '#53587A', fontFamily: 'Lato-Regular'}}
         >
-          Don’t have an account?{' '}
+          {t('no_account')}?{' '}
         </Text>
         <Text style={{fontSize: 14, color: '#1F4C6B', fontFamily: 'Lato-Bold'}}>
-          Register
+          {t('register')}
         </Text>
       </TouchableOpacity>
     </View>

@@ -1,5 +1,6 @@
 import i18n from '@/Translations/i18n';
 import {getImages} from '@/assets/Images';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {makeAutoObservable} from 'mobx';
 
 export default class AppState {
@@ -24,12 +25,25 @@ export default class AppState {
   }
 
   setLanguage(code: string) {
+    AsyncStorage.setItem('language', code);
     i18n.changeLanguage(code);
     this.languages.forEach((lang) => {
       lang.isSelected = lang?.code === code;
     });
   }
-
+  async getLanguage() {
+    try {
+      const language = await AsyncStorage.getItem('language');
+      if (language) {
+        i18n.changeLanguage(language);
+        this.languages.forEach((lang) => {
+          lang.isSelected = lang?.code === language;
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   setShowLanguageSheet(value: boolean) {
     this.showLanguageSheet = value;
   }

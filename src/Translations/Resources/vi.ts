@@ -2,6 +2,7 @@ export default {
   skip: 'bỏ qua',
   login: 'Đăng Nhập',
   register: 'Đăng Ký',
+  next: 'Kế tiếp',
   choose_language: 'Chọn Ngôn Ngữ',
   onboarding: {
     description1: {

@@ -10,7 +10,6 @@ import Register from '@/screens/Register';
 import Location from '@/screens/AccountSetup/Location';
 import Stories from '@/screens/Stories';
 import TabNavigator from './TabNavigator';
-import {onboardingStore} from '@/stores';
 import {observer} from 'mobx-react-lite';
 
 const AppStack = observer(() => {
@@ -22,21 +21,17 @@ const AppStack = observer(() => {
         headerShown: false,
       }}
     >
-      {onboardingStore.skipOnboarding ? (
-        <Stack.Screen
-          name="OptionLogin"
-          component={OptionLogin}
-          options={{
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-          }}
-        />
-      ) : (
-        <Stack.Screen
-          name="OnBoarding"
-          component={Onboarding}
-        />
-      )}
-
+      <Stack.Screen
+        name="OnBoarding"
+        component={Onboarding}
+      />
+      <Stack.Screen
+        name="OptionLogin"
+        component={OptionLogin}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
       <Stack.Screen
         name="HomeScreen"
         component={TabNavigator}
@@ -44,7 +39,6 @@ const AppStack = observer(() => {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
-
       <Stack.Screen
         name="Login"
         component={Login}

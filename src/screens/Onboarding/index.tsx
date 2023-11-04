@@ -7,7 +7,7 @@ import {
   FlatList,
   Animated,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {getImages} from '@/assets/Images';
 import Paginator from '@/components/Paginator';
 import {useTranslation} from 'react-i18next';
@@ -15,10 +15,12 @@ import {screenHeight, screenWidth} from '@/themes/Responsive';
 import Feather from 'react-native-vector-icons/Feather';
 import {languageStore, onboardingStore} from '@/stores';
 import {LanguageBottomSheet} from '@/components/LanguageBottomSheet';
-import {OnboardingProps} from '@/utils/interface';
 import {observer} from 'mobx-react-lite';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {OnboardingProps} from '@/utils/interface';
+import OptionLogin from '../OptionLogin';
 
-const Onboarding = observer(() => {
+const Onboarding: React.FC<OnboardingProps> = observer(({navigation}) => {
   const {t} = useTranslation();
   const slides = [
     {
@@ -40,6 +42,7 @@ const Onboarding = observer(() => {
       image: getImages().picture_3,
     },
   ];
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
 
@@ -51,11 +54,28 @@ const Onboarding = observer(() => {
 
   const viewConfig = useRef({viewAreaCoveragePercentThreshold: 50}).current;
 
-  const scrollTo = () => {
+  const [onboardingStatus, setOnboardingStatus] = useState(false);
+
+  useEffect(() => {
+    const getData = async () => {
+      const value = await AsyncStorage.getItem('Onboarding');
+      if (value) {
+        setOnboardingStatus(true);
+      } else {
+        await AsyncStorage.setItem('Onboarding', 'true');
+      }
+    };
+
+    getData();
+  }, []);
+  console.log(onboardingStatus);
+
+  const scrollTo = async () => {
     if (currentIndex < slides.length - 1) {
       slidesRef.current?.scrollToIndex({index: currentIndex + 1});
     } else {
-      onboardingStore.onChangeOnBoarding();
+      // await AsyncStorage.setItem('Onboarding', 'true');
+      navigation.replace('OptionLogin');
     }
   };
 
@@ -113,7 +133,11 @@ const Onboarding = observer(() => {
     );
   };
 
-  return (
+  return onboardingStatus ? (
+    <View style={{flex: 1}}>
+      <OptionLogin />
+    </View>
+  ) : (
     <View style={styles.container}>
       <LanguageBottomSheet />
       <Image
@@ -154,7 +178,10 @@ const Onboarding = observer(() => {
         <View style={{flex: 1}}></View>
         <TouchableOpacity
           style={styles.buttonSkip}
-          onPress={() => onboardingStore.onChangeOnBoarding()}
+          onPress={async () => {
+            // await AsyncStorage.setItem('Onboarding', 'true');
+            navigation.replace('OptionLogin');
+          }}
         >
           <Text style={styles.textSkip}>{t('skip')}</Text>
         </TouchableOpacity>
