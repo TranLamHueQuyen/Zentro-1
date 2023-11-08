@@ -30,4 +30,9 @@ export default {
   let: "Let's",
   featured_estates: 'Featured Estates',
   view_all: 'view all',
+  rent: 'Rent',
+  buy: 'Buy',
+  bedroom: 'Bedroom',
+  bathroom: 'Bathroom',
+  floors: 'Floors',
 };

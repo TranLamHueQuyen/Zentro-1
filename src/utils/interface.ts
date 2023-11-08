@@ -24,11 +24,21 @@ export interface Featured {
 }
 export interface EstateItems {
   id: number;
-  images: any;
   name: string;
-  location: string;
-  star_rating: number;
-  price: number;
-  time: string;
-  favorite: boolean;
+  avatar: any;
+  address: string;
+  phone: string;
+  email: string;
+  assets: {
+    images: any;
+    name: string;
+    location: string;
+    star_rating: number;
+    price: number;
+    bathroom: number;
+    bedroom: number;
+    floors: number;
+    time: string;
+    favorite: boolean;
+  };
 }

@@ -19,38 +19,62 @@ const FeaturedEstates: React.FC<FeaturedProps> = ({navigation}) => {
   const data = [
     {
       id: 1,
-      images: [
-        getImages().picture_1,
-        getImages().picture_2,
-        getImages().picture_3,
-        getImages().picture_4,
-        getImages().picture_5,
-      ],
-      name: 'Sky Dandelions Apartment',
-      location: 'Đà Nẵng, Việt Nam',
-      star_rating: 4.5,
-      price: 290,
-      time: 'month',
-      favorite: true,
+      name: 'Hung',
+      avatar: getImages().picture_1,
+      address: 'Việt Nam',
+      phone: '123456789',
+      email: 'admin@gmail.com',
+      assets: {
+        images: [
+          getImages().picture_1,
+          getImages().picture_2,
+          getImages().picture_3,
+          getImages().picture_4,
+          getImages().picture_5,
+        ],
+        name: 'Sky Dandelions Apartment',
+        location: 'Đà Nẵng, Việt Nam',
+        star_rating: 4.5,
+        price: 290,
+        bathroom: 2,
+        bedroom: 2,
+        floors: 2,
+        time: 'month',
+        favorite: true,
+      },
     },
     {
       id: 2,
-      images: [getImages().picture_3, getImages().picture_4],
-      name: 'Sky Dandelions Apartment',
-      location: 'Đà Nẵng, Việt Nam',
-      star_rating: 4.9,
-      price: 160,
-      time: 'month',
-      favorite: false,
+      name: 'Tony',
+      avatar: getImages().picture_2,
+      address: 'Việt Nam',
+      phone: '123456789',
+      email: 'admin@gmail.com',
+      assets: {
+        images: [
+          getImages().picture_4,
+          getImages().picture_5,
+          getImages().picture_3,
+        ],
+        name: 'Sky Dandelions Apartment',
+        location: 'Đà Nẵng, Việt Nam',
+        star_rating: 4.7,
+        price: 160,
+        bathroom: 2,
+        bedroom: 3,
+        floors: 2,
+        time: 'month',
+        favorite: false,
+      },
     },
   ];
   const RenderItems = ({item}: {item: EstateItems}) => {
     return (
       <View style={styles.cardItem}>
         <View>
-          <FavoriteButton favorite={item.favorite} />
+          <FavoriteButton favorite={item.assets.favorite} />
           <Image
-            source={item.images[0]}
+            source={item.assets.images[0]}
             style={styles.images}
           />
         </View>
@@ -59,14 +83,14 @@ const FeaturedEstates: React.FC<FeaturedProps> = ({navigation}) => {
           style={styles.cardContent}
           onPress={() => navigation.push('EstateDetail', {estate: item})}
         >
-          <Text style={styles.cardName}>{item.name}</Text>
+          <Text style={styles.cardName}>{item.assets.name}</Text>
           <View style={styles.ratingView}>
             <Entypo
               name="star"
               color={'#FFC42D'}
               size={10}
             />
-            <Text style={styles.rating}>{item.star_rating}</Text>
+            <Text style={styles.rating}>{item.assets.star_rating}</Text>
           </View>
           <View style={styles.ratingView}>
             <FontAwesome6
@@ -74,13 +98,13 @@ const FeaturedEstates: React.FC<FeaturedProps> = ({navigation}) => {
               color={'#234F68'}
               size={9}
             />
-            <Text style={styles.location}>{item.location}</Text>
+            <Text style={styles.location}>{item.assets.location}</Text>
           </View>
           <View style={styles.priceView}>
             <Text style={styles.price}>$ </Text>
-            <Text style={styles.price}>{item.price}</Text>
+            <Text style={styles.price}>{item.assets.price}</Text>
             <Text style={styles.stay}> /</Text>
-            <Text style={styles.stay}>{item.time}</Text>
+            <Text style={styles.stay}>{item.assets.time}</Text>
           </View>
         </TouchableOpacity>
       </View>
