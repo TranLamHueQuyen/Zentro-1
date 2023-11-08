@@ -11,6 +11,7 @@ import Location from '@/screens/AccountSetup/Location';
 import Stories from '@/screens/Stories';
 import TabNavigator from './TabNavigator';
 import {observer} from 'mobx-react-lite';
+import EstateDetail from '@/screens/Home/EstateDetail';
 
 const AppStack = observer(() => {
   const Stack = createStackNavigator<RootStackParams>();
@@ -65,6 +66,13 @@ const AppStack = observer(() => {
         component={Stories}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="EstateDetail"
+        component={EstateDetail}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
     </Stack.Navigator>

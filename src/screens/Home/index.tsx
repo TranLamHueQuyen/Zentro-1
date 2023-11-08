@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import StoryBar from './StoryBar';
 import {HomeProps} from '@/utils/interface';
 import TopLocation from './TopLocation';
+import FeaturedEstates from './FeaturedEstate';
 const Header = () => {
   return (
     <View style={styles.header}>
@@ -75,6 +76,7 @@ const Home: React.FC<HomeProps> = ({navigation}) => {
       <Header />
       <StoryBar navigation={navigation} />
       <TopLocation />
+      <FeaturedEstates navigation={navigation} />
     </View>
   );
 };

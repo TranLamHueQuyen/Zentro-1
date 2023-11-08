@@ -68,7 +68,6 @@ const Onboarding: React.FC<OnboardingProps> = observer(({navigation}) => {
 
     getData();
   }, []);
-  console.log(onboardingStatus);
 
   const scrollTo = async () => {
     if (currentIndex < slides.length - 1) {

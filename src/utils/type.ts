@@ -1,3 +1,5 @@
+import {EstateItems} from './interface';
+
 export type RootStackParams = {
   Login: any;
   HomeScreen: any;
@@ -6,4 +8,5 @@ export type RootStackParams = {
   Register: any;
   Location: any;
   Stories: any;
+  EstateDetail: {estate: EstateItems};
 };

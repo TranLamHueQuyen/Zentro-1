@@ -28,4 +28,6 @@ export default {
   ready_to: 'Ready to',
   explore: 'explore',
   let: "Let's",
+  featured_estates: 'Featured Estates',
+  view_all: 'view all',
 };
