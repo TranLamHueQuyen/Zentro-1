@@ -7,19 +7,14 @@ import StoryBar from './StoryBar';
 import {HomeProps} from '@/utils/interface';
 import TopLocation from './TopLocation';
 import FeaturedEstates from './FeaturedEstate';
-const Header = () => {
+import {screenWidth} from '@/themes/Responsive';
+const Header = ({navigation}: any) => {
   return (
     <View style={styles.header}>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderWidth: 1,
-          borderColor: '#ECEDF3',
-          padding: 16,
-          borderRadius: 25,
-        }}
+      <TouchableOpacity
+        style={styles.locationView}
+        activeOpacity={0.6}
+        onPress={() => navigation.navigate('Location')}
       >
         <Ionicons
           name="location-sharp"
@@ -32,7 +27,7 @@ const Header = () => {
           size={12.5}
           color={'#234F68'}
         />
-      </View>
+      </TouchableOpacity>
       <View style={{flexDirection: 'row'}}>
         <TouchableOpacity style={styles.notification}>
           <Feather
@@ -73,7 +68,7 @@ const Header = () => {
 const Home: React.FC<HomeProps> = ({navigation}) => {
   return (
     <View style={styles.container}>
-      <Header />
+      <Header navigation={navigation} />
       <StoryBar navigation={navigation} />
       <TopLocation />
       <FeaturedEstates navigation={navigation} />
@@ -92,6 +87,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 24,
+  },
+  locationView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ECEDF3',
+    padding: 16,
+    borderRadius: 25,
   },
   notification: {
     justifyContent: 'center',

@@ -35,4 +35,5 @@ export default {
   bedroom: 'Bedroom',
   bathroom: 'Bathroom',
   floors: 'Floors',
+  choose_location: 'Choose your location',
 };

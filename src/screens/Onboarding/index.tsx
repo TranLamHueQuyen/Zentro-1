@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   Animated,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {getImages} from '@/assets/Images';
@@ -56,16 +57,19 @@ const Onboarding: React.FC<OnboardingProps> = observer(({navigation}) => {
 
   const [onboardingStatus, setOnboardingStatus] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const getData = async () => {
       const value = await AsyncStorage.getItem('Onboarding');
       if (value) {
         setOnboardingStatus(true);
+        setIsLoading(false);
       } else {
+        setIsLoading(false);
         await AsyncStorage.setItem('Onboarding', 'true');
       }
     };
-
     getData();
   }, []);
 
@@ -132,7 +136,21 @@ const Onboarding: React.FC<OnboardingProps> = observer(({navigation}) => {
     );
   };
 
-  return onboardingStatus ? (
+  return isLoading ? (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#ffffff',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <ActivityIndicator
+        size="large"
+        color="#8BC83F"
+      />
+    </View>
+  ) : onboardingStatus ? (
     <View style={{flex: 1}}>
       <OptionLogin />
     </View>

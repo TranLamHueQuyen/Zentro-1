@@ -5,6 +5,7 @@ import {
   PermissionsAndroid,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
@@ -13,12 +14,19 @@ import Geolocation from '@react-native-community/geolocation';
 import BackButton from '@/components/BackButton';
 import {ButtonCenter} from '@/assets/Svg';
 import Feather from 'react-native-vector-icons/Feather';
+import Octicons from 'react-native-vector-icons/Octicons';
+import axios from 'axios';
+import {useTranslation} from 'react-i18next';
 
 const Location = () => {
-  const [latitude, setLatitude] = useState(16.081706176409128);
-  const [longitude, setLongitude] = useState(108.07812645010671);
+  const {t} = useTranslation();
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
   const [search, setSearch] = useState('');
   const [showView, setShowView] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [address, setAddress] = useState('');
+
   const handleTextInputPress = () => {
     setShowView(true);
   };
@@ -43,9 +51,27 @@ const Location = () => {
   };
   const getCurrentLocation = () => {
     Geolocation.getCurrentPosition(
-      (position) => {
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
+      async (position) => {
+        const {latitude, longitude} = position.coords;
+
+        try {
+          const response = await axios.get(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCXHsPT450-AosY7dvzi5gUT_geYSpI34o`,
+          );
+
+          const address = response.data.results[0].formatted_address;
+          const countName = response.data.results[0].address_components.length;
+          const name = response.data.results[0].address_components
+            .slice(countName - 3, countName - 1)
+            .map((item: any) => console.log(item.long_name));
+
+          setAddress(address);
+        } catch (error) {
+          console.error('Lỗi:', error);
+        }
+        setLatitude(latitude);
+        setLongitude(longitude);
+        setIsLoading(false);
       },
       (error) => {
         console.log('Error: ', error.message);
@@ -53,17 +79,18 @@ const Location = () => {
       {enableHighAccuracy: false},
     );
   };
-  return (
+  return isLoading ? (
+    <View style={styles.container}>
+      <ActivityIndicator
+        size="large"
+        color="#8BC83F"
+      />
+    </View>
+  ) : (
     <View style={styles.container}>
       <View style={styles.borderRadiusMap}>
         <MapView
           style={styles.map}
-          initialRegion={{
-            latitude: latitude,
-            longitude: longitude,
-            latitudeDelta: 1,
-            longitudeDelta: 1,
-          }}
           region={{
             latitude: latitude,
             longitude: longitude,
@@ -74,13 +101,15 @@ const Location = () => {
             setLatitude(e.nativeEvent.coordinate.latitude);
             setLongitude(e.nativeEvent.coordinate.longitude);
           }}
+          provider={PROVIDER_GOOGLE}
+          showsUserLocation={true}
         >
-          <Marker
+          {/* <Marker
             coordinate={{
               latitude: latitude,
               longitude: longitude,
             }}
-          />
+          /> */}
         </MapView>
       </View>
 
@@ -107,28 +136,50 @@ const Location = () => {
               value={search}
             />
           </View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
-              marginLeft: screenWidth - 74,
-              marginTop: screenHeight - 260,
+              left: screenWidth - 74,
+              top: screenHeight - 260,
             }}
             onPress={requestCameraPermission}
           >
             <ButtonCenter />
+          </TouchableOpacity> */}
+          <View style={styles.locView}>
+            <Text style={styles.addressTitle}>Location detail</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: 15,
+                marginBottom: 20,
+                marginHorizontal: 15,
+                alignItems: 'center',
+              }}
+            >
+              <View style={styles.iconLocView}>
+                <Octicons
+                  name="location"
+                  color={'#53587A'}
+                  size={14}
+                />
+              </View>
+              <Text style={styles.addressText}>{address}</Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            style={styles.chooseLocBtn}
+            activeOpacity={0.8}
+          >
+            <Text
+              style={{fontFamily: 'Lato-Bold', color: '#FFF', fontSize: 16}}
+            >
+              {t('choose_location')}
+            </Text>
           </TouchableOpacity>
         </View>
       ) : (
         <TouchableOpacity
-          style={{
-            backgroundColor: '#234F68',
-            position: 'absolute',
-            zIndex: 1,
-            top: 0,
-            left: 0,
-            width: screenWidth,
-            height: screenHeight,
-            opacity: 0.67,
-          }}
+          style={styles.activeInput}
           onPress={() => setShowView(false)}
           activeOpacity={0}
         >
@@ -197,10 +248,61 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     zIndex: 1,
   },
+  activeInput: {
+    backgroundColor: '#234F68',
+    position: 'absolute',
+    zIndex: 1,
+    top: 0,
+    left: 0,
+    width: screenWidth,
+    height: screenHeight,
+    opacity: 0.67,
+  },
   view2: {
     position: 'absolute',
     zIndex: 1,
     top: 0,
     left: 0,
+  },
+  locView: {
+    backgroundColor: '#FFF',
+    borderRadius: 25,
+    width: screenWidth - 48,
+    marginLeft: 24,
+    position: 'absolute',
+    top: screenHeight - 238,
+  },
+  chooseLocBtn: {
+    position: 'absolute',
+    top: screenHeight - 95,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginLeft: 45,
+    width: screenWidth - 90,
+    height: 65,
+    backgroundColor: '#8BC83F',
+  },
+  addressTitle: {
+    color: '#252B5C',
+    fontFamily: 'Lato-Bold',
+    fontSize: 18,
+    marginLeft: 15,
+    marginTop: 20,
+  },
+  addressText: {
+    color: '#53587A',
+    fontFamily: 'Lato-Regular',
+    fontSize: 14,
+    width: screenWidth - 128,
+    marginLeft: 15,
+  },
+  iconLocView: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ECEDF3',
+    borderRadius: 50,
   },
 });

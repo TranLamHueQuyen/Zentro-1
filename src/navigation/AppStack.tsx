@@ -58,7 +58,7 @@ const AppStack = observer(() => {
         name="Location"
         component={Location}
         options={{
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
         }}
       />
       <Stack.Screen
