@@ -12,7 +12,6 @@ import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {screenHeight, screenWidth} from '@/themes/Responsive';
 import Geolocation from '@react-native-community/geolocation';
 import BackButton from '@/components/BackButton';
-import {ButtonCenter} from '@/assets/Svg';
 import Feather from 'react-native-vector-icons/Feather';
 import Octicons from 'react-native-vector-icons/Octicons';
 import axios from 'axios';
@@ -26,6 +25,7 @@ const Location = () => {
   const [showView, setShowView] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [address, setAddress] = useState('');
+  const [name, setName] = useState('');
 
   const handleTextInputPress = () => {
     setShowView(true);
@@ -40,6 +40,7 @@ const Location = () => {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       );
+
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         getCurrentLocation();
       } else {
@@ -50,33 +51,21 @@ const Location = () => {
     }
   };
   const getCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      async (position) => {
-        const {latitude, longitude} = position.coords;
-
-        try {
-          const response = await axios.get(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyCXHsPT450-AosY7dvzi5gUT_geYSpI34o`,
-          );
-
-          const address = response.data.results[0].formatted_address;
-          const countName = response.data.results[0].address_components.length;
-          const name = response.data.results[0].address_components
-            .slice(countName - 3, countName - 1)
-            .map((item: any) => console.log(item.long_name));
-
-          setAddress(address);
-        } catch (error) {
-          console.error('Lỗi:', error);
-        }
-        setLatitude(latitude);
-        setLongitude(longitude);
-        setIsLoading(false);
-      },
-      (error) => {
-        console.log('Error: ', error.message);
-      },
-      {enableHighAccuracy: false},
+    // Geolocation.getCurrentPosition(
+    //   (position) => {
+    //     const {latitude, longitude} = position.coords;
+    //     console.log(position);
+    //     setIsLoading(false);
+    //   },
+    //   (error) => {
+    //     console.log('Error: ', error.message);
+    //   },
+    //   {enableHighAccuracy: false},
+    // );
+    console.log(
+      Geolocation.getCurrentPosition((position) => {
+        position;
+      }),
     );
   };
   return isLoading ? (

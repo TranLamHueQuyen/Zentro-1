@@ -1,4 +1,4 @@
-import {EstateItems} from './interface';
+import {EstateItems, ReviewItems} from './interface';
 
 export type RootStackParams = {
   Login: any;
@@ -9,4 +9,5 @@ export type RootStackParams = {
   Location: any;
   Stories: any;
   EstateDetail: {estate: EstateItems};
+  ReviewDetails: {estate: EstateItems; review: [ReviewItems]};
 };

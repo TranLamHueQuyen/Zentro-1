@@ -7,31 +7,49 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import {Featured} from '@/utils/interface';
+import {EstateItems, Featured, ReviewItems} from '@/utils/interface';
 import {screenHeight, screenWidth} from '@/themes/Responsive';
 import {BackButton, Separator} from '@/components';
 import FavoriteButton from '@/components/FavoriteButton';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Octicons from 'react-native-vector-icons/Octicons';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {Bath_Icon, Bed_Icon, Chat_Icon} from '@/assets/Svg';
 import {useTranslation} from 'react-i18next';
+import Maps from '@/components/Maps';
+import Reviews from '@/screens/Reviews';
 
 const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
-  const {t} = useTranslation();
   const {estate} = route.params;
+  const {t} = useTranslation();
+
   return (
-    <ScrollView style={styles.component}>
-      <View>
-        <BackButton />
-        <FavoriteButton
-          size={50}
-          favorite={estate.assets.favorite}
-        />
-        <View style={styles.imgArrayView}>
-          {estate.assets.images.length > 3
-            ? estate.assets.images
-                .slice(0, 3)
-                .map((item: any, index: number) => {
+    <View style={styles.component}>
+      <BackButton />
+      <ScrollView>
+        <View>
+          <FavoriteButton
+            size={50}
+            favorite={estate.assets.favorite}
+          />
+          <View style={styles.imgArrayView}>
+            {estate.assets.images.length > 3
+              ? estate.assets.images
+                  .slice(0, 3)
+                  .map((item: any, index: number) => {
+                    return (
+                      <View
+                        style={styles.insideImg}
+                        key={index}
+                      >
+                        <Image
+                          source={item}
+                          style={styles.imgArray}
+                        />
+                      </View>
+                    );
+                  })
+              : estate.assets.images.map((item: any, index: number) => {
                   return (
                     <View
                       style={styles.insideImg}
@@ -43,99 +61,107 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
                       />
                     </View>
                   );
-                })
-            : estate.assets.images.map((item: any, index: number) => {
-                return (
-                  <View
-                    style={styles.insideImg}
-                    key={index}
-                  >
-                    <Image
-                      source={item}
-                      style={styles.imgArray}
-                    />
-                  </View>
-                );
-              })}
-        </View>
-        {estate.assets.images.length > 3 ? (
-          <View style={styles.countImage}>
-            <Text style={{fontSize: 20, fontFamily: 'Lato-Regular'}}>
-              +{estate.assets.images.length - 3}
-            </Text>
+                })}
           </View>
-        ) : null}
+          {estate.assets.images.length > 3 ? (
+            <View style={styles.countImage}>
+              <Text style={{fontSize: 20, fontFamily: 'Lato-Regular'}}>
+                +{estate.assets.images.length - 3}
+              </Text>
+            </View>
+          ) : null}
 
-        <View style={[styles.ratingView]}>
-          <Entypo
-            name="star"
-            color={'#FFC42D'}
-            size={12}
-          />
-          <Text style={styles.ratingText}>{estate.assets.star_rating}</Text>
-        </View>
-        <Image
-          source={estate.assets.images[0]}
-          style={styles.images}
-        />
-      </View>
-      <View style={styles.nameView}>
-        <Text style={styles.nameStyle}>{estate.assets.name}</Text>
-        <Text style={styles.priceStyle}>$ {estate.assets.price}</Text>
-      </View>
-      <View style={styles.nameView}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <FontAwesome6
-            name="location-dot"
-            color={'#1F4C6B'}
-            size={12}
-          />
-          <Text style={styles.locationStyle}> {estate.assets.location}</Text>
-        </View>
-
-        <Text style={styles.locationStyle}>per month</Text>
-      </View>
-      <View style={{flexDirection: 'row', marginTop: 20}}>
-        <TouchableOpacity style={styles.rentButton}>
-          <Text style={styles.rentText}>{t('rent')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.buyButton}>
-          <Text style={styles.buyText}>{t('buy')}</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.separator}></View>
-      <View style={styles.ownerView}>
-        <View style={{flexDirection: 'row'}}>
+          <View style={[styles.ratingView]}>
+            <Entypo
+              name="star"
+              color={'#FFC42D'}
+              size={12}
+            />
+            <Text style={styles.ratingText}>{estate.assets.star_rating}</Text>
+          </View>
           <Image
-            source={estate.avatar}
-            style={styles.avatarStyles}
+            source={estate.assets.images[0]}
+            style={styles.images}
           />
-          <View style={{marginLeft: 16}}>
-            <Text style={styles.username}>{estate.name}</Text>
-            <Text style={styles.address}>{estate.address}</Text>
+        </View>
+        <View style={styles.nameView}>
+          <Text style={styles.nameStyle}>{estate.assets.name}</Text>
+          <Text style={styles.priceStyle}>$ {estate.assets.price}</Text>
+        </View>
+        <View style={styles.nameView}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <FontAwesome6
+              name="location-dot"
+              color={'#1F4C6B'}
+              size={12}
+            />
+            <Text style={styles.locationStyle}> {estate.assets.location}</Text>
+          </View>
+
+          <Text style={styles.locationStyle}>per month</Text>
+        </View>
+        <View style={{flexDirection: 'row', marginTop: 20}}>
+          <TouchableOpacity style={styles.rentButton}>
+            <Text style={styles.rentText}>{t('rent')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buyButton}>
+            <Text style={styles.buyText}>{t('buy')}</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.separator}></View>
+        <View style={styles.ownerView}>
+          <View style={{flexDirection: 'row'}}>
+            <Image
+              source={estate.avatar}
+              style={styles.avatarStyles}
+            />
+            <View style={{marginLeft: 16}}>
+              <Text style={styles.username}>{estate.name}</Text>
+              <Text style={styles.address}>{estate.address}</Text>
+            </View>
+          </View>
+          <Chat_Icon />
+        </View>
+        <View style={styles.facilitiesView}>
+          {estate.assets.bedroom ? (
+            <View style={styles.facilities}>
+              <Bed_Icon />
+              <Text style={styles.bedroom}>
+                {estate.assets.bedroom} {t('bedroom')}
+              </Text>
+            </View>
+          ) : null}
+          {estate.assets.bathroom ? (
+            <View style={styles.facilities}>
+              <Bath_Icon />
+              <Text style={styles.bedroom}>
+                {estate.assets.bathroom} {t('bathroom')}
+              </Text>
+            </View>
+          ) : null}
+        </View>
+        <View>
+          <Text style={styles.locationTitle}>{t('location')}</Text>
+          <View style={styles.locationView}>
+            <View style={styles.locationIcon}>
+              <Octicons
+                name="location"
+                color={'#53587A'}
+                size={14}
+              />
+            </View>
+            <Text style={styles.locationText}>{estate.assets.location}</Text>
+          </View>
+          <View style={styles.maps}>
+            <Maps />
           </View>
         </View>
-        <Chat_Icon />
-      </View>
-      <View style={styles.facilitiesView}>
-        {estate.assets.bedroom ? (
-          <View style={styles.facilities}>
-            <Bed_Icon />
-            <Text style={styles.bedroom}>
-              {estate.assets.bedroom} {t('bedroom')}
-            </Text>
-          </View>
-        ) : null}
-        {estate.assets.bathroom ? (
-          <View style={styles.facilities}>
-            <Bath_Icon />
-            <Text style={styles.bedroom}>
-              {estate.assets.bathroom} {t('bathroom')}
-            </Text>
-          </View>
-        ) : null}
-      </View>
-    </ScrollView>
+        <Reviews
+          navigation={navigation}
+          estate={estate}
+        />
+      </ScrollView>
+    </View>
   );
 };
 
@@ -293,5 +319,36 @@ const styles = StyleSheet.create({
   bedroom: {
     color: '#53587A',
     marginLeft: 8,
+  },
+  locationTitle: {
+    color: '#252B5C',
+    fontFamily: 'Lato-Bold',
+    fontSize: 20,
+    marginTop: 35,
+    marginLeft: 24,
+  },
+  locationView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 25,
+    marginTop: 20,
+  },
+  locationText: {
+    color: '#53587A',
+    fontFamily: 'Lato-Regular',
+    marginLeft: 15,
+    width: screenWidth - 140,
+  },
+  locationIcon: {
+    width: 50,
+    height: 50,
+    backgroundColor: '#F5F4F8',
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  maps: {
+    marginTop: 15,
+    marginBottom: 35,
   },
 });

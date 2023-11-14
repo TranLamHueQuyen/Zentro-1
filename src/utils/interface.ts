@@ -22,6 +22,14 @@ export interface Featured {
   route: RouteProp<RootStackParams, 'EstateDetail'>;
   navigation: StackNavigationProp<RootStackParams, 'EstateDetail'>;
 }
+
+export interface ReviewProps {
+  navigation: any;
+  estate: EstateItems;
+}
+export interface ReviewDetail {
+  route: RouteProp<RootStackParams, 'ReviewDetails'>;
+}
 export interface EstateItems {
   id: number;
   name: string;
@@ -36,9 +44,23 @@ export interface EstateItems {
     star_rating: number;
     price: number;
     bathroom: number;
-    bedroom: number;
+    bedroom: number | null | string;
     floors: number;
     time: string;
     favorite: boolean;
+  };
+}
+
+export interface ReviewItems {
+  id: number;
+  name: string;
+  avatar: any;
+  address: string;
+  phone: string;
+  email: string;
+  reviews: {
+    content: string;
+    images: any;
+    star_rating: number;
   };
 }

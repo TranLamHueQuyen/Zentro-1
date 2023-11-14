@@ -29,6 +29,7 @@ export default {
   explore: 'explore',
   let: "Let's",
   featured_estates: 'Featured Estates',
+  all: 'All',
   view_all: 'view all',
   rent: 'Rent',
   buy: 'Buy',
@@ -36,4 +37,8 @@ export default {
   bathroom: 'Bathroom',
   floors: 'Floors',
   choose_location: 'Choose your location',
+  location: 'Location',
+  reviews: 'Reviews',
+  view_all_reviews: 'View all reviews',
+  user_reviews: 'User reviews',
 };
