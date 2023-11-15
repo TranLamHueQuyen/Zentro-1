@@ -14,14 +14,13 @@ import FavoriteButton from '@/components/FavoriteButton';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {screenWidth} from '@/themes/Responsive';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import StarRating from '@/components/StarRating';
 
 const ReviewDetails: React.FC<ReviewDetail> = ({route}) => {
   const {t} = useTranslation();
   const {estate, review} = route.params;
   const star = [1, 2, 3, 4, 5, 6];
   const [pressStar, setPressStar] = useState(0);
-  console.log(pressStar);
 
   const EstateView = () => {
     return (
@@ -80,16 +79,7 @@ const ReviewDetails: React.FC<ReviewDetail> = ({route}) => {
             <View style={styles.reviewStar}>
               <Text style={styles.reviewName}>{item.name}</Text>
               <View style={styles.star}>
-                <AntDesign
-                  name="star"
-                  color={'rgba(253,181,74,1)'}
-                  style={{marginLeft: 2.5}}
-                />
-                <AntDesign
-                  name="star"
-                  color={'rgba(253,181,74,.5)'}
-                  style={{marginLeft: 2.5}}
-                />
+                <StarRating star={item.reviews.star_rating} />
               </View>
             </View>
             <Text style={styles.reviewText}>{item.reviews.content}</Text>
@@ -154,11 +144,13 @@ const ReviewDetails: React.FC<ReviewDetail> = ({route}) => {
             <Reviews
               item={item}
               index={index}
+              key={index}
             />
           ) : pressStar === item.reviews.star_rating ? (
             <Reviews
               item={item}
               index={index}
+              key={index}
             />
           ) : null;
         })}

@@ -41,4 +41,5 @@ export default {
   reviews: 'Reviews',
   view_all_reviews: 'View all reviews',
   user_reviews: 'User reviews',
+  explore_nearby_estates: 'Explore Nearby Estates',
 };

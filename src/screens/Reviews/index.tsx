@@ -4,7 +4,7 @@ import {useTranslation} from 'react-i18next';
 import {getImages} from '@/assets/Images';
 import {ReviewItems, ReviewProps} from '@/utils/interface';
 import {screenWidth} from '@/themes/Responsive';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import StarRating from '@/components/StarRating';
 
 const Reviews: React.FC<ReviewProps> = ({navigation, estate}) => {
   const {t} = useTranslation();
@@ -27,7 +27,7 @@ const Reviews: React.FC<ReviewProps> = ({navigation, estate}) => {
           getImages().picture_5,
           getImages().picture_3,
         ],
-        star_rating: 1,
+        star_rating: 5,
       },
     },
     {
@@ -87,6 +87,7 @@ const Reviews: React.FC<ReviewProps> = ({navigation, estate}) => {
       },
     },
   ];
+
   return (
     <View>
       <Text style={styles.reviewTitle}>{t('reviews')}</Text>
@@ -113,16 +114,7 @@ const Reviews: React.FC<ReviewProps> = ({navigation, estate}) => {
                 <View style={styles.reviewStar}>
                   <Text style={styles.reviewName}>{item.name}</Text>
                   <View style={styles.star}>
-                    <AntDesign
-                      name="star"
-                      color={'rgba(253,181,74,1)'}
-                      style={{marginLeft: 2.5}}
-                    />
-                    <AntDesign
-                      name="star"
-                      color={'rgba(253,181,74,.5)'}
-                      style={{marginLeft: 2.5}}
-                    />
+                    <StarRating star={item.reviews.star_rating} />
                   </View>
                 </View>
                 <Text style={styles.reviewText}>{item.reviews.content}</Text>
