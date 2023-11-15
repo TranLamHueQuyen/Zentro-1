@@ -6,25 +6,18 @@ const StarRating = ({star}: {star: number}) => {
   const totalStars = 5;
   const stars = [];
   for (let i = 1; i <= totalStars; i++) {
+    let color = 'rgba(253,181,74,.5)';
     if (i <= star) {
-      stars.push(
-        <AntDesign
-          name="star"
-          color={'rgba(253,181,74,1)'}
-          style={{marginLeft: 2.5}}
-          key={i}
-        />,
-      );
-    } else {
-      stars.push(
-        <AntDesign
-          name="star"
-          color={'rgba(253,181,74,.5)'}
-          style={{marginLeft: 2.5}}
-          key={i}
-        />,
-      );
+      color = 'rgba(253,181,74,1)';
     }
+    stars.push(
+      <AntDesign
+        name="star"
+        color={color}
+        style={{marginLeft: 2.5}}
+        key={i}
+      />,
+    );
   }
   return stars;
 };

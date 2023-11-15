@@ -17,14 +17,9 @@ const Maps = () => {
   const {t} = useTranslation();
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
-  const [showView, setShowView] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [address, setAddress] = useState('');
   const [name, setName] = useState('');
-
-  const handleTextInputPress = () => {
-    setShowView(true);
-  };
 
   useEffect(() => {
     requestCameraPermission();
