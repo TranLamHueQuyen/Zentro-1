@@ -39,7 +39,11 @@ export default {
   choose_location: 'Choose your location',
   location: 'Location',
   reviews: 'Reviews',
+  all_reviews: 'All reviews',
   view_all_reviews: 'View all reviews',
   user_reviews: 'User reviews',
   explore_nearby_estates: 'Explore Nearby Estates',
+  nearby_location: 'Nearby From this Location',
+  listings: 'Listings',
+  sold: 'Sold',
 };

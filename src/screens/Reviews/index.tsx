@@ -98,7 +98,7 @@ const Reviews: React.FC<ReviewProps> = ({navigation, estate}) => {
             style={styles.reviewView}
           >
             <View style={styles.reviewContent}>
-              <View style={styles.ountsideAvatar}>
+              <View style={styles.outsideAvatar}>
                 <Image
                   source={item.avatar}
                   style={styles.reviewAvatar}
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 25,
   },
-  ountsideAvatar: {
+  outsideAvatar: {
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -217,6 +217,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     borderRadius: 15,
     alignItems: 'center',
+    marginBottom: 35,
   },
   allReviewText: {
     color: '#1F4C6B',

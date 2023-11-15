@@ -10,4 +10,5 @@ export type RootStackParams = {
   Stories: any;
   EstateDetail: {estate: EstateItems};
   ReviewDetails: {estate: EstateItems; review: [ReviewItems]};
+  AllReview: any;
 };

@@ -1,11 +1,4 @@
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {EstateItems, Featured, ReviewItems} from '@/utils/interface';
 import {screenHeight, screenWidth} from '@/themes/Responsive';
@@ -18,6 +11,8 @@ import {Bath_Icon, Bed_Icon, Chat_Icon} from '@/assets/Svg';
 import {useTranslation} from 'react-i18next';
 import Maps from '@/components/Maps';
 import Reviews from '@/screens/Reviews';
+import {ScrollView} from 'react-native-virtualized-view';
+import NearbyEstate from '../NearbyEstate';
 
 const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
   const {estate} = route.params;
@@ -159,6 +154,10 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
         <Reviews
           navigation={navigation}
           estate={estate}
+        />
+        <NearbyEstate
+          navigation={navigation}
+          detail={true}
         />
       </ScrollView>
     </View>

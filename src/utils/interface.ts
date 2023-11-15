@@ -8,6 +8,9 @@ export interface StoryBarProps {
 export interface HomeProps {
   navigation: any;
 }
+export interface ProfileProps {
+  navigation: any;
+}
 export interface OnboardingProps {
   navigation: any;
 }
