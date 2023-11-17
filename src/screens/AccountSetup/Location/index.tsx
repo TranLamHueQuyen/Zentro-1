@@ -6,26 +6,34 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {screenHeight, screenWidth} from '@/themes/Responsive';
-import Geolocation from '@react-native-community/geolocation';
 import BackButton from '@/components/BackButton';
 import Feather from 'react-native-vector-icons/Feather';
 import Octicons from 'react-native-vector-icons/Octicons';
 import axios from 'axios';
 import {useTranslation} from 'react-i18next';
+import Geolocation from 'react-native-geolocation-service';
+import {Marker_Icon} from '@/assets/Svg';
+import {getImages} from '@/assets/Images';
 
 const Location = () => {
   const {t} = useTranslation();
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
   const [search, setSearch] = useState('');
   const [showView, setShowView] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [address, setAddress] = useState('');
-  const [name, setName] = useState('');
+  const [currentAddress, setCurrentAddress] = useState('');
+  const [currentLocation, setCurrentLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+  const [changeLocation, setChangeLocation] = useState({
+    latitude: currentLocation?.latitude || 0,
+    longitude: currentLocation?.longitude || 0,
+  });
 
   const handleTextInputPress = () => {
     setShowView(true);
@@ -33,14 +41,13 @@ const Location = () => {
 
   useEffect(() => {
     requestCameraPermission();
-  }, []);
+  }, [changeLocation]);
 
   const requestCameraPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       );
-
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         getCurrentLocation();
       } else {
@@ -51,23 +58,34 @@ const Location = () => {
     }
   };
   const getCurrentLocation = () => {
-    // Geolocation.getCurrentPosition(
-    //   (position) => {
-    //     const {latitude, longitude} = position.coords;
-    //     console.log(position);
-    //     setIsLoading(false);
-    //   },
-    //   (error) => {
-    //     console.log('Error: ', error.message);
-    //   },
-    //   {enableHighAccuracy: false},
-    // );
-    console.log(
-      Geolocation.getCurrentPosition((position) => {
-        position;
-      }),
+    Geolocation.getCurrentPosition(
+      async (position) => {
+        const {latitude, longitude} = position.coords;
+
+        let URL = '';
+        if (changeLocation.latitude !== 0 && changeLocation.longitude !== 0) {
+          URL = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${changeLocation.latitude}&lon=${changeLocation.longitude}`;
+        } else {
+          URL = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+        }
+        try {
+          const response = await axios.get(URL);
+          const current = `${response.data.address.road},  ${response.data.address.city_district}, ${response.data.address.city}`;
+
+          setCurrentAddress(current);
+        } catch (error) {
+          console.error('Lỗi:', error);
+        }
+        setCurrentLocation({latitude, longitude});
+        setIsLoading(false);
+      },
+      (error) => {
+        console.log('Error: ', error.message);
+      },
+      {enableHighAccuracy: false},
     );
   };
+
   return isLoading ? (
     <View style={styles.container}>
       <ActivityIndicator
@@ -78,28 +96,44 @@ const Location = () => {
   ) : (
     <View style={styles.container}>
       <View style={styles.borderRadiusMap}>
-        <MapView
-          style={styles.map}
-          region={{
-            latitude: latitude,
-            longitude: longitude,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
-          }}
-          onPress={(e) => {
-            setLatitude(e.nativeEvent.coordinate.latitude);
-            setLongitude(e.nativeEvent.coordinate.longitude);
-          }}
-          provider={PROVIDER_GOOGLE}
-          showsUserLocation={true}
-        >
-          {/* <Marker
-            coordinate={{
-              latitude: latitude,
-              longitude: longitude,
+        {currentLocation !== null && (
+          <MapView
+            style={styles.map}
+            region={{
+              latitude:
+                changeLocation.latitude !== 0
+                  ? changeLocation?.latitude
+                  : currentLocation.latitude,
+              longitude:
+                changeLocation.longitude !== 0
+                  ? changeLocation?.longitude
+                  : currentLocation.longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
             }}
-          /> */}
-        </MapView>
+            onPress={(e) => {
+              setChangeLocation({
+                latitude: e.nativeEvent.coordinate.latitude,
+                longitude: e.nativeEvent.coordinate.longitude,
+              });
+            }}
+          >
+            <Marker
+              coordinate={
+                changeLocation.latitude !== 0 ? changeLocation : currentLocation
+              }
+              title={currentAddress}
+            >
+              <View style={{top: 9, position: 'absolute'}}>
+                <Marker_Icon />
+                <Image
+                  source={getImages().picture_1}
+                  style={styles.markerImage}
+                />
+              </View>
+            </Marker>
+          </MapView>
+        )}
       </View>
 
       {!showView ? (
@@ -125,15 +159,6 @@ const Location = () => {
               value={search}
             />
           </View>
-          {/* <TouchableOpacity
-            style={{
-              left: screenWidth - 74,
-              top: screenHeight - 260,
-            }}
-            onPress={requestCameraPermission}
-          >
-            <ButtonCenter />
-          </TouchableOpacity> */}
           <View style={styles.locView}>
             <Text style={styles.addressTitle}>Location detail</Text>
             <View
@@ -152,7 +177,7 @@ const Location = () => {
                   size={14}
                 />
               </View>
-              <Text style={styles.addressText}>{address}</Text>
+              <Text style={styles.addressText}>{currentAddress}</Text>
             </View>
           </View>
           <TouchableOpacity
@@ -219,6 +244,14 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: '100%',
+  },
+  markerImage: {
+    width: 32.32,
+    height: 32.71,
+    borderRadius: 100,
+    position: 'absolute',
+    top: 4,
+    left: 4,
   },
   icon: {
     position: 'absolute',

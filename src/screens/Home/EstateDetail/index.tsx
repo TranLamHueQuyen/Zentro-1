@@ -1,4 +1,11 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Animated,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import {EstateItems, Featured, ReviewItems} from '@/utils/interface';
 import {screenHeight, screenWidth} from '@/themes/Responsive';
@@ -17,11 +24,36 @@ import NearbyEstate from '../NearbyEstate';
 const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
   const {estate} = route.params;
   const {t} = useTranslation();
+  // const scrollY = new Animated.Value(0);
+  // const translateY = scrollY.interpolate({
+  //   inputRange: [0, 85],
+  //   outputRange: [0, 85],
+  // });
 
   return (
     <View style={styles.component}>
+      {/* <Animated.View
+        style={{
+          transform: [{translateY: translateY}],
+          elevation: 4,
+          zIndex: 100,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: 'red',
+            height: 85,
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+          }}
+        ></View>
+      </Animated.View> */}
       <BackButton />
-      <ScrollView>
+      <ScrollView
+      // onScroll={(e) => scrollY.setValue(e.nativeEvent.contentOffset.y)}
+      >
         <View>
           <FavoriteButton
             size={50}
