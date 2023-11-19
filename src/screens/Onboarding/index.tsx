@@ -20,6 +20,7 @@ import {observer} from 'mobx-react-lite';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {OnboardingProps} from '@/utils/interface';
 import OptionLogin from '../OptionLogin';
+import {replace} from '@/navigation/NavigationUtils';
 
 const Onboarding: React.FC<OnboardingProps> = observer(({navigation}) => {
   const {t} = useTranslation();
@@ -78,7 +79,7 @@ const Onboarding: React.FC<OnboardingProps> = observer(({navigation}) => {
       slidesRef.current?.scrollToIndex({index: currentIndex + 1});
     } else {
       // await AsyncStorage.setItem('Onboarding', 'true');
-      navigation.replace('OptionLogin');
+      replace({name: 'OptionLogin', params: {}});
     }
   };
 
@@ -197,7 +198,7 @@ const Onboarding: React.FC<OnboardingProps> = observer(({navigation}) => {
           style={styles.buttonSkip}
           onPress={async () => {
             // await AsyncStorage.setItem('Onboarding', 'true');
-            navigation.replace('OptionLogin');
+            replace({name: 'OptionLogin', params: {}});
           }}
         >
           <Text style={styles.textSkip}>{t('skip')}</Text>

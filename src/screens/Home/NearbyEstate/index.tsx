@@ -14,6 +14,7 @@ import FavoriteButton from '@/components/FavoriteButton';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {screenWidth} from '@/themes/Responsive';
+import {push} from '@/navigation/NavigationUtils';
 
 const NearbyEstate = ({
   navigation,
@@ -151,7 +152,6 @@ const NearbyEstate = ({
       },
     },
   ];
-  console.log(detail);
 
   const RenderItems = ({item}: {item: EstateItems}) => {
     return (
@@ -176,7 +176,7 @@ const NearbyEstate = ({
 
         <TouchableOpacity
           style={styles.cardContent}
-          onPress={() => navigation.push('EstateDetail', {estate: item})}
+          onPress={() => push({name: 'EstateDetail', params: {estate: item}})}
         >
           <Text style={styles.cardName}>{item.assets.name}</Text>
           <View style={{flexDirection: 'row'}}>

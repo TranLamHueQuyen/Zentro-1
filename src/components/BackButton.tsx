@@ -1,13 +1,12 @@
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity} from 'react-native';
 import React, {memo} from 'react';
-import {useNavigation} from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
+import {goBack} from '@/navigation/NavigationUtils';
 
 const BackButton = () => {
-  const navigation = useNavigation();
   return (
     <TouchableOpacity
-      onPress={() => navigation.goBack()}
+      onPress={() => goBack()}
       style={styles.back}
     >
       <Feather

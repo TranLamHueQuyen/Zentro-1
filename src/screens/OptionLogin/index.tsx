@@ -10,6 +10,7 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParams} from '@/utils/type';
 import {useTranslation} from 'react-i18next';
+import {navigate} from '@/navigation/NavigationUtils';
 
 const OptionLogin = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
@@ -52,7 +53,7 @@ const OptionLogin = () => {
         <TouchableOpacity
           style={styles.email}
           activeOpacity={0.7}
-          onPress={() => navigation.navigate('Login')}
+          onPress={() => navigate({name: 'Login'})}
         >
           <Email_Icon color="#FFFFFF" />
           <Text
@@ -79,7 +80,7 @@ const OptionLogin = () => {
           marginVertical: '20%',
         }}
         activeOpacity={0.5}
-        onPress={() => navigation.navigate('Register')}
+        onPress={() => navigate({name: 'Register'})}
       >
         <Text
           style={{fontSize: 14, color: '#53587A', fontFamily: 'Lato-Regular'}}

@@ -9,6 +9,7 @@ import {
 import React from 'react';
 import {getImages} from '@/assets/Images';
 import {StoryBarProps} from '@/utils/interface';
+import {push} from '@/navigation/NavigationUtils';
 const data = [
   {
     id: 1,
@@ -43,7 +44,7 @@ const renderItem = ({item}: any, navigation: any) => {
     <TouchableOpacity
       style={styles.containerStory}
       activeOpacity={0.6}
-      onPress={() => navigation.navigate('Stories', {content: item.content})}
+      onPress={() => push({name: 'Stories', params: {content: item.content}})}
     >
       <Image
         source={item.avatar}

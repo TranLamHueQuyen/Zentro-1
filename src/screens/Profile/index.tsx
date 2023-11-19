@@ -13,6 +13,8 @@ import {getImages} from '@/assets/Images';
 import {screenWidth} from '@/themes/Responsive';
 import Octicons from 'react-native-vector-icons/Octicons';
 import {ProfileProps} from '@/utils/interface';
+import TabMenu from './TabMenu';
+import {navigate} from '@/navigation/NavigationUtils';
 
 const Profile: React.FC<ProfileProps> = ({navigation}) => {
   const {t} = useTranslation();
@@ -52,12 +54,13 @@ const Profile: React.FC<ProfileProps> = ({navigation}) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.btnListing}
-          onPress={() => navigation.navigate('AllReview')}
+          onPress={() => navigate({name: 'AllReview'})}
         >
           <Text style={styles.username}>28</Text>
           <Text style={styles.listingText}>{t('reviews')}</Text>
         </TouchableOpacity>
       </View>
+      <TabMenu />
     </View>
   );
 };

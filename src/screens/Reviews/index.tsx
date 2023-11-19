@@ -5,6 +5,7 @@ import {getImages} from '@/assets/Images';
 import {ReviewItems, ReviewProps} from '@/utils/interface';
 import {screenWidth} from '@/themes/Responsive';
 import StarRating from '@/components/StarRating';
+import {push} from '@/navigation/NavigationUtils';
 
 const Reviews: React.FC<ReviewProps> = ({navigation, estate}) => {
   const {t} = useTranslation();
@@ -137,7 +138,7 @@ const Reviews: React.FC<ReviewProps> = ({navigation, estate}) => {
       <TouchableOpacity
         style={styles.allReviewButton}
         onPress={() =>
-          navigation.navigate('ReviewDetails', {estate, review: data})
+          push({name: 'ReviewDetails', params: {estate, review: data}})
         }
       >
         <Text style={styles.allReviewText}>{t('view_all_reviews')}</Text>

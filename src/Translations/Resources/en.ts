@@ -46,4 +46,5 @@ export default {
   nearby_location: 'Nearby From this Location',
   listings: 'Listings',
   sold: 'Sold',
+  profile: 'Profile',
 };

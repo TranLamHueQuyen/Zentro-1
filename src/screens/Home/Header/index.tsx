@@ -3,6 +3,7 @@ import React from 'react';
 import {getImages} from '@/assets/Images';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {navigate} from '@/navigation/NavigationUtils';
 
 const Header = ({navigation}: any) => {
   return (
@@ -10,7 +11,7 @@ const Header = ({navigation}: any) => {
       <TouchableOpacity
         style={styles.locationView}
         activeOpacity={0.6}
-        onPress={() => navigation.navigate('Location')}
+        onPress={() => navigate({name: 'Location'})}
       >
         <Ionicons
           name="location-sharp"

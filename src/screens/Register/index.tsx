@@ -14,6 +14,7 @@ import {screenWidth} from '@/themes/Responsive';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParams} from '@/utils/type';
+import {navigate} from '@/navigation/NavigationUtils';
 
 const Register = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
@@ -127,7 +128,7 @@ const Register = () => {
             alignItems: 'center',
           }}
           activeOpacity={0.7}
-          onPress={() => navigation.navigate('Location')}
+          onPress={() => navigate({name: 'Location'})}
         >
           <Text
             style={{

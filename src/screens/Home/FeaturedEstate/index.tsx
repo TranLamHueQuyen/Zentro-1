@@ -13,6 +13,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import FavoriteButton from '@/components/FavoriteButton';
 import {EstateItems, FeaturedProps} from '@/utils/interface';
+import {push} from '@/navigation/NavigationUtils';
 
 const FeaturedEstates: React.FC<FeaturedProps> = ({navigation}) => {
   const {t} = useTranslation();
@@ -81,7 +82,7 @@ const FeaturedEstates: React.FC<FeaturedProps> = ({navigation}) => {
 
         <TouchableOpacity
           style={styles.cardContent}
-          onPress={() => navigation.push('EstateDetail', {estate: item})}
+          onPress={() => push({name: 'EstateDetail', params: {estate: item}})}
         >
           <Text style={styles.cardName}>{item.assets.name}</Text>
           <View style={styles.ratingView}>

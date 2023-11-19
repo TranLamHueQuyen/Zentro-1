@@ -6,6 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParams} from '@/utils/type';
 import {useTranslation} from 'react-i18next';
+import {navigate} from '@/navigation/NavigationUtils';
 
 const LoginButton = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
@@ -13,7 +14,7 @@ const LoginButton = () => {
   return (
     <View style={{alignItems: 'center'}}>
       <TouchableOpacity
-        onPress={() => navigation.navigate('HomeScreen')}
+        onPress={() => navigate({name: 'HomeScreen'})}
         style={{
           flexDirection: 'row',
           width: screenWidth - 96,

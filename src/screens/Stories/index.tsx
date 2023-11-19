@@ -9,6 +9,7 @@ import {
 import React, {useRef, useState} from 'react';
 import {StoriesProps} from '@/utils/interface';
 import {screenHeight, screenWidth} from '@/themes/Responsive';
+import {goBack} from '@/navigation/NavigationUtils';
 
 const Stories: React.FC<StoriesProps> = ({route, navigation}) => {
   const [current, setCurrent] = useState(0);
@@ -54,7 +55,7 @@ const Stories: React.FC<StoriesProps> = ({route, navigation}) => {
 
     // setCurrent(current);
     progress.setValue(0);
-    navigation.goBack();
+    goBack();
   };
   return (
     <View style={styles.container}>
