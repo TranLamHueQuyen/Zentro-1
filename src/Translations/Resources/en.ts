@@ -47,4 +47,5 @@ export default {
   listings: 'Listings',
   sold: 'Sold',
   profile: 'Profile',
+  transactions: 'Transactions',
 };

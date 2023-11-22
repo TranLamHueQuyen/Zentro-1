@@ -3,7 +3,7 @@ import React from 'react';
 
 const Sold = () => {
   return (
-    <View>
+    <View style={styles.container}>
       <Text>SoldScreen</Text>
     </View>
   );
@@ -11,4 +11,9 @@ const Sold = () => {
 
 export default Sold;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#ffffff',
+    flex: 1,
+  },
+});

@@ -14,6 +14,7 @@ import {observer} from 'mobx-react-lite';
 import EstateDetail from '@/screens/Home/EstateDetail';
 import ReviewDetails from '@/screens/ReviewDetails';
 import AllReview from '@/screens/Profile/AllReview';
+import TabMenu from '@/screens/Profile/TabMenu';
 
 const AppStack = observer(() => {
   const Stack = createStackNavigator<RootStackParams>();
@@ -87,6 +88,13 @@ const AppStack = observer(() => {
       <Stack.Screen
         name="AllReview"
         component={AllReview}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="TabMenu"
+        component={TabMenu}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}

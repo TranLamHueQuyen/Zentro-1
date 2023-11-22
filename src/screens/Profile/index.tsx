@@ -60,7 +60,15 @@ const Profile: React.FC<ProfileProps> = ({navigation}) => {
           <Text style={styles.listingText}>{t('reviews')}</Text>
         </TouchableOpacity>
       </View>
-      <TabMenu />
+      <View
+        style={{
+          height: '100%',
+          width: screenWidth - 48,
+          marginTop: 20,
+        }}
+      >
+        <TabMenu />
+      </View>
     </View>
   );
 };
