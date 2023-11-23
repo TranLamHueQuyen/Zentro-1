@@ -36,8 +36,12 @@ const data = [
       owner_name: 'John',
       type: 'Rent',
       period_time: '2 month',
-      discount: '88',
-      total: '31,250',
+      deposit: 220,
+      discount: 88,
+      payment_method: 'hung9654147@gmail.com',
+      method_image: getImages().picture_1,
+      total: 31.25,
+
       favorite: true,
     },
   },
@@ -62,7 +66,9 @@ const RenderItems = ({item}: {item: any}) => {
 
       <TouchableOpacity
         style={styles.cardContent}
-        onPress={() => push({name: 'EstateDetail', params: {estate: item}})}
+        onPress={() =>
+          push({name: 'TransactionDetail', params: {transaction: item}})
+        }
       >
         <Text style={styles.cardName}>{item.assets.name}</Text>
         <View style={{flexDirection: 'row'}}>

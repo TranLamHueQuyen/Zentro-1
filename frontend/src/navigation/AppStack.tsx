@@ -11,10 +11,12 @@ import Location from '@/screens/AccountSetup/Location';
 import Stories from '@/screens/Stories';
 import TabNavigator from './TabNavigator';
 import {observer} from 'mobx-react-lite';
-import EstateDetail from '@/screens/Home/EstateDetail';
-import ReviewDetails from '@/screens/ReviewDetails';
+import EstateDetail from '@/components/EstateDetail';
+import ReviewDetails from '@/screens/Reviews/ReviewDetails';
 import AllReview from '@/screens/Profile/AllReview';
 import TabMenu from '@/screens/Profile/TabMenu';
+import TransactionDetail from '@/components/TransactionDetail';
+import AddReview from '@/screens/Reviews/AddReview';
 
 const AppStack = observer(() => {
   const Stack = createStackNavigator<RootStackParams>();
@@ -95,6 +97,20 @@ const AppStack = observer(() => {
       <Stack.Screen
         name="TabMenu"
         component={TabMenu}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="TransactionDetail"
+        component={TransactionDetail}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="AddReview"
+        component={AddReview}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}

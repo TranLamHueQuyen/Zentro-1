@@ -19,7 +19,7 @@ import {useTranslation} from 'react-i18next';
 import Maps from '@/components/Maps';
 import Reviews from '@/screens/Reviews';
 import {ScrollView} from 'react-native-virtualized-view';
-import NearbyEstate from '../NearbyEstate';
+import NearbyEstate from '@/screens/Home/NearbyEstate';
 
 const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
   const {estate} = route.params;

@@ -12,4 +12,6 @@ export type RootStackParams = {
   ReviewDetails: {estate: EstateItems; review: [ReviewItems]};
   AllReview: any;
   TabMenu: any;
+  TransactionDetail: any;
+  AddReview: any;
 };
