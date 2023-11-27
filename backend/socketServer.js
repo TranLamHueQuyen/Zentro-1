@@ -171,4 +171,4 @@ const SocketServer = (socket) => {
   });
 };
 
-module.exports = SocketServer;
+export default SocketServer;

@@ -1,16 +1,18 @@
-const router = require('express').Router()
-const messageCtrl = require('../controllers/messageCtrl')
-const auth = require('../middleware/auth')
+import express from 'express'
+import messageCtrl from '../controllers/messageCtrl.js'
+import auth from '../middleware/auth.js'
 
-router.post('/message', auth, messageCtrl.createMessage)
+const messageRouter = express.Router()
 
-router.get('/conversations', auth, messageCtrl.getConversations)
+messageRouter.post('/message', auth, messageCtrl.createMessage)
 
-router.get('/message/:id', auth, messageCtrl.getMessages)
+messageRouter.get('/conversations', auth, messageCtrl.getConversations)
 
-router.delete('/message/:id', auth, messageCtrl.deleteMessages)
+messageRouter.get('/message/:id', auth, messageCtrl.getMessages)
 
-router.delete('/conversation/:id', auth, messageCtrl.deleteConversation)
+messageRouter.delete('/message/:id', auth, messageCtrl.deleteMessages)
+
+messageRouter.delete('/conversation/:id', auth, messageCtrl.deleteConversation)
 
 
-module.exports = router
+export default messageRouter

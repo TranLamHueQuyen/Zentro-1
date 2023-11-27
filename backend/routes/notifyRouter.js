@@ -1,17 +1,19 @@
-const router = require('express').Router()
-const auth = require('../middleware/auth')
-const notifyCtrl = require('../controllers/notifyCtrl')
+import express from 'express'
+import auth from '../middleware/auth.js'
+import notifyCtrl from '../controllers/notifyCtrl.js'
 
-router.post('/notify', auth, notifyCtrl.createNotify)
+const notifyRouter = express.Router()
 
-router.delete('/notify/:id', auth, notifyCtrl.removeNotify)
+notifyRouter.post('/notify', auth, notifyCtrl.createNotify)
 
-router.get('/notifies', auth, notifyCtrl.getNotifies)
+notifyRouter.delete('/notify/:id', auth, notifyCtrl.removeNotify)
 
-router.patch('/isReadNotify/:id', auth, notifyCtrl.isReadNotify)
+notifyRouter.get('/notifies', auth, notifyCtrl.getNotifies)
 
-router.delete('/deleteAllNotify', auth, notifyCtrl.deleteAllNotifies)
+notifyRouter.patch('/isReadNotify/:id', auth, notifyCtrl.isReadNotify)
+
+notifyRouter.delete('/deleteAllNotify', auth, notifyCtrl.deleteAllNotifies)
 
 
 
-module.exports = router
+export default notifyRouter

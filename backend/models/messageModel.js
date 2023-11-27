@@ -1,9 +1,10 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
+const { Schema, Types, model } = mongoose
 
-const messageSchema = new mongoose.Schema({
-    conversation: { type: mongoose.Types.ObjectId, ref: 'conversation' },
-    sender: { type: mongoose.Types.ObjectId, ref: 'user' },
-    recipient: { type: mongoose.Types.ObjectId, ref: 'user' },
+const messageSchema = new Schema({
+    conversation: { type: Types.ObjectId, ref: 'conversation' },
+    sender: { type: Types.ObjectId, ref: 'user' },
+    recipient: { type: Types.ObjectId, ref: 'user' },
     text: String,
     media: Array,
     call: Object
@@ -11,4 +12,4 @@ const messageSchema = new mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model('message', messageSchema)
+export default model('message', messageSchema)

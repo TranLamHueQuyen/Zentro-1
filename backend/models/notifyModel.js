@@ -1,16 +1,17 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
+const { Schema, Types, model } = mongoose
 
-const notifySchema = new mongoose.Schema({
-    id: mongoose.Types.ObjectId,
-    user: {type: mongoose.Types.ObjectId, ref: 'user'},
-    recipients: [mongoose.Types.ObjectId],
+const notifySchema = new Schema({
+    id: Types.ObjectId,
+    user: { type: Types.ObjectId, ref: 'user' },
+    recipients: [Types.ObjectId],
     url: String,
     text: String,
     content: String,
     image: String,
-    isRead: {type: Boolean, default: false}
+    isRead: { type: Boolean, default: false }
 }, {
     timestamps: true
 })
 
-module.exports = mongoose.model('notify', notifySchema)
+export default model('notify', notifySchema)

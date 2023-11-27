@@ -1,31 +1,15 @@
 import mongoose from 'mongoose'
 const { Schema, Types, model } = mongoose
-
-const userSchema = new Schema({
-    full_name: {
-        type: String,
-        required: true,
-        trim: true,
-        maxlength: 25
-    },
-    email: {
-        type: String,
-        required: true,
-        trim: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    avatar: {
-        type: String,
-        default: 'https://res.cloudinary.com/dw1sniewf/image/upload/v1669720008/noko-social/audefto1as6m8gg17nu1.jpg'
-    },
-    mobile: { type: String, default: '' },
+const estateSchema = new Schema({
+    name: String,
+    listType: [{ type: String, required: true }],
     address: {
         name: {
             type: String,
+            default: ''
+        },
+        house_number: {
+            type: Number,
             default: ''
         },
         road: {
@@ -53,9 +37,25 @@ const userSchema = new Schema({
             default: ''
         },
     },
+    images: {
+        type: Array,
+        required: true
+    },
+
+    price: {
+        sell: { type: Number },
+        rent: { type: Number }
+    },
+    property: {
+        bedroom: { type: Number },
+        bathroom: { type: Number },
+        balcony: { type: Number },
+    },
+    likes: [{ type: Types.ObjectId, ref: 'user' }],
+    reviews: [{ type: Types.ObjectId, ref: 'review' }],
+    user: { type: Types.ObjectId, ref: 'user' }
 }, {
     timestamps: true
 })
 
-
-export default model('user', userSchema)
+export default model('estate', estateSchema)
