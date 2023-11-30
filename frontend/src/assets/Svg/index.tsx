@@ -540,3 +540,75 @@ export const Marker_Icon = (props: any) => (
     />
   </Svg>
 );
+
+export const Pin_Location = (props: any) => (
+  <Svg
+    width={34}
+    height={51}
+    viewBox="0 0 34 51"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <Ellipse
+      opacity={0.15}
+      cx={16.9996}
+      cy={41.7833}
+      rx={15.7857}
+      ry={9.21687}
+      fill="url(#paint0_radial_2_3188)"
+    />
+    <Ellipse
+      opacity={0.5}
+      cx={16.9996}
+      cy={41.7831}
+      rx={7.28571}
+      ry={4.30121}
+      fill="#234F68"
+    />
+    <Path
+      d="M34 17.2048C34 24.6601 23.5333 36.3049 19.0255 40.9744C17.9085 42.1315 16.0915 42.1315 14.9745 40.9744C10.4667 36.3049 0 24.6601 0 17.2048C0 12.6418 1.79107 8.26571 4.97919 5.03918C8.1673 1.81265 12.4913 0 17 0C21.5087 0 25.8327 1.81265 29.0208 5.03918C32.2089 8.26571 34 12.6418 34 17.2048Z"
+      fill="url(#paint1_radial_2_3188)"
+    />
+    <Path
+      d="M17 22C18.3261 22 19.5979 21.4732 20.5355 20.5355C21.4732 19.5979 22 18.3261 22 17C22 15.6739 21.4732 14.4021 20.5355 13.4645C19.5979 12.5268 18.3261 12 17 12C15.6739 12 14.4021 12.5268 13.4645 13.4645C12.5268 14.4021 12 15.6739 12 17C12 18.3261 12.5268 19.5979 13.4645 20.5355C14.4021 21.4732 15.6739 22 17 22Z"
+      fill="white"
+    />
+    <Defs>
+      <RadialGradient
+        id="paint0_radial_2_3188"
+        cx={0}
+        cy={0}
+        r={1}
+        gradientUnits="userSpaceOnUse"
+        gradientTransform="translate(1.21387 29.5656) rotate(39.2353) scale(33.8883 35.0905)"
+      >
+        <Stop
+          offset={0.046875}
+          stopColor="#234F68"
+        />
+        <Stop
+          offset={0.983052}
+          stopColor="#8BC83F"
+        />
+      </RadialGradient>
+      <RadialGradient
+        id="paint1_radial_2_3188"
+        cx={0}
+        cy={0}
+        r={1}
+        gradientUnits="userSpaceOnUse"
+        gradientTransform="translate(2.69431e-06 -7.00196) rotate(60.5253) scale(57.4495 52.0133)"
+      >
+        <Stop
+          offset={0.046875}
+          stopColor="#234F68"
+        />
+        <Stop
+          offset={0.983052}
+          stopColor="#8BC83F"
+        />
+      </RadialGradient>
+    </Defs>
+  </Svg>
+);

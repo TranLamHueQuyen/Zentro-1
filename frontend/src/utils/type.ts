@@ -14,4 +14,7 @@ export type RootStackParams = {
   TabMenu: any;
   TransactionDetail: any;
   AddReview: any;
+  CreateEstate: any;
+  AddEstateLocation: any;
+  AddEstateImages: any;
 };

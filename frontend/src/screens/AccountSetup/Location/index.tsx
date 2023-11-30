@@ -111,12 +111,12 @@ const Location = () => {
               latitudeDelta: 0.01,
               longitudeDelta: 0.01,
             }}
-            onPress={(e) => {
-              setChangeLocation({
-                latitude: e.nativeEvent.coordinate.latitude,
-                longitude: e.nativeEvent.coordinate.longitude,
-              });
-            }}
+            // onPress={(e) => {
+            //   setChangeLocation({
+            //     latitude: e.nativeEvent.coordinate.latitude,
+            //     longitude: e.nativeEvent.coordinate.longitude,
+            //   });
+            // }}
           >
             <Marker
               coordinate={

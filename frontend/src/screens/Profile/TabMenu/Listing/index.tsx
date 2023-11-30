@@ -14,7 +14,7 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {EstateItems} from '@/utils/interface';
 import {screenHeight, screenWidth} from '@/themes/Responsive';
-import {push} from '@/navigation/NavigationUtils';
+import {navigate, push} from '@/navigation/NavigationUtils';
 import {getImages} from '@/assets/Images';
 import {Pencil_Icon} from '@/assets/Svg';
 
@@ -216,7 +216,10 @@ const Listing = () => {
       <View>
         <View style={styles.viewTitle}>
           <Text style={styles.textTitle}>30 {t('listings')}</Text>
-          <TouchableOpacity style={styles.addButton}>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => navigate({name: 'CreateEstate'})}
+          >
             <AntDesign
               name="plus"
               color={'#FFFFFF'}

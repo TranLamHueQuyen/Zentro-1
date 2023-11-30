@@ -17,6 +17,9 @@ import AllReview from '@/screens/Profile/AllReview';
 import TabMenu from '@/screens/Profile/TabMenu';
 import TransactionDetail from '@/components/TransactionDetail';
 import AddReview from '@/screens/Reviews/AddReview';
+import CreateEstate from '@/screens/CreateEstate';
+import AddEstateLocation from '@/screens/CreateEstate/AddEstateLocation';
+import AddEstateImages from '@/screens/CreateEstate/AddEstateImages';
 
 const AppStack = observer(() => {
   const Stack = createStackNavigator<RootStackParams>();
@@ -111,6 +114,27 @@ const AppStack = observer(() => {
       <Stack.Screen
         name="AddReview"
         component={AddReview}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="CreateEstate"
+        component={CreateEstate}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="AddEstateLocation"
+        component={AddEstateLocation}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="AddEstateImages"
+        component={AddEstateImages}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
