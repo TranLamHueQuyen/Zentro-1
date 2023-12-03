@@ -29,7 +29,10 @@ const CreateEstate = () => {
           <Text style={styles.addList}>{t('add_listing')}</Text>
         </View>
         <BackButton />
-        <Text style={styles.title}>{t('fill_details')}</Text>
+        <View style={styles.titleView}>
+          <Text style={styles.titleNormal}>{t('fill_details')}</Text>
+          <Text style={styles.titleHighlight}>{t('real_estate')}</Text>
+        </View>
         <View>
           <TextInput
             style={styles.textInput}
@@ -124,13 +127,21 @@ const styles = StyleSheet.create({
     marginTop: 35,
     marginBottom: 20,
   },
-  title: {
-    color: '#252B5C',
-    fontFamily: 'Lato-Medium',
-    fontSize: 30,
+  titleView: {
+    flexDirection: 'row',
     marginTop: 35,
     marginBottom: 20,
     marginHorizontal: 24,
+  },
+  titleNormal: {
+    fontFamily: 'Lato-Medium',
+    color: '#000000',
+    fontSize: 30,
+  },
+  titleHighlight: {
+    fontFamily: 'Lato-Bold',
+    color: '#252B5C',
+    fontSize: 30,
   },
   textInput: {
     width: screenWidth - 48,

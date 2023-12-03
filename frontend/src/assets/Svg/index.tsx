@@ -612,3 +612,245 @@ export const Pin_Location = (props: any) => (
     </Defs>
   </Svg>
 );
+
+export const Plus = (props: any) => (
+  <Svg
+    width={11}
+    height={11}
+    viewBox="0 0 11 11"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <Path
+      d="M5.3942 1.76596V9.02311"
+      stroke="white"
+      strokeWidth={1.2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <Path
+      d="M1.76562 5.39453H9.02277"
+      stroke="white"
+      strokeWidth={1.2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+export const Minus = (props: any) => (
+  <Svg
+    width={11}
+    height={11}
+    viewBox="0 0 11 11"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <Path
+      d="M1.76562 5.39453H9.02277"
+      stroke="white"
+      strokeWidth={1.2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+export const Success = (props: any) => (
+  <Svg
+    width={163}
+    height={162}
+    viewBox="0 0 163 162"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <G
+      opacity={0.1}
+      filter="url(#filter0_f_2_3111)"
+    >
+      <Circle
+        cx={81.5}
+        cy={81}
+        r={71}
+        fill="url(#paint0_radial_2_3111)"
+      />
+    </G>
+    <G
+      opacity={0.15}
+      filter="url(#filter1_f_2_3111)"
+    >
+      <Circle
+        cx={81.5}
+        cy={81}
+        r={55}
+        fill="url(#paint1_radial_2_3111)"
+      />
+    </G>
+    <Circle
+      cx={81.5}
+      cy={81}
+      r={35}
+      fill="url(#paint2_radial_2_3111)"
+    />
+    <Path
+      d="M75.8612 91.1C75.8612 90.875 75.8362 90.775 75.7362 90.775L75.1612 91.05C75.1612 90.925 75.0862 90.85 74.9612 90.8L74.7612 90.775C74.5862 90.775 74.5112 90.8 74.2612 90.95C74.1862 90.8 74.0862 90.625 74.0112 90.475C73.3612 89.225 72.6862 87.35 72.3862 86.525C72.2362 86.1 72.0862 85.225 71.9112 83.9C72.1112 84.025 72.2612 84.075 72.3362 84.075C72.4362 84.075 72.5612 83.9 72.6612 83.55C72.7112 83.625 72.8112 83.65 72.9362 83.65C73.0112 83.65 73.1112 83.625 73.1612 83.55L73.5612 82.95L74.0112 83.1H74.0362C74.0862 83.1 74.1612 83.025 74.2862 82.95C74.4112 82.875 74.5112 82.825 74.5862 82.825L74.6612 82.85C75.0612 83.05 75.3362 83.4 75.4612 83.95C75.7612 85.225 76.0362 85.85 76.3612 85.85C76.6362 85.85 77.0112 85.525 77.4112 84.9C77.8112 84.275 78.2112 83.425 78.6612 82.4C78.6862 82.6 78.7112 82.7 78.7612 82.7C78.9112 82.7 79.2862 81.825 80.2112 80.35C81.5862 78.125 84.9862 73.85 85.8612 73.25C86.5112 72.8 87.0112 72.375 87.3612 72C87.3112 72.25 87.2612 72.425 87.2612 72.5C87.2612 72.575 87.3112 72.6 87.3612 72.6L88.0612 72.25V72.35C88.0612 72.475 88.0862 72.55 88.1612 72.55C88.2612 72.55 88.6612 72.15 88.7112 72L88.6612 72.35L89.5112 71.85L89.3112 72.3C89.5612 72.125 89.7612 72.025 89.8862 72.025C90.0112 72.025 90.0862 72.225 90.0862 72.35C90.0862 72.55 89.9112 72.825 89.6362 73.175C89.3362 73.575 88.5862 74.35 86.3362 76.925C85.3612 78.025 81.0362 83.9 80.2112 85.3L78.6612 87.925C77.9862 89.05 77.5612 89.775 77.3362 90.05C77.1112 90.325 76.8362 90.6 76.5112 90.85L76.2862 90.725L76.0862 90.85L75.8612 91.1Z"
+      fill="white"
+    />
+    <Defs>
+      <RadialGradient
+        id="paint0_radial_2_3111"
+        cx={0}
+        cy={0}
+        r={1}
+        gradientUnits="userSpaceOnUse"
+        gradientTransform="translate(10.5 -13.1163) rotate(54.4352) scale(202.981)"
+      >
+        <Stop
+          offset={0.046875}
+          stopColor="#234F68"
+        />
+        <Stop
+          offset={0.983052}
+          stopColor="#8BC83F"
+        />
+      </RadialGradient>
+      <RadialGradient
+        id="paint1_radial_2_3111"
+        cx={0}
+        cy={0}
+        r={1}
+        gradientUnits="userSpaceOnUse"
+        gradientTransform="translate(26.5 8.09303) rotate(54.4352) scale(157.238)"
+      >
+        <Stop
+          offset={0.046875}
+          stopColor="#234F68"
+        />
+        <Stop
+          offset={0.983052}
+          stopColor="#8BC83F"
+        />
+      </RadialGradient>
+      <RadialGradient
+        id="paint2_radial_2_3111"
+        cx={0}
+        cy={0}
+        r={1}
+        gradientUnits="userSpaceOnUse"
+        gradientTransform="translate(46.5 34.6047) rotate(54.4352) scale(100.061)"
+      >
+        <Stop
+          offset={0.046875}
+          stopColor="#234F68"
+        />
+        <Stop
+          offset={0.983052}
+          stopColor="#8BC83F"
+        />
+      </RadialGradient>
+    </Defs>
+  </Svg>
+);
+
+export const Error = (props: any) => (
+  <Svg
+    width={163}
+    height={162}
+    viewBox="0 0 163 162"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <G
+      opacity={0.1}
+      filter="url(#filter0_f_2_3073)"
+    >
+      <Circle
+        cx={81.5}
+        cy={81}
+        r={71}
+        fill="url(#paint0_radial_2_3073)"
+      />
+    </G>
+    <G
+      opacity={0.15}
+      filter="url(#filter1_f_2_3073)"
+    >
+      <Circle
+        cx={81.5}
+        cy={81}
+        r={55}
+        fill="url(#paint1_radial_2_3073)"
+      />
+    </G>
+    <Circle
+      cx={81.5}
+      cy={81}
+      r={35}
+      fill="url(#paint2_radial_2_3073)"
+    />
+    <Path
+      d="M79.771 84.2L79.171 72.5H82.871L82.246 84.2H79.771ZM81.021 90.175C80.4377 90.175 79.9543 89.9833 79.571 89.6C79.1877 89.2167 78.996 88.7583 78.996 88.225C78.996 87.6917 79.1877 87.2417 79.571 86.875C79.9543 86.4917 80.4377 86.3 81.021 86.3C81.6043 86.3 82.0793 86.4917 82.446 86.875C82.8127 87.2417 82.996 87.6917 82.996 88.225C82.996 88.7583 82.8127 89.2167 82.446 89.6C82.0793 89.9833 81.6043 90.175 81.021 90.175Z"
+      fill="white"
+    />
+    <Defs>
+      <RadialGradient
+        id="paint0_radial_2_3073"
+        cx={0}
+        cy={0}
+        r={1}
+        gradientUnits="userSpaceOnUse"
+        gradientTransform="translate(10.5 -13.1163) rotate(54.4352) scale(202.981)"
+      >
+        <Stop
+          offset={0.046875}
+          stopColor="#234F68"
+          stopOpacity={0.42}
+        />
+        <Stop
+          offset={0.983052}
+          stopColor="#234F68"
+        />
+      </RadialGradient>
+      <RadialGradient
+        id="paint1_radial_2_3073"
+        cx={0}
+        cy={0}
+        r={1}
+        gradientUnits="userSpaceOnUse"
+        gradientTransform="translate(26.5 8.09303) rotate(54.4352) scale(157.238)"
+      >
+        <Stop
+          offset={0.046875}
+          stopColor="#234F68"
+          stopOpacity={0.42}
+        />
+        <Stop
+          offset={0.983052}
+          stopColor="#234F68"
+        />
+      </RadialGradient>
+      <RadialGradient
+        id="paint2_radial_2_3073"
+        cx={0}
+        cy={0}
+        r={1}
+        gradientUnits="userSpaceOnUse"
+        gradientTransform="translate(46.5 34.6047) rotate(54.4352) scale(100.061)"
+      >
+        <Stop
+          offset={0.046875}
+          stopColor="#234F68"
+          stopOpacity={0.42}
+        />
+        <Stop
+          offset={0.983052}
+          stopColor="#234F68"
+        />
+      </RadialGradient>
+    </Defs>
+  </Svg>
+);

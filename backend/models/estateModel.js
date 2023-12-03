@@ -1,8 +1,15 @@
 import mongoose from 'mongoose'
 const { Schema, Types, model } = mongoose
 const estateSchema = new Schema({
-    name: String,
-    listType: [{ type: String, required: true }],
+    name: { type: String, required: true },
+    listType: {
+        rent: {
+            type: Boolean,
+        },
+        sell: {
+            type: Boolean,
+        },
+    },
     address: {
         name: {
             type: String,
@@ -46,10 +53,13 @@ const estateSchema = new Schema({
         sell: { type: Number },
         rent: { type: Number }
     },
+    rental: {
+        type: Boolean,
+    },
     property: {
         bedroom: { type: Number },
         bathroom: { type: Number },
-        balcony: { type: Number },
+        floors: { type: Number },
     },
     likes: [{ type: Types.ObjectId, ref: 'user' }],
     reviews: [{ type: Types.ObjectId, ref: 'review' }],

@@ -38,7 +38,7 @@ const AddEstateLocation = ({route}: any) => {
     setTimeout(() => {
       getLocation();
       setLoadLocation(false);
-    }, 1000);
+    }, 0);
   }, [search]);
 
   const getLocation = async () => {
@@ -340,5 +340,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     width: screenWidth - 100,
   },
-  btnNext: {fontFamily: 'Lato-Bold', color: '#FFF', fontSize: 16},
+  btnNext: {
+    fontFamily: 'Lato-Bold',
+    color: '#FFF',
+    fontSize: 16,
+  },
 });

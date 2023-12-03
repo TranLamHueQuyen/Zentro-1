@@ -17,4 +17,5 @@ export type RootStackParams = {
   CreateEstate: any;
   AddEstateLocation: any;
   AddEstateImages: any;
+  AddEstateInfo: any;
 };
