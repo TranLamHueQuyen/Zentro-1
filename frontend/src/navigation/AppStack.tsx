@@ -15,12 +15,13 @@ import EstateDetail from '@/components/EstateDetail';
 import ReviewDetails from '@/screens/Reviews/ReviewDetails';
 import AllReview from '@/screens/Profile/AllReview';
 import TabMenu from '@/screens/Profile/TabMenu';
-import TransactionDetail from '@/components/TransactionDetail';
+import TransactionDetail from '@/screens/TransactionDetail';
 import AddReview from '@/screens/Reviews/AddReview';
 import CreateEstate from '@/screens/CreateEstate';
 import AddEstateLocation from '@/screens/CreateEstate/AddEstateLocation';
 import AddEstateImages from '@/screens/CreateEstate/AddEstateImages';
 import AddEstateInfo from '@/screens/CreateEstate/AddEstateInfo';
+import Transaction from '@/screens/Transaction';
 
 const AppStack = observer(() => {
   const Stack = createStackNavigator<RootStackParams>();
@@ -143,6 +144,13 @@ const AppStack = observer(() => {
       <Stack.Screen
         name="AddEstateInfo"
         component={AddEstateInfo}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="Transaction"
+        component={Transaction}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}

@@ -18,4 +18,5 @@ export type RootStackParams = {
   AddEstateLocation: any;
   AddEstateImages: any;
   AddEstateInfo: any;
+  Transaction: any;
 };

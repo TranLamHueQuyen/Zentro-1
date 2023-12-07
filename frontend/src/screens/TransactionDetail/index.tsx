@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
-import BackButton from '../BackButton';
-import FavoriteButton from '../FavoriteButton';
+import BackButton from '../../components/BackButton';
+import FavoriteButton from '../../components/FavoriteButton';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {screenWidth} from '@/themes/Responsive';
 import {getImages} from '@/assets/Images';

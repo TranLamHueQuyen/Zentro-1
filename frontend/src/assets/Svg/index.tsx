@@ -854,3 +854,100 @@ export const Error = (props: any) => (
     </Defs>
   </Svg>
 );
+
+export const Empty = (props: any) => (
+  <Svg
+    width={163}
+    height={162}
+    viewBox="0 0 163 162"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <G
+      opacity={0.1}
+      filter="url(#filter0_f_2_4033)"
+    >
+      <Circle
+        cx={81.5}
+        cy={81}
+        r={71}
+        fill="url(#paint0_radial_2_4033)"
+      />
+    </G>
+    <G
+      opacity={0.15}
+      filter="url(#filter1_f_2_4033)"
+    >
+      <Circle
+        cx={81.5}
+        cy={81}
+        r={55}
+        fill="url(#paint1_radial_2_4033)"
+      />
+    </G>
+    <Circle
+      cx={81.5}
+      cy={81}
+      r={35}
+      fill="url(#paint2_radial_2_4033)"
+    />
+    <Path
+      d="M79.5521 87.86V75.14H81.4421V87.86H79.5521ZM73.9721 82.4V80.63H87.0221V82.4H73.9721Z"
+      fill="white"
+    />
+    <Defs>
+      <RadialGradient
+        id="paint0_radial_2_4033"
+        cx={0}
+        cy={0}
+        r={1}
+        gradientUnits="userSpaceOnUse"
+        gradientTransform="translate(10.5 -13.1163) rotate(54.4352) scale(202.981)"
+      >
+        <Stop
+          offset={0.046875}
+          stopColor="#234F68"
+        />
+        <Stop
+          offset={0.983052}
+          stopColor="#8BC83F"
+        />
+      </RadialGradient>
+      <RadialGradient
+        id="paint1_radial_2_4033"
+        cx={0}
+        cy={0}
+        r={1}
+        gradientUnits="userSpaceOnUse"
+        gradientTransform="translate(26.5 8.09303) rotate(54.4352) scale(157.238)"
+      >
+        <Stop
+          offset={0.046875}
+          stopColor="#234F68"
+        />
+        <Stop
+          offset={0.983052}
+          stopColor="#8BC83F"
+        />
+      </RadialGradient>
+      <RadialGradient
+        id="paint2_radial_2_4033"
+        cx={0}
+        cy={0}
+        r={1}
+        gradientUnits="userSpaceOnUse"
+        gradientTransform="translate(46.5 34.6047) rotate(54.4352) scale(100.061)"
+      >
+        <Stop
+          offset={0.046875}
+          stopColor="#234F68"
+        />
+        <Stop
+          offset={0.983052}
+          stopColor="#8BC83F"
+        />
+      </RadialGradient>
+    </Defs>
+  </Svg>
+);

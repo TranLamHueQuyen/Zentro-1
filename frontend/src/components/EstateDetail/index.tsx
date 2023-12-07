@@ -6,10 +6,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
-import {EstateItems, Featured, ReviewItems} from '@/utils/interface';
-import {screenHeight, screenWidth} from '@/themes/Responsive';
-import {BackButton, Separator} from '@/components';
+import React, {useRef} from 'react';
+import {Featured} from '@/utils/interface';
+import {screenWidth} from '@/themes/Responsive';
+import {BackButton} from '@/components';
 import FavoriteButton from '@/components/FavoriteButton';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -20,45 +20,45 @@ import Maps from '@/components/Maps';
 import Reviews from '@/screens/Reviews';
 import {ScrollView} from 'react-native-virtualized-view';
 import NearbyEstate from '@/screens/Home/NearbyEstate';
+import {push} from '@/navigation/NavigationUtils';
 
 const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
   const {estate} = route.params;
   const {t} = useTranslation();
-  // const scrollY = new Animated.Value(0);
-  // const translateY = scrollY.interpolate({
-  //   inputRange: [0, 85],
-  //   outputRange: [0, 85],
-  // });
+  const scrollOffsetY = useRef(new Animated.Value(0)).current;
+  const AnimatedHeader = Animated.createAnimatedComponent(View);
+  const DynamicHeader = ({value}: any) => {
+    const animatedHeaderHeight = value.interpolate({
+      inputRange: [0, 85],
+      outputRange: [0, 85],
+      extrapolate: 'clamp',
+    });
+    return (
+      <AnimatedHeader style={[styles.header, {height: animatedHeaderHeight}]} />
+    );
+  };
 
   return (
     <View style={styles.component}>
-      {/* <Animated.View
-        style={{
-          transform: [{translateY: translateY}],
-          elevation: 4,
-          zIndex: 100,
+      <DynamicHeader value={scrollOffsetY} />
+
+      <View style={styles.btnHeader}>
+        <BackButton />
+        <FavoriteButton
+          size={50}
+          favorite={estate.assets.favorite}
+        />
+      </View>
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={5}
+        onScroll={(e) => {
+          const offsetY = e.nativeEvent.contentOffset.y;
+          scrollOffsetY.setValue(offsetY);
         }}
       >
-        <View
-          style={{
-            backgroundColor: 'red',
-            height: 85,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-          }}
-        ></View>
-      </Animated.View> */}
-      <BackButton />
-      <ScrollView
-      // onScroll={(e) => scrollY.setValue(e.nativeEvent.contentOffset.y)}
-      >
         <View>
-          <FavoriteButton
-            size={50}
-            favorite={estate.assets.favorite}
-          />
           <View style={styles.imgArrayView}>
             {estate.assets.images.length > 3
               ? estate.assets.images
@@ -128,7 +128,10 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
           <Text style={styles.locationStyle}>per month</Text>
         </View>
         <View style={{flexDirection: 'row', marginTop: 20}}>
-          <TouchableOpacity style={styles.rentButton}>
+          <TouchableOpacity
+            style={styles.rentButton}
+            onPress={() => push({name: 'Transaction', params: {estate}})}
+          >
             <Text style={styles.rentText}>{t('rent')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.buyButton}>
@@ -201,6 +204,13 @@ export default EstateDetail;
 const styles = StyleSheet.create({
   component: {
     backgroundColor: '#FFFFFF',
+  },
+  header: {
+    left: 0,
+    right: 0,
+  },
+  btnHeader: {
+    position: 'absolute',
   },
   images: {
     width: screenWidth - 20,
