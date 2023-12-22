@@ -31,7 +31,7 @@ const TransactionDetail = ({
         <View style={styles.estateContent}>
           <FavoriteButton favorite={transaction.assets.favorite} />
           <Image
-            source={transaction.assets.images[0]}
+            source={{uri: transaction.assets.images[0]}}
             style={styles.estateImage}
           />
           <View style={styles.cardContent}>
@@ -135,15 +135,7 @@ const TransactionDetail = ({
         <View style={styles.transactionView}>
           <Text style={styles.transactionText}>{t('payment_method')}</Text>
           <View style={styles.tranDetail}>
-            <View style={styles.methodView}>
-              <Image
-                source={transaction.assets.method_image}
-                style={styles.payImages}
-              />
-              <Text style={styles.methodText}>
-                {'••••••••••' + transaction.assets.payment_method.substr(10)}
-              </Text>
-            </View>
+            <Text style={styles.methodText}>{t('direct_transaction')}</Text>
           </View>
         </View>
         <TouchableOpacity
@@ -295,11 +287,13 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     flexDirection: 'row',
   },
+
   methodText: {
     color: '#53587A',
     marginLeft: 15,
     fontFamily: 'Lato-Regular',
     fontSize: 15,
+    marginVertical: 15,
   },
   btnReview: {
     width: screenWidth - 100,

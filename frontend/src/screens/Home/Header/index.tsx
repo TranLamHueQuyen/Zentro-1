@@ -2,6 +2,7 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {getImages} from '@/assets/Images';
 import Feather from 'react-native-vector-icons/Feather';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {navigate} from '@/navigation/NavigationUtils';
 
@@ -26,7 +27,14 @@ const Header = ({navigation}: any) => {
         />
       </TouchableOpacity>
       <View style={{flexDirection: 'row'}}>
-        <TouchableOpacity style={styles.notification}>
+        <TouchableOpacity
+          style={styles.notification}
+          onPress={() =>
+            navigate({
+              name: 'Notification',
+            })
+          }
+        >
           <Feather
             name="bell"
             size={20}
@@ -54,10 +62,41 @@ const Header = ({navigation}: any) => {
             />
           </View>
         </TouchableOpacity>
-        <Image
-          source={getImages().picture_4}
-          style={styles.avatar}
-        />
+        <TouchableOpacity
+          style={styles.notification}
+          onPress={() =>
+            navigate({
+              name: 'Message',
+            })
+          }
+        >
+          <AntDesign
+            name="message1"
+            size={20}
+            color={'#252B5C'}
+          />
+          <View
+            style={{
+              backgroundColor: '#FFFFFF',
+              width: 12,
+              height: 12,
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'absolute',
+              right: 12,
+              top: 8,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: '#FD5F4A',
+                width: 6,
+                height: 6,
+                borderRadius: 6,
+              }}
+            />
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -89,7 +128,7 @@ const styles = StyleSheet.create({
     borderColor: '#8BC83F',
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    marginRight: 13,
+    marginLeft: 13,
   },
   avatar: {
     width: 44,

@@ -48,7 +48,7 @@ const estateSchema = new Schema({
         type: Array,
         required: true
     },
-
+    rating_star: Number,
     price: {
         sell: { type: Number },
         rent: { type: Number }

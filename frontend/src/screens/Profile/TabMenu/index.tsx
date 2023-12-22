@@ -25,6 +25,7 @@ const TabMenu = () => {
           width: screenWidth / 3 - 24 - 8,
           left: 8,
         },
+        swipeEnabled: false,
         tabBarLabel: ({focused}) => {
           let label;
           return (label = focused ? (

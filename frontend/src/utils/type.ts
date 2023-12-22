@@ -1,4 +1,4 @@
-import {EstateItems, ReviewItems} from './interface';
+import {EstateDetailProps, EstateItems, ReviewItems} from './interface';
 
 export type RootStackParams = {
   Login: any;
@@ -8,7 +8,7 @@ export type RootStackParams = {
   Register: any;
   Location: any;
   Stories: any;
-  EstateDetail: {estate: EstateItems};
+  EstateDetail: {id: EstateDetailProps; nearby: boolean};
   ReviewDetails: {estate: EstateItems; review: [ReviewItems]};
   AllReview: any;
   TabMenu: any;
@@ -19,4 +19,9 @@ export type RootStackParams = {
   AddEstateImages: any;
   AddEstateInfo: any;
   Transaction: any;
+  SearchResult: any;
+  Message: any;
+  Notification: any;
+  MessagesDetail: any;
+  TransactionSummary: any;
 };

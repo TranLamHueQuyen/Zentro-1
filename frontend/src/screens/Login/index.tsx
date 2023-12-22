@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Image,
   StyleSheet,
   Text,
@@ -6,32 +7,44 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useCallback, useContext, useState} from 'react';
 import {getImages} from '@/assets/Images';
 import {Email_Icon} from '@/assets/Svg';
 import Feather from 'react-native-vector-icons/Feather';
 import Separator from '@/components/Separator';
-import LoginButton from '@/components/LoginButton';
 import GoogleButton from '@/components/GoogleButton';
 import FacebookButton from '@/components/FacebookButton';
 import {screenWidth} from '@/themes/Responsive';
 import BackButton from '@/components/BackButton';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {RootStackParams} from '@/utils/type';
 import {useTranslation} from 'react-i18next';
 import {navigate} from '@/navigation/NavigationUtils';
+import {AuthContext} from '@/context/AuthContext';
+import Loading from '@/components/Loading';
 
 const Login = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParams>>();
+  const {login} = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
-  const [login, setLogin] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
   const {t} = useTranslation();
+  const [isLoading, setIsLoading] = useState(false);
+  const HandleLogin = (email: string, password: string) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      login(email, password);
+      setIsLoading(false);
+      setLoginSuccess(true);
+    }, 3000);
+  };
+
   return (
     <View style={styles.container}>
-      <BackButton />
+      {isLoading && <Loading />}
+      <View style={{zIndex: isLoading ? 0 : 1}}>
+        <BackButton />
+      </View>
+
       <Image
         source={getImages().city}
         style={styles.headerImage}
@@ -53,7 +66,7 @@ const Login = () => {
           {t('sign_in')}
         </Text>
       </View>
-      {login ? (
+      {loginSuccess && (
         <View
           style={{
             height: 50,
@@ -70,7 +83,7 @@ const Login = () => {
         >
           <Text style={{color: '#FFFFFF'}}>Email or password is incorrect</Text>
         </View>
-      ) : null}
+      )}
       <View style={{marginTop: 74}}>
         <View style={styles.icon}>
           <Email_Icon color="#252B5C" />
@@ -127,7 +140,15 @@ const Login = () => {
         </TouchableOpacity>
       </View>
       <View style={{marginTop: 50}}>
-        <LoginButton />
+        <View style={{alignItems: 'center'}}>
+          <TouchableOpacity
+            onPress={() => HandleLogin(email, password)}
+            style={styles.btnLogin}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.txtLogin}>{t('login')}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={{marginTop: 10}}>
         <Separator />
@@ -165,7 +186,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
-
+  indicator: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   headerImage: {
     height: 175,
     zIndex: -1,
@@ -186,6 +212,21 @@ const styles = StyleSheet.create({
     flex: 1,
     top: 25,
     left: 40,
+  },
+  btnLogin: {
+    flexDirection: 'row',
+    width: screenWidth - 96,
+    height: 63,
+    backgroundColor: '#8BC83F',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  txtLogin: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'Lato-Bold',
+    padding: 6,
   },
   text: {
     fontSize: 12,

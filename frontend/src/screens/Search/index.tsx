@@ -1,14 +1,290 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  TextInput,
+  ActivityIndicator,
+  ScrollView,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import MapView, {Marker} from 'react-native-maps';
+import {screenHeight, screenWidth} from '@/themes/Responsive';
+import Feather from 'react-native-vector-icons/Feather';
+import Octicons from 'react-native-vector-icons/Octicons';
+import axios from 'axios';
+import {useTranslation} from 'react-i18next';
+import {Pin_Location} from '@/assets/Svg';
+import {push} from '@/navigation/NavigationUtils';
 
 const Search = () => {
-  return (
-    <View>
-      <Text>Search</Text>
+  const {t} = useTranslation();
+  const [search, setSearch] = useState('');
+  const [address, setAddress] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadLocation, setLoadLocation] = useState(false);
+  const [changeLocation, setChangeLocation] = useState({
+    latitude: 16.055061228490178,
+    longitude: 108.20310270503711,
+  });
+
+  useEffect(() => {
+    setIsLoading(false);
+    setLoadLocation(true);
+    setTimeout(() => {
+      getLocation();
+      setLoadLocation(false);
+    }, 0);
+  }, [search]);
+
+  const getLocation = async () => {
+    if (search) {
+      const URL = `https://nominatim.openstreetmap.org/search?format=json&countrycodes=vn&q=${search}`;
+      try {
+        const response = await axios.get(URL);
+        const address = response.data;
+        setAddress(address);
+      } catch (error) {
+        console.error('Lỗi:', error);
+      }
+    }
+  };
+
+  return isLoading ? (
+    <View style={styles.container}>
+      <ActivityIndicator
+        size="large"
+        color="#8BC83F"
+      />
+    </View>
+  ) : (
+    <View style={styles.container}>
+      <View style={styles.borderRadiusMap}>
+        <MapView
+          style={styles.map}
+          region={{
+            latitude: changeLocation.latitude,
+            longitude: changeLocation.longitude,
+            latitudeDelta: 0.02,
+            longitudeDelta: 0.02,
+          }}
+        >
+          {changeLocation.latitude !== 0 && (
+            <Marker coordinate={changeLocation}>
+              <View style={{top: 9, position: 'absolute'}}>
+                <Pin_Location />
+              </View>
+            </Marker>
+          )}
+        </MapView>
+      </View>
+
+      <View style={styles.view2}>
+        <View style={{position: 'absolute', zIndex: 1, top: 89}}>
+          <View style={styles.icon}>
+            <Feather
+              name="search"
+              size={20}
+              color={'#252B5C'}
+            />
+          </View>
+          <TextInput
+            placeholder="Search House, Apartment, etc"
+            style={[
+              styles.input,
+              {fontFamily: search ? 'Lato-Bold' : 'Lato-Regular'},
+            ]}
+            placeholderTextColor={'#A1A5C1'}
+            onChangeText={(text) => setSearch(text)}
+            value={search}
+          />
+        </View>
+
+        {search && (
+          <View style={styles.viewSearch}>
+            <Text style={styles.titleSearch}>{t('location')}</Text>
+            <ScrollView>
+              {loadLocation ? (
+                <View
+                  style={{
+                    width: screenWidth - 78,
+                  }}
+                >
+                  <ActivityIndicator
+                    size="large"
+                    color="#8BC83F"
+                  />
+                </View>
+              ) : (
+                address &&
+                address?.map((item: any, index: any) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}
+                    onPress={() => {
+                      push({
+                        name: 'SearchResult',
+                        params: {result: item.display_name},
+                      });
+                    }}
+                  >
+                    <View style={styles.iconLocation}>
+                      <Octicons
+                        name="location"
+                        color={'#53587A'}
+                        size={8}
+                      />
+                    </View>
+                    <Text style={styles.txtLocation}>{item.display_name}</Text>
+                  </TouchableOpacity>
+                ))
+              )}
+            </ScrollView>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
 
 export default Search;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+  borderRadiusMap: {
+    borderRadius: 25,
+    width: screenWidth - 24,
+    height: screenHeight - 120,
+    overflow: 'hidden',
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
+  markerImage: {
+    width: 32.32,
+    height: 32.71,
+    borderRadius: 100,
+    position: 'absolute',
+    top: 4,
+    left: 4,
+  },
+  icon: {
+    position: 'absolute',
+    top: 25,
+    left: 40,
+    zIndex: 2,
+  },
+  input: {
+    color: '#252B5C',
+    fontSize: 15,
+    height: 70,
+    width: screenWidth - 48,
+    marginHorizontal: 24,
+    paddingHorizontal: 46,
+    borderRadius: 25,
+    backgroundColor: '#FFFFFF',
+    zIndex: 1,
+  },
+  activeInput: {
+    backgroundColor: '#234F68',
+    position: 'absolute',
+    zIndex: 1,
+    top: 0,
+    left: 0,
+    width: screenWidth,
+    height: screenHeight,
+    opacity: 0.67,
+  },
+  view2: {
+    position: 'absolute',
+    zIndex: 1,
+    top: 0,
+    left: 0,
+  },
+  locView: {
+    backgroundColor: '#FFF',
+    borderRadius: 25,
+    width: screenWidth - 48,
+    marginLeft: 24,
+    position: 'absolute',
+    top: screenHeight - 238,
+  },
+  chooseLocBtn: {
+    position: 'absolute',
+    top: screenHeight - 95,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginLeft: 45,
+    width: screenWidth - 90,
+    height: 65,
+    backgroundColor: '#8BC83F',
+  },
+  addressTitle: {
+    color: '#252B5C',
+    fontFamily: 'Lato-Bold',
+    fontSize: 18,
+    marginLeft: 15,
+    marginTop: 20,
+  },
+  addressText: {
+    color: '#53587A',
+    fontFamily: 'Lato-Regular',
+    fontSize: 14,
+    width: screenWidth - 128,
+    marginLeft: 15,
+  },
+  iconLocView: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ECEDF3',
+    borderRadius: 50,
+  },
+  iconLocation: {
+    width: 25,
+    height: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ECEDF3',
+    borderRadius: 50,
+    marginRight: 10,
+  },
+  viewSearch: {
+    marginTop: 180,
+    maxHeight: 200,
+    width: screenWidth - 48,
+    marginHorizontal: 24,
+    paddingHorizontal: 15,
+    borderRadius: 25,
+    backgroundColor: '#FFFFFF',
+    zIndex: 1,
+  },
+  titleSearch: {
+    color: '#252B5C',
+    fontFamily: 'Lato-Bold',
+    fontSize: 18,
+    marginVertical: 20,
+  },
+  txtLocation: {
+    color: '#53587A',
+    fontSize: 16,
+    marginBottom: 15,
+    width: screenWidth - 100,
+  },
+  btnNext: {
+    fontFamily: 'Lato-Bold',
+    color: '#FFF',
+    fontSize: 16,
+  },
+});

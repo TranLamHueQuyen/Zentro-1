@@ -22,25 +22,28 @@ import {t} from 'i18next';
 const data = [
   {
     id: 1,
-    name: 'Hung',
-    avatar: getImages().picture_1,
-    address: 'Việt Nam',
+    name: 'HuynhHung',
+    avatar:
+      'https://toigingiuvedep.vn/wp-content/uploads/2022/01/hinh-avatar-cute-nu.jpg',
+    address: '40 Nguyễn Như Hạnh',
     phone: '123456789',
     email: 'admin@gmail.com',
     assets: {
-      images: [getImages().picture_1],
-      name: 'Sky Dandelions Apartment',
-      location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-      check_in: '11/28/2021',
-      check_out: '01/28/2022',
-      owner_name: 'John',
+      images: [
+        'https://cf.bstatic.com/xdata/images/hotel/max1024x768/445509855.jpg?k=23bd8940c66fe2edbead9c8eecfe47e3b40b9c04361f49db73dd849aa1c86d76&o=&hp=1',
+      ],
+      name: 'Nhà của Te',
+      location: '40 Nguyễn Như Hạnh, Đà Nẵng',
+      check_in: '12/25/2023',
+      check_out: '01/25/2024',
+      owner_name: 'CamQuyen',
       type: 'Rent',
-      period_time: '2 month',
-      deposit: 220,
-      discount: 88,
+      period_time: '1 month',
+      deposit: 520,
+      discount: 0,
       payment_method: 'hung9654147@gmail.com',
       method_image: getImages().picture_1,
-      total: 31.25,
+      total: 520,
 
       favorite: true,
     },
@@ -60,7 +63,7 @@ const RenderItems = ({item}: {item: any}) => {
       </View>
 
       <Image
-        source={item.assets.images[0]}
+        source={{uri: item.assets.images[0]}}
         style={styles.images}
       />
 
@@ -90,7 +93,7 @@ const Transaction = () => {
   return (
     <ScrollView style={styles.container}>
       <View>
-        <Text style={styles.textTitle}>2 {t('transactions')}</Text>
+        <Text style={styles.textTitle}>1 {t('transactions')}</Text>
         <View style={styles.viewRender}>
           {data.map((item: any, index: number) => {
             return (

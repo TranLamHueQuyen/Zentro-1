@@ -11,8 +11,8 @@ export default class OnboardingStore {
     this.skipOnboarding = 'true';
   }
   async onChangeOnBoarding1() {
-    const language = await AsyncStorage.getItem('Onboarding');
-    if (language) this.skipOnboarding = language;
-    return (this.skipOnboarding = JSON.stringify(language));
+    const onboarding = await AsyncStorage.getItem('Onboarding');
+    if (onboarding) this.skipOnboarding = onboarding;
+    return (this.skipOnboarding = JSON.stringify(onboarding));
   }
 }

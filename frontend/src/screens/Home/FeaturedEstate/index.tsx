@@ -6,92 +6,59 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {useTranslation} from 'react-i18next';
-import {getImages} from '@/assets/Images';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import FavoriteButton from '@/components/FavoriteButton';
-import {EstateItems, FeaturedProps} from '@/utils/interface';
+import {EstateDetailProps, FeaturedProps} from '@/utils/interface';
 import {push} from '@/navigation/NavigationUtils';
+import {Config} from '@/config';
+import {AuthContext} from '@/context/AuthContext';
 
 const FeaturedEstates: React.FC<FeaturedProps> = ({navigation}) => {
   const {t} = useTranslation();
-  const data = [
-    {
-      id: 1,
-      name: 'Hung',
-      avatar: getImages().picture_1,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_1,
-          getImages().picture_2,
-          getImages().picture_3,
-          getImages().picture_4,
-          getImages().picture_5,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.5,
-        price: 290,
-        bathroom: 2,
-        bedroom: 2,
-        floors: 2,
-        time: 'month',
-        favorite: true,
-      },
-    },
-    {
-      id: 2,
-      name: 'Tony',
-      avatar: getImages().picture_2,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_4,
-          getImages().picture_5,
-          getImages().picture_3,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.7,
-        price: 160,
-        bathroom: 2,
-        bedroom: 3,
-        floors: 2,
-        time: 'month',
-        favorite: false,
-      },
-    },
-  ];
-  const RenderItems = ({item}: {item: EstateItems}) => {
+  const [data, setData] = useState<EstateDetailProps[]>([]);
+  const {userToken} = useContext(AuthContext);
+  useEffect(() => {
+    const loadPosts = async () => {
+      await fetch(`${Config.API_URL}/api/estates`, {
+        method: 'GET',
+        headers: {Authorization: userToken},
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          setData(res.estates);
+        });
+    };
+    loadPosts();
+  }, []);
+
+  const RenderItems = ({item}: {item: EstateDetailProps}) => {
     return (
       <View style={styles.cardItem}>
         <View>
-          <FavoriteButton favorite={item.assets.favorite} />
+          {/* <FavoriteButton favorite={item.assets.favorite} /> */}
           <Image
-            source={item.assets.images[0]}
+            source={{uri: item.images[0]}}
             style={styles.images}
           />
         </View>
 
         <TouchableOpacity
           style={styles.cardContent}
-          onPress={() => push({name: 'EstateDetail', params: {estate: item}})}
+          onPress={() =>
+            push({name: 'EstateDetail', params: {id: item._id, nearby: true}})
+          }
         >
-          <Text style={styles.cardName}>{item.assets.name}</Text>
+          <Text style={styles.cardName}>{item.name}</Text>
           <View style={styles.ratingView}>
             <Entypo
               name="star"
               color={'#FFC42D'}
               size={10}
             />
-            <Text style={styles.rating}>{item.assets.star_rating}</Text>
+            <Text style={styles.rating}>3.9</Text>
           </View>
           <View style={styles.ratingView}>
             <FontAwesome6
@@ -99,13 +66,15 @@ const FeaturedEstates: React.FC<FeaturedProps> = ({navigation}) => {
               color={'#234F68'}
               size={9}
             />
-            <Text style={styles.location}>{item.assets.location}</Text>
+            <Text style={styles.location}>
+              {item.address.road}, {item.address.city}
+            </Text>
           </View>
           <View style={styles.priceView}>
             <Text style={styles.price}>$ </Text>
-            <Text style={styles.price}>{item.assets.price}</Text>
+            <Text style={styles.price}>{item.price.rent}</Text>
             <Text style={styles.stay}> /</Text>
-            <Text style={styles.stay}>{item.assets.time}</Text>
+            <Text style={styles.stay}>month</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -121,7 +90,7 @@ const FeaturedEstates: React.FC<FeaturedProps> = ({navigation}) => {
         <FlatList
           data={data}
           renderItem={(item) => RenderItems(item)}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item._id.toString()}
           horizontal
         />
       </View>

@@ -14,6 +14,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Error, Minus, Plus, Success} from '@/assets/Svg';
 import {push} from '@/navigation/NavigationUtils';
 import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
+import Loading from '@/components/Loading';
 
 const AddEstateInfo = ({route}: any) => {
   const {data} = route.params;
@@ -25,6 +26,7 @@ const AddEstateInfo = ({route}: any) => {
   const [bathroom, setBathroom] = useState(0);
   const [floors, setFloors] = useState(0);
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   // console.log({
   //   name: data.name,
   //   listType: data.listType,
@@ -50,13 +52,21 @@ const AddEstateInfo = ({route}: any) => {
 
   const snapPoints = useMemo(() => ['50%'], []);
 
-  const handleOpenPress = () => bottomSheetRef.current?.expand();
+  const handleOpenPress = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      bottomSheetRef.current?.expand();
+    }, 2000);
+  };
   const handleClosePress = () => bottomSheetRef.current?.close();
 
   return (
     <View style={styles.component}>
-      <BackButton />
-
+      {loading && <Loading />}
+      <View style={{zIndex: loading ? 0 : 1}}>
+        <BackButton />
+      </View>
       <ScrollView>
         <View style={styles.pageTitle}>
           <Text style={styles.addList}>{t('add_listing')}</Text>

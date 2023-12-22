@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {getImages} from '@/assets/Images';
 import {EstateItems} from '@/utils/interface';
@@ -15,6 +15,8 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {screenWidth} from '@/themes/Responsive';
 import {push} from '@/navigation/NavigationUtils';
+import {AuthContext} from '@/context/AuthContext';
+import {Config} from '@/config';
 
 const NearbyEstate = ({
   navigation,
@@ -24,161 +26,53 @@ const NearbyEstate = ({
   detail: boolean;
 }) => {
   const {t} = useTranslation();
-  const data = [
-    {
-      id: 1,
-      name: 'Hung',
-      avatar: getImages().picture_1,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_1,
-          getImages().picture_2,
-          getImages().picture_3,
-          getImages().picture_4,
-          getImages().picture_5,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.5,
-        price: 290,
-        bathroom: 2,
-        bedroom: 2,
-        floors: 2,
-        time: 'month',
-        favorite: true,
-      },
-    },
-    {
-      id: 2,
-      name: 'Tony',
-      avatar: getImages().picture_2,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_4,
-          getImages().picture_5,
-          getImages().picture_3,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.7,
-        price: 160,
-        bathroom: 2,
-        bedroom: 3,
-        floors: 2,
-        time: 'month',
-        favorite: false,
-      },
-    },
-    {
-      id: 3,
-      name: 'Tony',
-      avatar: getImages().picture_2,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_4,
-          getImages().picture_5,
-          getImages().picture_3,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.7,
-        price: 160,
-        bathroom: 2,
-        bedroom: 3,
-        floors: 2,
-        time: 'month',
-        favorite: false,
-      },
-    },
-    {
-      id: 4,
-      name: 'Hung',
-      avatar: getImages().picture_1,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_1,
-          getImages().picture_2,
-          getImages().picture_3,
-          getImages().picture_4,
-          getImages().picture_5,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.5,
-        price: 290,
-        bathroom: 2,
-        bedroom: 2,
-        floors: 2,
-        time: 'month',
-        favorite: true,
-      },
-    },
-    {
-      id: 5,
-      name: 'Hung',
-      avatar: getImages().picture_1,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_1,
-          getImages().picture_2,
-          getImages().picture_3,
-          getImages().picture_4,
-          getImages().picture_5,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.5,
-        price: 290,
-        bathroom: 2,
-        bedroom: 2,
-        floors: 2,
-        time: 'month',
-        favorite: true,
-      },
-    },
-  ];
+  const {userToken, idUser} = useContext(AuthContext);
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const loadPosts = async () => {
+      await fetch(
+        `${Config.API_URL}/api/user_estates/655f7aa9ea4e6c1ff89859f5?limit=100`,
+        {
+          method: 'GET',
+          headers: {Authorization: userToken},
+        },
+      )
+        .then((res) => res.json())
+        .then((res) => {
+          setData(res.estates);
+        });
+    };
+    loadPosts();
+  }, []);
 
   const RenderItems = ({item}: {item: EstateItems}) => {
     return (
       <View style={styles.cardItem}>
         <View style={styles.btnFavorite}>
-          <FavoriteButton favorite={item.assets.favorite} />
+          {/* <FavoriteButton favorite={item.assets.favorite} /> */}
         </View>
 
         <View style={styles.priceView}>
           <View style={styles.priceContent}>
             <Text style={styles.price}>$ </Text>
-            <Text style={styles.price}>{item.assets.price}</Text>
+            <Text style={styles.price}>{item.price.rent}</Text>
             <Text style={styles.stay}> /</Text>
-            <Text style={styles.stay}>{item.assets.time}</Text>
+            <Text style={styles.stay}>month</Text>
           </View>
         </View>
 
         <Image
-          source={item.assets.images[0]}
+          source={{uri: item.images[0]}}
           style={styles.images}
         />
 
         <TouchableOpacity
           style={styles.cardContent}
-          onPress={() => push({name: 'EstateDetail', params: {estate: item}})}
+          onPress={() =>
+            push({name: 'EstateDetail', params: {id: item._id, nearby: true}})
+          }
         >
-          <Text style={styles.cardName}>{item.assets.name}</Text>
+          <Text style={styles.cardName}>{item.name}</Text>
           <View style={{flexDirection: 'row'}}>
             <View style={styles.ratingView}>
               <Entypo
@@ -186,7 +80,7 @@ const NearbyEstate = ({
                 color={'#FFC42D'}
                 size={10}
               />
-              <Text style={styles.rating}>{item.assets.star_rating}</Text>
+              <Text style={styles.rating}>{item.rating_star}</Text>
             </View>
             <View style={styles.locationView}>
               <FontAwesome6
@@ -194,7 +88,9 @@ const NearbyEstate = ({
                 color={'#234F68'}
                 size={9}
               />
-              <Text style={styles.location}>{item.assets.location}</Text>
+              <Text style={styles.location}>
+                {item.address.road}, {item.address.city}
+              </Text>
             </View>
           </View>
         </TouchableOpacity>

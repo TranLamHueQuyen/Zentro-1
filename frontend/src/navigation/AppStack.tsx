@@ -22,12 +22,18 @@ import AddEstateLocation from '@/screens/CreateEstate/AddEstateLocation';
 import AddEstateImages from '@/screens/CreateEstate/AddEstateImages';
 import AddEstateInfo from '@/screens/CreateEstate/AddEstateInfo';
 import Transaction from '@/screens/Transaction';
+import SearchResult from '@/screens/Search/SearchResult';
+import Notification from '@/screens/Home/Header/Notification';
+import Message from '@/screens/Home/Header/Message';
+import MessagesDetail from '@/screens/Home/Header/MessagesDetail';
+import TransactionSummary from '@/screens/TransactionSummary';
 
-const AppStack = observer(() => {
+const AppStack = ({name}: any) => {
   const Stack = createStackNavigator<RootStackParams>();
 
   return (
     <Stack.Navigator
+      initialRouteName={name}
       screenOptions={{
         headerShown: false,
       }}
@@ -43,13 +49,12 @@ const AppStack = observer(() => {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
+
       <Stack.Screen
         name="HomeScreen"
         component={TabNavigator}
-        options={{
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-        }}
       />
+
       <Stack.Screen
         name="Login"
         component={Login}
@@ -155,8 +160,43 @@ const AppStack = observer(() => {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
+      <Stack.Screen
+        name="SearchResult"
+        component={SearchResult}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="Message"
+        component={Message}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="Notification"
+        component={Notification}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="MessagesDetail"
+        component={MessagesDetail}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="TransactionSummary"
+        component={TransactionSummary}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
     </Stack.Navigator>
   );
-});
+};
 
-export default AppStack;
+export default observer(AppStack);

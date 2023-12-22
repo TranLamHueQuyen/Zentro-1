@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import FavoriteButton from '@/components/FavoriteButton';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -17,135 +17,9 @@ import {screenHeight, screenWidth} from '@/themes/Responsive';
 import {navigate, push} from '@/navigation/NavigationUtils';
 import {getImages} from '@/assets/Images';
 import {Pencil_Icon} from '@/assets/Svg';
+import {Config} from '@/config';
+import {AuthContext} from '@/context/AuthContext';
 
-const data = [
-  {
-    id: 1,
-    name: 'Hung',
-    avatar: getImages().picture_1,
-    address: 'Việt Nam',
-    phone: '123456789',
-    email: 'admin@gmail.com',
-    assets: {
-      images: [
-        getImages().picture_1,
-        getImages().picture_2,
-        getImages().picture_3,
-        getImages().picture_4,
-        getImages().picture_5,
-      ],
-      name: 'Sky Dandelions Apartment',
-      location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-      star_rating: 4.5,
-      price: 290,
-      bathroom: 2,
-      bedroom: 2,
-      floors: 2,
-      time: 'month',
-      favorite: true,
-    },
-  },
-  {
-    id: 2,
-    name: 'Tony',
-    avatar: getImages().picture_2,
-    address: 'Việt Nam',
-    phone: '123456789',
-    email: 'admin@gmail.com',
-    assets: {
-      images: [
-        getImages().picture_4,
-        getImages().picture_5,
-        getImages().picture_3,
-      ],
-      name: 'Sky Dandelions Apartment',
-      location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-      star_rating: 4.7,
-      price: 160,
-      bathroom: 2,
-      bedroom: 3,
-      floors: 2,
-      time: 'month',
-      favorite: false,
-    },
-  },
-  {
-    id: 3,
-    name: 'Tony',
-    avatar: getImages().picture_2,
-    address: 'Việt Nam',
-    phone: '123456789',
-    email: 'admin@gmail.com',
-    assets: {
-      images: [
-        getImages().picture_4,
-        getImages().picture_5,
-        getImages().picture_3,
-      ],
-      name: 'Sky Dandelions Apartment',
-      location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-      star_rating: 4.7,
-      price: 160,
-      bathroom: 2,
-      bedroom: 3,
-      floors: 2,
-      time: 'month',
-      favorite: false,
-    },
-  },
-  {
-    id: 4,
-    name: 'Hung',
-    avatar: getImages().picture_1,
-    address: 'Việt Nam',
-    phone: '123456789',
-    email: 'admin@gmail.com',
-    assets: {
-      images: [
-        getImages().picture_1,
-        getImages().picture_2,
-        getImages().picture_3,
-        getImages().picture_4,
-        getImages().picture_5,
-      ],
-      name: 'Sky Dandelions Apartment',
-      location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-      star_rating: 4.5,
-      price: 290,
-      bathroom: 2,
-      bedroom: 2,
-      floors: 2,
-      time: 'month',
-      favorite: true,
-    },
-  },
-  {
-    id: 5,
-    name: 'Hung',
-    avatar: getImages().picture_1,
-    address: 'Việt Nam',
-    phone: '123456789',
-    email: 'admin@gmail.com',
-    assets: {
-      images: [
-        getImages().picture_1,
-        getImages().picture_2,
-        getImages().picture_3,
-        getImages().picture_4,
-        getImages().picture_5,
-      ],
-      name: 'Sky Dandelions Apartment',
-      location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-      star_rating: 4.5,
-      price: 290,
-      bathroom: 2,
-      bedroom: 2,
-      floors: 2,
-      time: 'month',
-      favorite: true,
-    },
-  },
-];
 const RenderItems = ({item}: {item: EstateItems}) => {
   return (
     <View style={styles.cardItem}>
@@ -171,22 +45,24 @@ const RenderItems = ({item}: {item: EstateItems}) => {
       <View style={styles.priceView}>
         <View style={styles.priceContent}>
           <Text style={styles.price}>$ </Text>
-          <Text style={styles.price}>{item.assets.price}</Text>
+          <Text style={styles.price}>{item.price.rent}</Text>
           <Text style={styles.stay}> /</Text>
-          <Text style={styles.stay}>{item.assets.time}</Text>
+          <Text style={styles.stay}>month</Text>
         </View>
       </View>
 
       <Image
-        source={item.assets.images[0]}
+        source={{uri: item.images[0]}}
         style={styles.images}
       />
 
       <TouchableOpacity
         style={styles.cardContent}
-        onPress={() => push({name: 'EstateDetail', params: {estate: item}})}
+        onPress={() =>
+          push({name: 'EstateDetail', params: {id: item._id, nearby: false}})
+        }
       >
-        <Text style={styles.cardName}>{item.assets.name}</Text>
+        <Text style={styles.cardName}>{item.address.name}</Text>
         <View style={{flexDirection: 'row'}}>
           <View style={styles.ratingView}>
             <Entypo
@@ -194,7 +70,7 @@ const RenderItems = ({item}: {item: EstateItems}) => {
               color={'#FFC42D'}
               size={10}
             />
-            <Text style={styles.rating}>{item.assets.star_rating}</Text>
+            <Text style={styles.rating}>4</Text>
           </View>
           <View style={styles.locationView}>
             <FontAwesome6
@@ -202,7 +78,7 @@ const RenderItems = ({item}: {item: EstateItems}) => {
               color={'#234F68'}
               size={9}
             />
-            <Text style={styles.location}>{item.assets.location}</Text>
+            <Text style={styles.location}>{item.address.road}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -211,6 +87,21 @@ const RenderItems = ({item}: {item: EstateItems}) => {
 };
 const Listing = () => {
   const {t} = useTranslation();
+  const {userToken, idUser} = useContext(AuthContext);
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const loadPosts = async () => {
+      await fetch(`${Config.API_URL}/api/user_estates/${idUser}?limit=100`, {
+        method: 'GET',
+        headers: {Authorization: userToken},
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          setData(res.estates);
+        });
+    };
+    loadPosts();
+  }, []);
   return (
     <ScrollView style={styles.container}>
       <View>

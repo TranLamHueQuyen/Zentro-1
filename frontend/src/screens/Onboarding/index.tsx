@@ -8,7 +8,7 @@ import {
   Animated,
   ActivityIndicator,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {getImages} from '@/assets/Images';
 import Paginator from '@/components/Paginator';
 import {useTranslation} from 'react-i18next';
@@ -21,8 +21,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {OnboardingProps} from '@/utils/interface';
 import OptionLogin from '../OptionLogin';
 import {replace} from '@/navigation/NavigationUtils';
+import Splash from '@/components/Splash';
+import {AuthContext} from '@/context/AuthContext';
+import TabNavigator from '@/navigation/TabNavigator';
 
-const Onboarding: React.FC<OnboardingProps> = observer(({navigation}) => {
+const Onboarding: React.FC<OnboardingProps> = observer(() => {
+  const {userToken} = useContext(AuthContext);
+  console.log(userToken);
+
   const {t} = useTranslation();
   const slides = [
     {
@@ -59,9 +65,8 @@ const Onboarding: React.FC<OnboardingProps> = observer(({navigation}) => {
   const [onboardingStatus, setOnboardingStatus] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
-    const getData = async () => {
+    const check = async () => {
       const value = await AsyncStorage.getItem('Onboarding');
       if (value) {
         setOnboardingStatus(true);
@@ -71,15 +76,15 @@ const Onboarding: React.FC<OnboardingProps> = observer(({navigation}) => {
         await AsyncStorage.setItem('Onboarding', 'true');
       }
     };
-    getData();
+    check();
   }, []);
 
   const scrollTo = async () => {
     if (currentIndex < slides.length - 1) {
       slidesRef.current?.scrollToIndex({index: currentIndex + 1});
     } else {
-      // await AsyncStorage.setItem('Onboarding', 'true');
-      replace({name: 'OptionLogin', params: {}});
+      await AsyncStorage.setItem('Onboarding', 'true');
+      setOnboardingStatus(true);
     }
   };
 
@@ -138,19 +143,7 @@ const Onboarding: React.FC<OnboardingProps> = observer(({navigation}) => {
   };
 
   return isLoading ? (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#ffffff',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <ActivityIndicator
-        size="large"
-        color="#8BC83F"
-      />
-    </View>
+    <Splash />
   ) : onboardingStatus ? (
     <View style={{flex: 1}}>
       <OptionLogin />
@@ -197,8 +190,8 @@ const Onboarding: React.FC<OnboardingProps> = observer(({navigation}) => {
         <TouchableOpacity
           style={styles.buttonSkip}
           onPress={async () => {
-            // await AsyncStorage.setItem('Onboarding', 'true');
-            replace({name: 'OptionLogin', params: {}});
+            await AsyncStorage.setItem('Onboarding', 'true');
+            setOnboardingStatus(true);
           }}
         >
           <Text style={styles.textSkip}>{t('skip')}</Text>

@@ -42,11 +42,9 @@ const estateCtrl = {
     },
     getEstates: async (req, res) => {
         try {
-            const features = new APIfeatures(Estates.find({
-                user: [req.user._id]
-            }), req.query).paginating()
+            const features = new APIfeatures(Estates.find({}), req.query).paginating()
 
-            const estates = await features.query.sort('-createdAt')
+            const estates = await features.query.sort('price')
                 .populate("avatar full_name")
                 .populate({
                     path: "reviews",
@@ -142,7 +140,7 @@ const estateCtrl = {
     getEstate: async (req, res) => {
         try {
             const estate = await Estates.findById(req.params.id)
-                .populate("user likes", "avatar full_name")
+                .populate("user likes", "avatar full_name address")
                 .populate({
                     path: "Reviews",
                     populate: {

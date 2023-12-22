@@ -1,9 +1,12 @@
 import {
   Image,
+  KeyboardAvoidingView,
   Modal,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -16,17 +19,22 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import Feather from 'react-native-vector-icons/Feather';
 import {Calendar} from 'react-native-calendars';
 import moment from 'moment';
+import {Note_Icon} from '@/assets/Svg';
+import {navigate, push} from '@/navigation/NavigationUtils';
 
 const Transaction = ({route}: any) => {
-  const {estate} = route.params;
+  const {data} = route.params;
+  console.log(data);
+
   const {t} = useTranslation();
   const [modalVisible, setModalVisible] = useState(false);
   const [check, setCheck] = useState(false);
-
+  const [note, setNote] = useState<string>('');
   const [selectedIn, setSelectedIn] = useState('');
   const [selectedOut, setSelectedOut] = useState('');
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
+
   const handleCheckIn = (day: any) => {
     setSelectedIn(day.dateString);
     setCheckIn(moment(day.dateString).format('DD/MM/YYYY'));
@@ -42,13 +50,13 @@ const Transaction = ({route}: any) => {
     return (
       <View style={styles.estateView}>
         <View style={styles.estateContent}>
-          <FavoriteButton favorite={estate.assets.favorite} />
+          {/* <FavoriteButton favorite={estate.assets.favorite} /> */}
           <Image
-            source={estate.assets.images[0]}
+            source={{uri: data.images[0]}}
             style={styles.estateImage}
           />
           <View style={styles.cardContent}>
-            <Text style={styles.cardName}>{estate.assets.name}</Text>
+            <Text style={styles.cardName}>{data.name}</Text>
 
             <View style={styles.ratingView}>
               <FontAwesome6
@@ -56,11 +64,13 @@ const Transaction = ({route}: any) => {
                 color={'#234F68'}
                 size={9}
               />
-              <Text style={styles.location}>{estate.assets.location}</Text>
+              <Text style={styles.location}>
+                {data.address.road}, {data.address.city}
+              </Text>
             </View>
           </View>
           <View style={styles.typeView}>
-            <Text style={styles.typeText}>{estate.assets.type}</Text>
+            <Text style={styles.typeText}>Rent</Text>
           </View>
         </View>
       </View>
@@ -162,16 +172,59 @@ const Transaction = ({route}: any) => {
       </View>
     );
   };
+
   return (
     <View style={styles.component}>
       <BackButton />
       <View style={styles.titleView}>
-        <Text style={styles.transactionTitle}>{t('transaction_detail')}</Text>
+        <Text style={styles.transactionTitle}>{t('transaction')}</Text>
       </View>
       <EstateView />
       <PeriodView />
-      <View style={styles.radialGradient}>
-        <View style={styles.radialColor}></View>
+      <View style={styles.periodView}>
+        <Text style={styles.transactionText}>{t('note')}</Text>
+        <View>
+          <View
+            style={{
+              position: 'absolute',
+              zIndex: 1,
+              top: 27.5,
+              left: 18.5,
+            }}
+          >
+            <Note_Icon />
+          </View>
+          <TextInput
+            placeholder="Write your note in here"
+            style={[
+              styles.input,
+              {fontFamily: note ? 'Lato-Bold' : 'Lato-Regular'},
+            ]}
+            placeholderTextColor={'#A1A5C1'}
+            onChangeText={(text) => setNote(text)}
+          />
+        </View>
+      </View>
+      <View
+        style={{
+          alignItems: 'center',
+          position: 'absolute',
+          bottom: 24,
+          left: 48,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() =>
+            push({
+              name: 'TransactionSummary',
+              params: {data, checkIn, checkOut, note},
+            })
+          }
+          style={styles.btnNext}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.txtNext}>{t('next')}</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -288,5 +341,29 @@ const styles = StyleSheet.create({
   },
   contentCheckIn: {
     flexDirection: 'row',
+  },
+  input: {
+    color: '#252B5C',
+    fontSize: 15,
+    height: 70,
+    width: screenWidth - 48,
+    paddingHorizontal: 46,
+    borderRadius: 20,
+    backgroundColor: '#F5F4F8',
+  },
+  btnNext: {
+    flexDirection: 'row',
+    width: screenWidth - 96,
+    height: 63,
+    backgroundColor: '#8BC83F',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  txtNext: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontFamily: 'Lato-Bold',
+    padding: 6,
   },
 });

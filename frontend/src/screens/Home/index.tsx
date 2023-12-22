@@ -14,7 +14,6 @@ const Home: React.FC<HomeProps> = ({navigation}) => {
     <View style={styles.container}>
       <Header navigation={navigation} />
       <ScrollView>
-        <StoryBar navigation={navigation} />
         <TopLocation />
         <FeaturedEstates navigation={navigation} />
         <NearbyEstate

@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useRef} from 'react';
-import {Featured} from '@/utils/interface';
+import React, {useContext, useRef, useEffect, useState} from 'react';
+import {EstateDetailProps, Featured} from '@/utils/interface';
 import {screenWidth} from '@/themes/Responsive';
 import {BackButton} from '@/components';
 import FavoriteButton from '@/components/FavoriteButton';
@@ -21,10 +21,30 @@ import Reviews from '@/screens/Reviews';
 import {ScrollView} from 'react-native-virtualized-view';
 import NearbyEstate from '@/screens/Home/NearbyEstate';
 import {push} from '@/navigation/NavigationUtils';
+import {AuthContext} from '@/context/AuthContext';
+import {Config} from '@/config';
+import Splash from '../Splash';
 
 const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
-  const {estate} = route.params;
   const {t} = useTranslation();
+
+  const {id, nearby} = route.params;
+  const {userToken, idUser} = useContext(AuthContext);
+  const [data, setData] = useState<EstateDetailProps | null>(null);
+  useEffect(() => {
+    const loadPosts = async () => {
+      await fetch(`${Config.API_URL}/api/estate/${id}`, {
+        method: 'GET',
+        headers: {Authorization: userToken},
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          setData(res.estate);
+        });
+    };
+    loadPosts();
+  }, []);
+
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
   const AnimatedHeader = Animated.createAnimatedComponent(View);
   const DynamicHeader = ({value}: any) => {
@@ -32,22 +52,25 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
       inputRange: [0, 85],
       outputRange: [0, 85],
       extrapolate: 'clamp',
+      useNativeDriver: false,
     });
     return (
       <AnimatedHeader style={[styles.header, {height: animatedHeaderHeight}]} />
     );
   };
 
-  return (
+  return !data ? (
+    <Splash />
+  ) : (
     <View style={styles.component}>
       <DynamicHeader value={scrollOffsetY} />
 
       <View style={styles.btnHeader}>
         <BackButton />
-        <FavoriteButton
+        {/* <FavoriteButton
           size={50}
           favorite={estate.assets.favorite}
-        />
+        /> */}
       </View>
 
       <ScrollView
@@ -60,40 +83,38 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
       >
         <View>
           <View style={styles.imgArrayView}>
-            {estate.assets.images.length > 3
-              ? estate.assets.images
-                  .slice(0, 3)
-                  .map((item: any, index: number) => {
-                    return (
-                      <View
-                        style={styles.insideImg}
-                        key={index}
-                      >
-                        <Image
-                          source={item}
-                          style={styles.imgArray}
-                        />
-                      </View>
-                    );
-                  })
-              : estate.assets.images.map((item: any, index: number) => {
+            {data.images.length > 3
+              ? data.images.slice(0, 3).map((item: any, index: number) => {
                   return (
                     <View
                       style={styles.insideImg}
                       key={index}
                     >
                       <Image
-                        source={item}
+                        source={{uri: item}}
+                        style={styles.imgArray}
+                      />
+                    </View>
+                  );
+                })
+              : data.images.map((item: any, index: number) => {
+                  return (
+                    <View
+                      style={styles.insideImg}
+                      key={index}
+                    >
+                      <Image
+                        source={{uri: item}}
                         style={styles.imgArray}
                       />
                     </View>
                   );
                 })}
           </View>
-          {estate.assets.images.length > 3 ? (
+          {data.images.length > 3 ? (
             <View style={styles.countImage}>
               <Text style={{fontSize: 20, fontFamily: 'Lato-Regular'}}>
-                +{estate.assets.images.length - 3}
+                +{data.images.length - 3}
               </Text>
             </View>
           ) : null}
@@ -104,16 +125,16 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
               color={'#FFC42D'}
               size={12}
             />
-            <Text style={styles.ratingText}>{estate.assets.star_rating}</Text>
+            <Text style={styles.ratingText}>3</Text>
           </View>
           <Image
-            source={estate.assets.images[0]}
+            source={{uri: data.images[0]}}
             style={styles.images}
           />
         </View>
         <View style={styles.nameView}>
-          <Text style={styles.nameStyle}>{estate.assets.name}</Text>
-          <Text style={styles.priceStyle}>$ {estate.assets.price}</Text>
+          <Text style={styles.nameStyle}>{data.address.name}</Text>
+          <Text style={styles.priceStyle}>$ {data.price.rent}</Text>
         </View>
         <View style={styles.nameView}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -122,7 +143,9 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
               color={'#1F4C6B'}
               size={12}
             />
-            <Text style={styles.locationStyle}> {estate.assets.location}</Text>
+            <Text style={styles.locationStyle}>
+              {data.address.road}, {data.address.quarter}, {data.address.city}
+            </Text>
           </View>
 
           <Text style={styles.locationStyle}>per month</Text>
@@ -130,7 +153,7 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
         <View style={{flexDirection: 'row', marginTop: 20}}>
           <TouchableOpacity
             style={styles.rentButton}
-            onPress={() => push({name: 'Transaction', params: {estate}})}
+            onPress={() => push({name: 'Transaction', params: {data}})}
           >
             <Text style={styles.rentText}>{t('rent')}</Text>
           </TouchableOpacity>
@@ -142,30 +165,30 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
         <View style={styles.ownerView}>
           <View style={{flexDirection: 'row'}}>
             <Image
-              source={estate.avatar}
+              source={{uri: data.user.avatar}}
               style={styles.avatarStyles}
             />
             <View style={{marginLeft: 16}}>
-              <Text style={styles.username}>{estate.name}</Text>
-              <Text style={styles.address}>{estate.address}</Text>
+              <Text style={styles.username}>{data.user.full_name}</Text>
+              {/* <Text style={styles.address}>{data.address}</Text> */}
             </View>
           </View>
           <Chat_Icon />
         </View>
         <View style={styles.facilitiesView}>
-          {estate.assets.bedroom ? (
+          {data.property.bedroom ? (
             <View style={styles.facilities}>
               <Bed_Icon />
               <Text style={styles.bedroom}>
-                {estate.assets.bedroom} {t('bedroom')}
+                {data.property.bedroom} {t('bedroom')}
               </Text>
             </View>
           ) : null}
-          {estate.assets.bathroom ? (
+          {data.property.bathroom ? (
             <View style={styles.facilities}>
               <Bath_Icon />
               <Text style={styles.bedroom}>
-                {estate.assets.bathroom} {t('bathroom')}
+                {data.property.bathroom} {t('bathroom')}
               </Text>
             </View>
           ) : null}
@@ -180,20 +203,27 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
                 size={14}
               />
             </View>
-            <Text style={styles.locationText}>{estate.assets.location}</Text>
+            <Text style={styles.locationText}>
+              {data.address.road}, {data.address.quarter}, {data.address.city}
+            </Text>
           </View>
           <View style={styles.maps}>
-            <Maps />
+            <Maps
+              user={data.user}
+              estate={data}
+            />
           </View>
         </View>
-        <Reviews
+        {/* <Reviews
           navigation={navigation}
           estate={estate}
-        />
-        <NearbyEstate
-          navigation={navigation}
-          detail={true}
-        />
+        /> */}
+        {nearby && (
+          <NearbyEstate
+            navigation={navigation}
+            detail={true}
+          />
+        )}
       </ScrollView>
     </View>
   );
