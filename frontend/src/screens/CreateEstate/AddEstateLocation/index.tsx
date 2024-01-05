@@ -26,7 +26,11 @@ const AddEstateLocation = ({route}: any) => {
   const [address, setAddress] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadLocation, setLoadLocation] = useState(false);
-  const [nameLocation, setNameLocation] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [road, setRoad] = useState('');
+  const [quarter, setQuarter] = useState('');
+  const [city, setCity] = useState('');
+  const [country, setCountry] = useState('');
   const [changeLocation, setChangeLocation] = useState({
     latitude: 16.055061228490178,
     longitude: 108.20310270503711,
@@ -54,11 +58,27 @@ const AddEstateLocation = ({route}: any) => {
     }
   };
   const handleChangeLocation = (item: any) => {
-    setNameLocation(item.display_name);
-    setChangeLocation({
-      latitude: parseFloat(item.lat),
-      longitude: parseFloat(item.lon),
-    });
+    setDisplayName(item.display_name);
+    const addressComponents = item.display_name.split(',');
+    if (item.display_name.startsWith('K')) {
+      setRoad(addressComponents[0].trim());
+      setChangeLocation({
+        latitude: parseFloat(item.lat),
+        longitude: parseFloat(item.lon),
+      });
+      setQuarter(addressComponents[1].trim());
+      setCity(addressComponents[addressComponents.length - 3].trim());
+      setCountry(addressComponents[addressComponents.length - 1].trim());
+    } else {
+      setRoad(addressComponents[0].trim() + ' ' + addressComponents[1].trim());
+      setChangeLocation({
+        latitude: parseFloat(item.lat),
+        longitude: parseFloat(item.lon),
+      });
+      setQuarter(addressComponents[2].trim());
+      setCity(addressComponents[addressComponents.length - 3].trim());
+      setCountry(addressComponents[addressComponents.length - 1].trim());
+    }
   };
 
   return isLoading ? (
@@ -83,7 +103,7 @@ const AddEstateLocation = ({route}: any) => {
           {changeLocation.latitude !== 0 && (
             <Marker
               coordinate={changeLocation}
-              title={nameLocation}
+              title={road}
             >
               <View style={{top: 9, position: 'absolute'}}>
                 <Pin_Location />
@@ -114,7 +134,7 @@ const AddEstateLocation = ({route}: any) => {
             value={search}
           />
         </View>
-        {nameLocation && (
+        {road && (
           <View style={styles.locView}>
             <Text style={styles.addressTitle}>Location detail</Text>
             <View
@@ -133,12 +153,12 @@ const AddEstateLocation = ({route}: any) => {
                   size={14}
                 />
               </View>
-              <Text style={styles.addressText}>{nameLocation}</Text>
+              <Text style={styles.addressText}>{displayName}</Text>
             </View>
           </View>
         )}
 
-        {nameLocation && (
+        {road && (
           <TouchableOpacity
             style={styles.chooseLocBtn}
             activeOpacity={0.8}
@@ -150,7 +170,10 @@ const AddEstateLocation = ({route}: any) => {
                     name: data.name,
                     listType: data.listType,
                     address: {
-                      name: nameLocation,
+                      road,
+                      quarter,
+                      city,
+                      country,
                       lat: changeLocation.latitude,
                       lng: changeLocation.longitude,
                     },

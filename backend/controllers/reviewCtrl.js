@@ -4,16 +4,16 @@ import Estates from '../models/estateModel.js'
 const reviewCtrl = {
     createReview: async (req, res) => {
         try {
-            const { estateId, content, estateUserId } = req.body
+            const { estateId, content, star, images, estateUserId } = req.body
 
             const estate = await Estates.findById(estateId)
             if (!estate) return res.status(400).json({ msg: "This estate does not exist." })
 
             const newReview = new Reviews({
-                user: req.user._id, content, estateUserId, estateId
+                user: req.user._id, content, star, images, estateUserId, estateId
             })
 
-            await Estates._findOneAndUpdate({ _id: estateId }, {
+            await Estates.findOneAndUpdate({ _id: estateId }, {
                 $push: { reviews: newReview._id }
             }, { new: true })
 
@@ -49,7 +49,7 @@ const reviewCtrl = {
                 ]
             })
 
-            await Estates._findOneAndUpdate({ _id: review.postId }, {
+            await Estates.findOneAndUpdate({ _id: review.estateId }, {
                 $pull: { reviews: req.params.id }
             })
 

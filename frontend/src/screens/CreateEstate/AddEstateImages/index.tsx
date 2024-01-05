@@ -7,15 +7,21 @@ import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ImagePicker from 'react-native-image-crop-picker';
 import {push} from '@/navigation/NavigationUtils';
+import Loading from '@/components/Loading';
+import {GestureHandlerRefContext} from '@react-navigation/stack';
 
 const AddEstateImages = ({route}: any) => {
   const {data} = route.params;
   const {t} = useTranslation();
   const [images, setImages] = useState<any>([]);
+  const [img, setImg] = useState<any>([]);
+  const uploadedImages: string[] = [];
+
   const OpenLibrary = useCallback(async () => {
     ImagePicker.openPicker({
       mediaType: 'photo',
       multiple: true,
+      includeBase64: true,
     }).then((images) => {
       setImages((img: any) => [
         ...img.concat(
@@ -24,15 +30,59 @@ const AddEstateImages = ({route}: any) => {
           }),
         ),
       ]);
+      images
+        .map((item: any) => item.path)
+        .forEach(async (item: string) => {
+          const formData = new FormData();
+          const base64 = {
+            uri: item,
+            type: 'image/jpeg',
+            name: 'image.jpg',
+          };
+          formData.append('file', base64);
+          formData.append('upload_preset', 'zkrhoyir');
+          formData.append('cloud_name', 'dw1sniewf');
+          const res = await fetch(
+            'https://api.cloudinary.com/v1_1/dw1sniewf/image/upload',
+            {
+              method: 'POST',
+              body: formData,
+            },
+          );
+          const image = await res.json();
+          uploadedImages.push(image.url);
+          setImg(uploadedImages);
+        });
     });
   }, []);
   const handleDeleteImages = (index: any) => {
     const newArray = [...images];
     newArray.splice(index, 1);
     setImages(newArray);
-    console.log(newArray);
   };
-
+  const HandleNext = () => {
+    console.log(img);
+    if (img) {
+      push({
+        name: 'AddEstateInfo',
+        params: {
+          data: {
+            name: data.name,
+            listType: data.listType,
+            address: {
+              road: data.address.road,
+              quarter: data.address.quarter,
+              city: data.address.city,
+              country: data.address.country,
+              lat: data.address.lat,
+              lng: data.address.lng,
+            },
+            images: img,
+          },
+        },
+      });
+    }
+  };
   return (
     <View style={styles.component}>
       <BackButton />
@@ -78,23 +128,7 @@ const AddEstateImages = ({route}: any) => {
       <TouchableOpacity
         style={styles.btnNext}
         activeOpacity={0.8}
-        onPress={() =>
-          push({
-            name: 'AddEstateInfo',
-            params: {
-              data: {
-                name: data.name,
-                listType: data.listType,
-                address: {
-                  name: data.address.name,
-                  lat: data.address.lat,
-                  lng: data.address.lng,
-                },
-                images: images,
-              },
-            },
-          })
-        }
+        onPress={HandleNext}
       >
         <Text style={styles.txtNext}>{t('next')}</Text>
       </TouchableOpacity>

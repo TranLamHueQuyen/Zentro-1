@@ -1,12 +1,13 @@
 import {
   Image,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import FavoriteButton from '@/components/FavoriteButton';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -20,75 +21,18 @@ import {Pencil_Icon} from '@/assets/Svg';
 import {Config} from '@/config';
 import {AuthContext} from '@/context/AuthContext';
 
-const RenderItems = ({item}: {item: EstateItems}) => {
-  return (
-    <View style={styles.cardItem}>
-      <View style={styles.btnFavorite}>
-        <TouchableOpacity
-          style={[
-            styles.viewButton,
-            {
-              backgroundColor: '#8BC83F',
-              width: 25,
-              height: 25,
-              top: 8,
-              left: 7,
-            },
-          ]}
-          // onPress={() => setStatus(!status)}
-          activeOpacity={0.5}
-        >
-          <Pencil_Icon />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.priceView}>
-        <View style={styles.priceContent}>
-          <Text style={styles.price}>$ </Text>
-          <Text style={styles.price}>{item.price.rent}</Text>
-          <Text style={styles.stay}> /</Text>
-          <Text style={styles.stay}>month</Text>
-        </View>
-      </View>
-
-      <Image
-        source={{uri: item.images[0]}}
-        style={styles.images}
-      />
-
-      <TouchableOpacity
-        style={styles.cardContent}
-        onPress={() =>
-          push({name: 'EstateDetail', params: {id: item._id, nearby: false}})
-        }
-      >
-        <Text style={styles.cardName}>{item.address.name}</Text>
-        <View style={{flexDirection: 'row'}}>
-          <View style={styles.ratingView}>
-            <Entypo
-              name="star"
-              color={'#FFC42D'}
-              size={10}
-            />
-            <Text style={styles.rating}>4</Text>
-          </View>
-          <View style={styles.locationView}>
-            <FontAwesome6
-              name="location-dot"
-              color={'#234F68'}
-              size={9}
-            />
-            <Text style={styles.location}>{item.address.road}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    </View>
-  );
-};
 const Listing = () => {
   const {t} = useTranslation();
   const {userToken, idUser} = useContext(AuthContext);
   const [data, setData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 100);
+  }, []);
+
   useEffect(() => {
     const loadPosts = async () => {
       await fetch(`${Config.API_URL}/api/user_estates/${idUser}?limit=100`, {
@@ -102,11 +46,85 @@ const Listing = () => {
     };
     loadPosts();
   }, []);
+
+  const RenderItems = ({item}: {item: EstateItems}) => {
+    return (
+      <View style={styles.cardItem}>
+        <FavoriteButton
+          favorite={
+            item.likes.find((item: any) => item === idUser) ? true : false
+          }
+          id={item._id}
+        />
+        <View style={styles.btnFavorite}>
+          <TouchableOpacity
+            style={[
+              styles.viewButton,
+              {
+                backgroundColor: '#8BC83F',
+                width: 25,
+                height: 25,
+                top: 8,
+                left: 7,
+              },
+            ]}
+            activeOpacity={0.5}
+          >
+            <Pencil_Icon />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.priceView}>
+          <View style={styles.priceContent}>
+            <Text style={styles.price}>$ </Text>
+            <Text style={styles.price}>{item.price.rent}</Text>
+            <Text style={styles.stay}> /</Text>
+            <Text style={styles.stay}>month</Text>
+          </View>
+        </View>
+
+        <Image
+          source={{uri: item.images[0]}}
+          style={styles.images}
+        />
+
+        <TouchableOpacity
+          style={styles.cardContent}
+          onPress={() =>
+            push({name: 'EstateDetail', params: {id: item._id, nearby: false}})
+          }
+        >
+          <Text style={styles.cardName}>{item.name}</Text>
+          <View style={{flexDirection: 'row'}}>
+            <View style={styles.ratingView}>
+              <Entypo
+                name="star"
+                color={'#FFC42D'}
+                size={10}
+              />
+              <Text style={styles.rating}>4</Text>
+            </View>
+            <View style={styles.locationView}>
+              <FontAwesome6
+                name="location-dot"
+                color={'#234F68'}
+                size={9}
+              />
+              <Text style={styles.location}>{item.address.road}</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View>
         <View style={styles.viewTitle}>
-          <Text style={styles.textTitle}>30 {t('listings')}</Text>
+          <Text style={styles.textTitle}>
+            {data.length} {t('listings')}
+          </Text>
           <TouchableOpacity
             style={styles.addButton}
             onPress={() => navigate({name: 'CreateEstate'})}
@@ -137,10 +155,10 @@ export default Listing;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ffffff',
     width: screenWidth,
     height: screenHeight,
     marginBottom: 332,
+    backgroundColor: '#FFFFFF',
   },
   textTitle: {
     textTransform: 'lowercase',

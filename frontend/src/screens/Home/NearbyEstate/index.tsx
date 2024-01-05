@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {getImages} from '@/assets/Images';
 import {EstateItems} from '@/utils/interface';
 import FavoriteButton from '@/components/FavoriteButton';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -17,39 +16,37 @@ import {screenWidth} from '@/themes/Responsive';
 import {push} from '@/navigation/NavigationUtils';
 import {AuthContext} from '@/context/AuthContext';
 import {Config} from '@/config';
+import Splash from '@/components/Splash';
 
-const NearbyEstate = ({
-  navigation,
-  detail,
-}: {
-  navigation: any;
-  detail: boolean;
-}) => {
+const NearbyEstate = ({detail, id}: {detail: boolean; id: string}) => {
   const {t} = useTranslation();
   const {userToken, idUser} = useContext(AuthContext);
   const [data, setData] = useState([]);
+  const [load, setLoad] = useState(true);
   useEffect(() => {
-    const loadPosts = async () => {
-      await fetch(
-        `${Config.API_URL}/api/user_estates/655f7aa9ea4e6c1ff89859f5?limit=100`,
-        {
-          method: 'GET',
-          headers: {Authorization: userToken},
-        },
-      )
-        .then((res) => res.json())
-        .then((res) => {
-          setData(res.estates);
-        });
-    };
-    loadPosts();
+    setLoad(true);
+
+    fetch(`${Config.API_URL}/api/getRecommend/${detail ? id : idUser}`, {
+      method: 'GET',
+      headers: {Authorization: userToken},
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setData(res.estates);
+      })
+      .finally(() => setLoad(false));
   }, []);
 
   const RenderItems = ({item}: {item: EstateItems}) => {
-    return (
+    return item._id === id ? null : (
       <View style={styles.cardItem}>
         <View style={styles.btnFavorite}>
-          {/* <FavoriteButton favorite={item.assets.favorite} /> */}
+          <FavoriteButton
+            favorite={
+              item.likes.find((item: any) => item === idUser) ? true : false
+            }
+            id={item._id}
+          />
         </View>
 
         <View style={styles.priceView}>
@@ -104,16 +101,20 @@ const NearbyEstate = ({
       ) : (
         <Text style={styles.textHeader}>{t('explore_nearby_estates')}</Text>
       )}
-      <View style={styles.viewRender}>
-        {data.map((item: EstateItems, index: number) => {
-          return (
-            <RenderItems
-              item={item}
-              key={index}
-            />
-          );
-        })}
-      </View>
+      {load ? (
+        <Splash />
+      ) : (
+        <View style={styles.viewRender}>
+          {data?.map((item: EstateItems, index: number) => {
+            return (
+              <RenderItems
+                item={item}
+                key={index}
+              />
+            );
+          })}
+        </View>
+      )}
     </View>
   );
 };
@@ -140,6 +141,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
     marginLeft: 24,
+    marginBottom: 20,
   },
   cardItem: {
     width: screenWidth / 2 - 27.5,

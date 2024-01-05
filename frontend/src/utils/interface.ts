@@ -27,25 +27,23 @@ export interface Featured {
 }
 
 export interface ReviewProps {
-  navigation: any;
-  estate: EstateItems;
+  estate: EstateDetailProps;
 }
 export interface ReviewDetail {
   route: RouteProp<RootStackParams, 'ReviewDetails'>;
 }
+
+export interface Users {
+  avatar: string;
+  _id: string;
+  full_name: string;
+  address: Address;
+}
 export interface EstateItems {
   _id: string;
   name: string;
-  address: {
-    name: string;
-    house_number: number;
-    road: string;
-    quarter: string;
-    city: string;
-    country: string;
-    lat: number;
-    lng: number;
-  };
+  likes: Array<Likes> | Array<string>;
+  address: Address;
   email: string;
   price: {
     rent: number;
@@ -57,17 +55,14 @@ export interface EstateItems {
 }
 
 export interface ReviewItems {
-  id: number;
-  name: string;
-  avatar: any;
-  address: string;
-  phone: string;
-  email: string;
-  reviews: {
-    content: string;
-    images: any;
-    star_rating: number;
-  };
+  _id: string;
+  images: Array<string>;
+  user: Users;
+
+  content: string;
+  star: number;
+  estateUserId: string;
+  estateId: string;
 }
 
 export interface UserData {
@@ -77,22 +72,31 @@ export interface UserData {
   full_name: string;
   mobile: number;
   address: object;
+  lengthEstates?: number;
+}
+
+export interface Likes {
+  _id: string;
+  avatar: string;
+  full_name: string;
+}
+
+export interface Address {
+  house_number: number;
+  road: string;
+  quarter: string;
+  city: string;
+  country: string;
+  lat: number;
+  lng: number;
 }
 
 export interface EstateDetailProps {
-  address: {
-    name: string;
-    house_number: number;
-    road: string;
-    quarter: string;
-    city: string;
-    country: string;
-    lat: number;
-    lng: number;
-  };
+  address: Address;
   price: {
     rent: number;
   };
+  likes: Array<Likes> | Array<string>;
   property: {
     bedroom: number;
     bathroom: number;
@@ -100,17 +104,6 @@ export interface EstateDetailProps {
   images: Array<string>;
   _id: string;
   name: string;
-  user: {
-    avatar: string;
-    _id: string;
-    full_name: string;
-    address: {
-      road: string;
-      quarter: string;
-      city: string;
-      country: string;
-      lat: number;
-      lng: number;
-    };
-  };
+  reviews: Array<ReviewItems>;
+  user: Users;
 }

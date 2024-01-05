@@ -57,10 +57,12 @@ const TabNavigator = () => {
       <Tab.Screen
         name="Favorite"
         component={Favorite}
+        options={{unmountOnBlur: true}}
       />
       <Tab.Screen
         name="Profile"
         component={Profile}
+        options={{unmountOnBlur: true}}
       />
     </Tab.Navigator>
   );

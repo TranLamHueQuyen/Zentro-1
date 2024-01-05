@@ -9,7 +9,7 @@ export type RootStackParams = {
   Location: any;
   Stories: any;
   EstateDetail: {id: EstateDetailProps; nearby: boolean};
-  ReviewDetails: {estate: EstateItems; review: [ReviewItems]};
+  ReviewDetails: {estate: EstateItems; reviews: [ReviewItems]};
   AllReview: any;
   TabMenu: any;
   TransactionDetail: any;

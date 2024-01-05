@@ -6,50 +6,75 @@ import {
   TextInput,
   ActivityIndicator,
   ScrollView,
+  Image,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import MapView, {Marker} from 'react-native-maps';
+import React, {useContext, useEffect, useState} from 'react';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {screenHeight, screenWidth} from '@/themes/Responsive';
 import Feather from 'react-native-vector-icons/Feather';
-import Octicons from 'react-native-vector-icons/Octicons';
-import axios from 'axios';
+import Entypo from 'react-native-vector-icons/Entypo';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {useTranslation} from 'react-i18next';
-import {Pin_Location} from '@/assets/Svg';
+import {Marker_Icon, Pin_Location} from '@/assets/Svg';
 import {push} from '@/navigation/NavigationUtils';
+import {Config} from '@/config';
+import {EstateDetailProps, EstateItems} from '@/utils/interface';
+import {AuthContext} from '@/context/AuthContext';
 
 const Search = () => {
   const {t} = useTranslation();
   const [search, setSearch] = useState('');
-  const [address, setAddress] = useState<any>([]);
+  // const [address, setAddress] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [loadLocation, setLoadLocation] = useState(false);
   const [changeLocation, setChangeLocation] = useState({
     latitude: 16.055061228490178,
     longitude: 108.20310270503711,
   });
 
-  useEffect(() => {
-    setIsLoading(false);
-    setLoadLocation(true);
-    setTimeout(() => {
-      getLocation();
-      setLoadLocation(false);
-    }, 0);
-  }, [search]);
+  const [data, setData] = useState<EstateItems[]>([]);
+  const [estate, setEstate] = useState<EstateDetailProps[]>([]);
+  const [idEstate, setIdEstate] = useState('');
+  const {userToken, idUser} = useContext(AuthContext);
 
-  const getLocation = async () => {
-    if (search) {
-      const URL = `https://nominatim.openstreetmap.org/search?format=json&countrycodes=vn&q=${search}`;
-      try {
-        const response = await axios.get(URL);
-        const address = response.data;
-        setAddress(address);
-      } catch (error) {
-        console.error('Lỗi:', error);
-      }
+  useEffect(() => {
+    const loadEstates = async () => {
+      await fetch(`${Config.API_URL}/api/estates`, {
+        method: 'GET',
+        headers: {Authorization: userToken},
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          setData(res.estates);
+        });
+    };
+    loadEstates();
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    if (idEstate) {
+      const loadEstate = async () => {
+        await fetch(`${Config.API_URL}/api//estate/${idEstate}`, {
+          method: 'GET',
+          headers: {Authorization: userToken},
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            setEstate([res.estate]);
+          });
+      };
+      loadEstate();
+    }
+  }, [idEstate]);
+  const handleFavorite = (id: any) => {
+    console.log(id);
+
+    if (id === idUser) {
+      return true;
+    } else {
+      return false;
     }
   };
-
   return isLoading ? (
     <View style={styles.container}>
       <ActivityIndicator
@@ -68,14 +93,28 @@ const Search = () => {
             latitudeDelta: 0.02,
             longitudeDelta: 0.02,
           }}
+          provider={PROVIDER_GOOGLE}
         >
-          {changeLocation.latitude !== 0 && (
-            <Marker coordinate={changeLocation}>
-              <View style={{top: 9, position: 'absolute'}}>
-                <Pin_Location />
-              </View>
-            </Marker>
-          )}
+          {data?.map((item: any, index: number) => {
+            return (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: parseFloat(item.address.lat),
+                  longitude: parseFloat(item.address.lng),
+                }}
+                onPress={() => setIdEstate(item._id)}
+              >
+                <View style={{marginTop: 9}}>
+                  <Marker_Icon />
+                  <Image
+                    source={{uri: item.images[0]}}
+                    style={styles.markerImage}
+                  />
+                </View>
+              </Marker>
+            );
+          })}
         </MapView>
       </View>
 
@@ -94,57 +133,67 @@ const Search = () => {
               styles.input,
               {fontFamily: search ? 'Lato-Bold' : 'Lato-Regular'},
             ]}
+            returnKeyType="search"
+            onSubmitEditing={() => {
+              push({
+                name: 'SearchResult',
+                params: {result: search},
+              });
+            }}
             placeholderTextColor={'#A1A5C1'}
             onChangeText={(text) => setSearch(text)}
             value={search}
           />
         </View>
-
-        {search && (
-          <View style={styles.viewSearch}>
-            <Text style={styles.titleSearch}>{t('location')}</Text>
-            <ScrollView>
-              {loadLocation ? (
-                <View
-                  style={{
-                    width: screenWidth - 78,
-                  }}
-                >
-                  <ActivityIndicator
-                    size="large"
-                    color="#8BC83F"
+        {Array.isArray(estate) &&
+          estate.map((item: any, index: number) => {
+            return (
+              <TouchableOpacity
+                style={styles.itemView}
+                key={index}
+                onPress={() =>
+                  push({
+                    name: 'EstateDetail',
+                    params: {id: item._id, nearby: true},
+                  })
+                }
+              >
+                <View style={styles.contentView}>
+                  <Image
+                    source={{uri: item.images[0]}}
+                    style={styles.imgItem}
                   />
-                </View>
-              ) : (
-                address &&
-                address?.map((item: any, index: any) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}
-                    onPress={() => {
-                      push({
-                        name: 'SearchResult',
-                        params: {result: item.display_name},
-                      });
-                    }}
-                  >
-                    <View style={styles.iconLocation}>
-                      <Octicons
-                        name="location"
-                        color={'#53587A'}
-                        size={8}
+                  <View style={styles.rightView}>
+                    <Text style={styles.nameEstate}>{item.name}</Text>
+                    <View style={styles.ratingView}>
+                      <Entypo
+                        name="star"
+                        color={'rgba(35,79,104,.42)'}
+                        size={12}
                       />
+                      <Text style={styles.rating}>3.5</Text>
                     </View>
-                    <Text style={styles.txtLocation}>{item.display_name}</Text>
-                  </TouchableOpacity>
-                ))
-              )}
-            </ScrollView>
-          </View>
-        )}
+                    <View style={styles.ratingView}>
+                      <FontAwesome6
+                        name="location-dot"
+                        color={'#234F68'}
+                        size={12}
+                      />
+                      <Text style={styles.location}>
+                        {item.address.road}, {item.address.city}
+                      </Text>
+                    </View>
+                    <View style={styles.priceView}>
+                      <Text style={styles.price}>$ </Text>
+                      <Text style={styles.price}>{item.price.rent}</Text>
+                      <Text style={styles.stay}> /</Text>
+                      <Text style={styles.stay}>month</Text>
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
       </View>
     </View>
   );
@@ -286,5 +335,73 @@ const styles = StyleSheet.create({
     fontFamily: 'Lato-Bold',
     color: '#FFF',
     fontSize: 16,
+  },
+  itemView: {
+    position: 'relative',
+    width: screenWidth - 48,
+    height: 156,
+    backgroundColor: '#F5F4F8',
+    marginLeft: 24,
+    marginBottom: 10,
+    borderRadius: 25,
+    bottom: -screenHeight + 156 + 90 + 30,
+  },
+  contentView: {
+    flexDirection: 'row',
+  },
+  btnFavoriteView: {
+    left: 8,
+    top: 8,
+  },
+  imgItem: {
+    width: screenWidth / 2 - 16,
+    height: 140,
+    borderRadius: 18,
+    margin: 8,
+  },
+  rightView: {
+    marginLeft: 16,
+    marginTop: 16,
+  },
+  nameEstate: {
+    fontFamily: 'Lato-Bold',
+    color: '#252B5C',
+    fontSize: 16,
+    width: screenWidth / 2 - 24 - 48,
+  },
+  ratingView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  rating: {
+    color: '#53587A',
+    fontSize: 12,
+    fontFamily: 'Lato-Bold',
+    marginLeft: 2,
+  },
+  location: {
+    color: '#53587A',
+    fontFamily: 'Lato-Regular',
+    marginLeft: 2,
+    fontSize: 14,
+    width: screenWidth / 2 - 24 - 48 - 16,
+  },
+  priceView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 10,
+  },
+  price: {
+    color: '#252B5C',
+    fontSize: 18,
+    fontFamily: 'Lato-Bold',
+    marginLeft: 2,
+  },
+  stay: {
+    color: '#252B5C',
+    fontSize: 12,
+    fontFamily: 'Lato-Regular',
   },
 });

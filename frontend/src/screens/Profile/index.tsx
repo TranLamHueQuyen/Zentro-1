@@ -22,6 +22,7 @@ const Profile: React.FC<ProfileProps> = () => {
   const {userToken, idUser, logout} = useContext(AuthContext);
   const {t} = useTranslation();
   const [data, setData] = useState<UserData | null>(null);
+  const [lengthEstates, setLengthEstates] = useState();
   const getProFile = async () => {
     await fetch(`${Config.API_URL}/api/user/${idUser}`, {
       method: 'GET',
@@ -30,6 +31,7 @@ const Profile: React.FC<ProfileProps> = () => {
       .then((res) => res.json())
       .then((res) => {
         setData(res.user);
+        setLengthEstates(res.lengthEstates);
       });
   };
 
@@ -40,56 +42,60 @@ const Profile: React.FC<ProfileProps> = () => {
   const handleEmailPress = (email: string) => {
     Linking.openURL(`mailto:${email}`);
   };
-  return !data ? (
-    <Splash />
-  ) : (
+  return (
     <View style={styles.component}>
       <Text style={styles.profileTitle}>{t('profile')}</Text>
       <TouchableOpacity style={styles.btnSetting}>
         <Setting_Icon />
       </TouchableOpacity>
-      <View>
-        <Image
-          style={styles.avatar}
-          source={{uri: data.avatar}}
-        />
-        <View style={styles.btnEdit}>
-          <Pencil_Icon />
-        </View>
-      </View>
-      <Text style={styles.username}>{data.full_name}</Text>
-      <Text
-        style={styles.email}
-        onPress={() => handleEmailPress(data.email)}
-      >
-        {data.email}
-      </Text>
-      <View style={styles.information}>
-        <TouchableOpacity style={styles.btnListing}>
-          <Text style={styles.username}>3</Text>
-          <Text style={styles.listingText}>{t('listings')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.btnListing}>
-          <Text style={styles.username}>0</Text>
-          <Text style={styles.listingText}>{t('sold')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.btnListing}
-          onPress={() => navigate({name: 'AllReview'})}
-        >
-          <Text style={styles.username}>0</Text>
-          <Text style={styles.listingText}>{t('reviews')}</Text>
-        </TouchableOpacity>
-      </View>
-      <View
-        style={{
-          height: '100%',
-          width: screenWidth - 48,
-          marginTop: 20,
-        }}
-      >
-        <TabMenu />
-      </View>
+      {!data ? (
+        <Splash />
+      ) : (
+        <>
+          <View>
+            <Image
+              style={styles.avatar}
+              source={{uri: data.avatar}}
+            />
+            <View style={styles.btnEdit}>
+              <Pencil_Icon />
+            </View>
+          </View>
+          <Text style={styles.username}>{data.full_name}</Text>
+          <Text
+            style={styles.email}
+            onPress={() => handleEmailPress(data.email)}
+          >
+            {data.email}
+          </Text>
+          <View style={styles.information}>
+            <TouchableOpacity style={styles.btnListing}>
+              <Text style={styles.username}>{lengthEstates}</Text>
+              <Text style={styles.listingText}>{t('listings')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.btnListing}>
+              <Text style={styles.username}>0</Text>
+              <Text style={styles.listingText}>{t('sold')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.btnListing}
+              onPress={() => navigate({name: 'AllReview'})}
+            >
+              <Text style={styles.username}>0</Text>
+              <Text style={styles.listingText}>{t('reviews')}</Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              height: '100%',
+              width: screenWidth - 48,
+              marginTop: 20,
+            }}
+          >
+            <TabMenu />
+          </View>
+        </>
+      )}
     </View>
   );
 };

@@ -11,10 +11,6 @@ const estateSchema = new Schema({
         },
     },
     address: {
-        name: {
-            type: String,
-            default: ''
-        },
         house_number: {
             type: Number,
             default: ''
@@ -63,7 +59,9 @@ const estateSchema = new Schema({
     },
     likes: [{ type: Types.ObjectId, ref: 'user' }],
     reviews: [{ type: Types.ObjectId, ref: 'review' }],
-    user: { type: Types.ObjectId, ref: 'user' }
+    user: { type: Types.ObjectId, ref: 'user' },
+    distance: Number
+
 }, {
     timestamps: true
 })

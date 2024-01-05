@@ -22,7 +22,7 @@ import {AuthContext} from '@/context/AuthContext';
 import Loading from '@/components/Loading';
 
 const Login = () => {
-  const {login} = useContext(AuthContext);
+  const {login, status} = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
@@ -30,12 +30,11 @@ const Login = () => {
   const {t} = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const HandleLogin = (email: string, password: string) => {
-    setIsLoading(true);
-    setTimeout(() => {
-      login(email, password);
-      setIsLoading(false);
-      setLoginSuccess(true);
-    }, 3000);
+    setIsLoading(!status);
+    login(email, password);
+
+    setLoginSuccess(true);
+    setIsLoading(status);
   };
 
   return (

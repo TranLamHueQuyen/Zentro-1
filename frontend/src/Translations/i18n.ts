@@ -8,8 +8,8 @@ i18n.use(initReactI18next).init({
     en: {translation: resources.en},
     vi: {translation: resources.vi},
   },
-  fallbackLng: 'en',
-  lng: 'en',
+  fallbackLng: 'vi',
+  lng: 'vi',
 });
 
 export default i18n;

@@ -5,8 +5,10 @@ import {
   TouchableOpacity,
   View,
   Animated,
+  ScrollView,
+  RefreshControl,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import Feather from 'react-native-vector-icons/Feather';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -17,90 +19,78 @@ import {screenWidth} from '@/themes/Responsive';
 import {getImages} from '@/assets/Images';
 import FavoriteButton from '@/components/FavoriteButton';
 import {collectStoredAnnotations} from 'mobx/dist/internal';
+import {EstateDetailProps} from '@/utils/interface';
+import {AuthContext} from '@/context/AuthContext';
+import {Config} from '@/config';
+import Loading from '@/components/Loading';
+import {push} from '@/navigation/NavigationUtils';
+import Splash from '@/components/Splash';
+import {observer} from 'mobx-react-lite';
 
 const Favorite = () => {
   const {t} = useTranslation();
-  const [length, setLength] = useState(1);
-  const data = [
-    {
-      id: 1,
-      name: 'Hung',
-      avatar: getImages().picture_1,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_1,
-          getImages().picture_2,
-          getImages().picture_3,
-          getImages().picture_4,
-          getImages().picture_5,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.5,
-        price: 290,
-        bathroom: 2,
-        bedroom: 2,
-        floors: 2,
-        time: 'month',
-        favorite: true,
-      },
-    },
-    {
-      id: 2,
-      name: 'Tony',
-      avatar: getImages().picture_2,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_4,
-          getImages().picture_5,
-          getImages().picture_3,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.7,
-        price: 160,
-        bathroom: 2,
-        bedroom: 3,
-        floors: 2,
-        time: 'month',
-        favorite: false,
-      },
-    },
-  ];
+  const [data, setData] = useState<EstateDetailProps[]>([]);
+  const {userToken, idUser} = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = () => {
+    setRefreshing(true);
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetch(`${Config.API_URL}/api/getLikeEstates`, {
+      method: 'GET',
+      headers: {Authorization: userToken},
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setData(res.likeEstates);
+      })
+      .finally(() => {
+        setRefreshing(false);
+        setIsLoading(false);
+      });
+  }, [refreshing]);
 
   const FavoriteItems = () => {
-    return data.map((item: any, index: any) => {
+    return data.map((item: EstateDetailProps, index: any) => {
       return (
         <Swipeable
           renderRightActions={() => RightSwipe(item)}
           key={index}
           overshootRight={false}
         >
-          <View style={styles.itemView}>
+          <TouchableOpacity
+            onPress={() =>
+              push({
+                name: 'EstateDetail',
+                params: {id: item._id, nearby: true},
+              })
+            }
+            style={styles.itemView}
+          >
             <View style={styles.contentView}>
               <View style={styles.btnFavoriteView}>
-                <FavoriteButton favorite={true} />
+                <FavoriteButton
+                  favorite={item.likes[0] === idUser ? true : false}
+                  id={item._id}
+                />
               </View>
 
               <Image
-                source={item.assets.images[0]}
+                source={{uri: item.images[0]}}
                 style={styles.imgItem}
               />
               <View style={styles.rightView}>
-                <Text style={styles.nameEstate}>{item.assets.name}</Text>
+                <Text style={styles.nameEstate}>{item.name}</Text>
                 <View style={styles.ratingView}>
                   <Entypo
                     name="star"
                     color={'rgba(35,79,104,.42)'}
                     size={12}
                   />
-                  <Text style={styles.rating}>{item.assets.star_rating}</Text>
+                  <Text style={styles.rating}>3.5</Text>
                 </View>
                 <View style={styles.ratingView}>
                   <FontAwesome6
@@ -108,17 +98,19 @@ const Favorite = () => {
                     color={'#234F68'}
                     size={12}
                   />
-                  <Text style={styles.location}>{item.assets.location}</Text>
+                  <Text style={styles.location}>
+                    {item.address.road}, {item.address.city}
+                  </Text>
                 </View>
                 <View style={styles.priceView}>
                   <Text style={styles.price}>$ </Text>
-                  <Text style={styles.price}>{item.assets.price}</Text>
+                  <Text style={styles.price}>{item.price.rent}</Text>
                   <Text style={styles.stay}> /</Text>
-                  <Text style={styles.stay}>{item.assets.time}</Text>
+                  <Text style={styles.stay}>month</Text>
                 </View>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </Swipeable>
       );
     });
@@ -152,21 +144,37 @@ const Favorite = () => {
           size={15}
         />
       </TouchableOpacity>
-      <Text style={styles.txtEstates}>0 estates</Text>
-      {length === 0 ? (
-        <View style={styles.emptyView}>
-          <Empty />
-          <Text style={styles.titleNormal}>{t('your_favorite')}</Text>
-          <Text style={styles.titleHighlight}>{t('empty')}</Text>
-        </View>
+      <Text style={styles.txtEstates}>
+        {data.length} {t('estates')}
+      </Text>
+      {isLoading ? (
+        <Splash />
       ) : (
-        <FavoriteItems />
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#8BC83F']}
+            />
+          }
+        >
+          {data.length === 0 ? (
+            <View style={styles.emptyView}>
+              <Empty />
+              <Text style={styles.titleNormal}>{t('your_favorite')}</Text>
+              <Text style={styles.titleHighlight}>{t('empty')}</Text>
+            </View>
+          ) : (
+            <FavoriteItems />
+          )}
+        </ScrollView>
       )}
     </View>
   );
 };
 
-export default Favorite;
+export default observer(Favorite);
 
 const styles = StyleSheet.create({
   component: {
@@ -202,9 +210,8 @@ const styles = StyleSheet.create({
     marginLeft: 24,
   },
   emptyView: {
-    flex: 1,
+    marginTop: 124,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   titleNormal: {
     fontFamily: 'Lato-Medium',

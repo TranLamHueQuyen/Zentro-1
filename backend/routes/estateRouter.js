@@ -19,5 +19,10 @@ estateRouter.patch('/estate/:id/unlike', auth, estateCtrl.unLikeEstate)
 
 estateRouter.get('/user_estates/:id', auth, estateCtrl.getUserEstates)
 
+estateRouter.get('/getLikeEstates', auth, estateCtrl.getLikeEstates)
+
+estateRouter.get('/getRecommend/:id', auth, estateCtrl.getRecommend)
+
+
 
 export default estateRouter

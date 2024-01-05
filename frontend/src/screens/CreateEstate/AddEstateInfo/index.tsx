@@ -6,18 +6,22 @@ import {
   View,
   ScrollView,
 } from 'react-native';
-import React, {useState, useCallback, useMemo, useRef} from 'react';
+import React, {useState, useCallback, useMemo, useRef, useContext} from 'react';
 import {BackButton} from '@/components';
 import {useTranslation} from 'react-i18next';
 import {screenHeight, screenWidth} from '@/themes/Responsive';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Error, Minus, Plus, Success} from '@/assets/Svg';
-import {push} from '@/navigation/NavigationUtils';
+import {navigate, push} from '@/navigation/NavigationUtils';
 import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import Loading from '@/components/Loading';
+import axios from 'axios';
+import {Config} from '@/config';
+import {AuthContext} from '@/context/AuthContext';
 
 const AddEstateInfo = ({route}: any) => {
   const {data} = route.params;
+  const {userToken} = useContext(AuthContext);
   const {t} = useTranslation();
   const [active, setActive] = useState(true);
   const [sell, setSell] = useState(0);
@@ -27,35 +31,76 @@ const AddEstateInfo = ({route}: any) => {
   const [floors, setFloors] = useState(0);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  // console.log({
-  //   name: data.name,
-  //   listType: data.listType,
-  //   address: {
-  //     name: data.address.name,
-  //     lat: data.address.lat,
-  //     lng: data.address.lng,
-  //   },
-  //   images: data.images,
-  //   price: {
-  //     sell: sell,
-  //     rent: rent,
-  //   },
-  //   property: {
-  //     bedroom: bedroom,
-  //     bathroom: bathroom,
-  //     floors: floors,
-  //   },
-  //   rental: active,
-  // });
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const snapPoints = useMemo(() => ['50%'], []);
+  console.log(data.images);
 
   const handleOpenPress = () => {
     setLoading(true);
-    setTimeout(() => {
+    setTimeout(async () => {
       setLoading(false);
+      if (data && sell | rent && bedroom && bathroom && floors) {
+        await axios
+          .post(
+            `${Config.API_URL}/api/estates`,
+            {
+              name: data.name,
+              listType: data.listType,
+              address: {
+                road: data.address.road,
+                quarter: data.address.quarter,
+                city: data.address.city,
+                country: data.address.country,
+                lat: data.address.lat,
+                lng: data.address.lng,
+              },
+              images: data.images,
+              price: {
+                sell: sell,
+                rent: rent,
+              },
+              property: {
+                bedroom: bedroom,
+                bathroom: bathroom,
+                floors: floors,
+              },
+            },
+            {
+              headers: {Authorization: userToken},
+            },
+          )
+          .then((res) => {
+            setSuccess(true);
+          })
+          .catch((e) => {
+            setSuccess(false);
+            console.log({
+              name: data.name,
+              listType: data.listType,
+              address: {
+                road: data.address.road,
+                quarter: data.address.quarter,
+                city: data.address.city,
+                country: data.address.country,
+                lat: data.address.lat,
+                lng: data.address.lng,
+              },
+              images: data.images,
+              price: {
+                sell: sell,
+                rent: rent,
+              },
+              property: {
+                bedroom: bedroom,
+                bathroom: bathroom,
+                floors: floors,
+              },
+            });
+          });
+      }
+
       bottomSheetRef.current?.expand();
     }, 2000);
   };
@@ -76,86 +121,93 @@ const AddEstateInfo = ({route}: any) => {
           <Text style={styles.titleHighlight}>{t('almost_finish')}</Text>
           <Text style={styles.titleNormal}>{t('complete_listing')}</Text>
         </View>
-        <Text style={styles.sellTitle}>
-          {t('sell')} {t('price')}
-        </Text>
-        <View>
-          <TextInput
-            style={styles.sellInput}
-            keyboardType="numeric"
-            onChangeText={(value) => setSell(parseFloat(value))}
-          />
-          <View style={styles.dollarIcon}>
-            <FontAwesome
-              name="dollar"
-              color={'#252B5C'}
-              size={16}
-            />
-          </View>
-        </View>
-        <View>
-          <Text style={styles.rentTitle}>
-            {t('rent')} {t('price')}
-          </Text>
+        {data.listType.sell && (
           <View>
-            <TextInput
-              style={styles.rentInput}
-              keyboardType="numeric"
-              onChangeText={(value) => setRent(parseFloat(value))}
-            />
-            <View style={styles.dollarIcon}>
-              <FontAwesome
-                name="dollar"
-                color={'#252B5C'}
-                size={16}
+            <Text style={styles.sellTitle}>
+              {t('sell')} {t('price')}
+            </Text>
+            <View>
+              <TextInput
+                style={styles.sellInput}
+                keyboardType="numeric"
+                onChangeText={(value) => setSell(parseFloat(value))}
               />
+              <View style={styles.dollarIcon}>
+                <FontAwesome
+                  name="dollar"
+                  color={'#252B5C'}
+                  size={16}
+                />
+              </View>
             </View>
-            <View style={styles.btnView}>
-              <TouchableOpacity
-                style={
-                  active
-                    ? [styles.btnNormal, {backgroundColor: '#234F68'}]
-                    : styles.btnNormal
-                }
-                onPress={() => setActive(true)}
-              >
-                <Text
+          </View>
+        )}
+        {data.listType.rent && (
+          <View>
+            <Text style={styles.rentTitle}>
+              {t('rent')} {t('price')}
+            </Text>
+            <View>
+              <TextInput
+                style={styles.rentInput}
+                keyboardType="numeric"
+                onChangeText={(value) => setRent(parseFloat(value))}
+              />
+              <View style={styles.dollarIcon}>
+                <FontAwesome
+                  name="dollar"
+                  color={'#252B5C'}
+                  size={16}
+                />
+              </View>
+              <View style={styles.btnView}>
+                <TouchableOpacity
                   style={
                     active
-                      ? [
-                          styles.btnText,
-                          {color: '#FFFFFF', fontFamily: 'Lato-Bold'},
-                        ]
-                      : styles.btnText
+                      ? [styles.btnNormal, {backgroundColor: '#234F68'}]
+                      : styles.btnNormal
                   }
+                  onPress={() => setActive(true)}
                 >
-                  {t('month')}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={
-                  !active
-                    ? [styles.btnNormal, {backgroundColor: '#234F68'}]
-                    : styles.btnNormal
-                }
-                onPress={() => setActive(false)}
-              >
-                <Text
+                  <Text
+                    style={
+                      active
+                        ? [
+                            styles.btnText,
+                            {color: '#FFFFFF', fontFamily: 'Lato-Bold'},
+                          ]
+                        : styles.btnText
+                    }
+                  >
+                    {t('month')}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
                   style={
                     !active
-                      ? [
-                          styles.btnText,
-                          {color: '#FFFFFF', fontFamily: 'Lato-Bold'},
-                        ]
-                      : styles.btnText
+                      ? [styles.btnNormal, {backgroundColor: '#234F68'}]
+                      : styles.btnNormal
                   }
+                  onPress={() => setActive(false)}
                 >
-                  {t('year')}
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={
+                      !active
+                        ? [
+                            styles.btnText,
+                            {color: '#FFFFFF', fontFamily: 'Lato-Bold'},
+                          ]
+                        : styles.btnText
+                    }
+                  >
+                    {t('year')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
+        )}
+
         <View style={styles.propertyView}>
           <Text style={styles.sellTitle}>{t('property')}</Text>
           <View style={styles.propertyFrom}>
@@ -261,9 +313,17 @@ const AddEstateInfo = ({route}: any) => {
             <Text style={styles.titleHighlight}>{t('published')}</Text>
             <View style={styles.btnModalGroup}>
               <TouchableOpacity style={styles.btnAddMoreModal}>
-                <Text style={styles.txtAddMoreModal}>{t('add_more')}</Text>
+                <Text
+                  style={styles.txtAddMoreModal}
+                  onPress={() => navigate({name: 'CreateEstate'})}
+                >
+                  {t('add_more')}
+                </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnFinishModal}>
+              <TouchableOpacity
+                style={styles.btnFinishModal}
+                onPress={() => navigate({name: 'Profile'})}
+              >
                 <Text style={styles.txtFinishModal}>{t('finish')}</Text>
               </TouchableOpacity>
             </View>
@@ -283,7 +343,12 @@ const AddEstateInfo = ({route}: any) => {
                 <Text style={styles.txtAddMoreModal}>{t('close')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.btnFinishModal}>
-                <Text style={styles.txtFinishModal}>{t('retry')}</Text>
+                <Text
+                  style={styles.txtFinishModal}
+                  onPress={handleOpenPress}
+                >
+                  {t('retry')}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -11,7 +11,7 @@ import Location from '@/screens/AccountSetup/Location';
 import Stories from '@/screens/Stories';
 import TabNavigator from './TabNavigator';
 import {observer} from 'mobx-react-lite';
-import EstateDetail from '@/components/EstateDetail';
+import EstateDetail from '@/screens/EstateDetail';
 import ReviewDetails from '@/screens/Reviews/ReviewDetails';
 import AllReview from '@/screens/Profile/AllReview';
 import TabMenu from '@/screens/Profile/TabMenu';

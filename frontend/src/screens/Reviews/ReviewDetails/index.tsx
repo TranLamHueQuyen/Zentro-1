@@ -18,7 +18,7 @@ import StarRating from '@/components/StarRating';
 
 const ReviewDetails: React.FC<ReviewDetail> = ({route}) => {
   const {t} = useTranslation();
-  const {estate, review} = route.params;
+  const {estate, reviews} = route.params;
   const star = [1, 2, 3, 4, 5, 6];
   const [pressStar, setPressStar] = useState(0);
 
@@ -26,13 +26,13 @@ const ReviewDetails: React.FC<ReviewDetail> = ({route}) => {
     return (
       <View style={styles.estateView}>
         <View style={styles.estateContent}>
-          <FavoriteButton favorite={estate.assets.favorite} />
+          {/* <FavoriteButton favorite={estate.assets.favorite} /> */}
           <Image
-            source={estate.assets.images[0]}
+            source={{uri: estate.images[0]}}
             style={styles.estateImage}
           />
           <View style={styles.cardContent}>
-            <Text style={styles.cardName}>{estate.assets.name}</Text>
+            <Text style={styles.cardName}>{estate.name}</Text>
 
             <View style={styles.ratingView}>
               <Entypo
@@ -40,7 +40,7 @@ const ReviewDetails: React.FC<ReviewDetail> = ({route}) => {
                 color={'#FFC42D'}
                 size={10}
               />
-              <Text style={styles.rating}>{estate.assets.star_rating}</Text>
+              <Text style={styles.rating}>{estate.rating_star}</Text>
             </View>
             <View style={styles.ratingView}>
               <FontAwesome6
@@ -48,7 +48,9 @@ const ReviewDetails: React.FC<ReviewDetail> = ({route}) => {
                 color={'#234F68'}
                 size={9}
               />
-              <Text style={styles.location}>{estate.assets.location}</Text>
+              <Text style={styles.location}>
+                {estate.address.road}, {estate.address.city}
+              </Text>
             </View>
           </View>
         </View>
@@ -65,7 +67,7 @@ const ReviewDetails: React.FC<ReviewDetail> = ({route}) => {
         <View style={styles.reviewContent}>
           <View style={styles.ountsideAvatar}>
             <Image
-              source={item.avatar}
+              source={{uri: item.user.avatar}}
               style={styles.reviewAvatar}
             />
           </View>
@@ -77,18 +79,18 @@ const ReviewDetails: React.FC<ReviewDetail> = ({route}) => {
             }}
           >
             <View style={styles.reviewStar}>
-              <Text style={styles.reviewName}>{item.name}</Text>
+              <Text style={styles.reviewName}>{item.user.full_name}</Text>
               <View style={styles.star}>
-                <StarRating star={item.reviews.star_rating} />
+                <StarRating star={item.star} />
               </View>
             </View>
-            <Text style={styles.reviewText}>{item.reviews.content}</Text>
+            <Text style={styles.reviewText}>{item.content}</Text>
             <View style={styles.reviewImagesView}>
-              {item.reviews.images.map((image: any, index: number) => {
+              {item.images.map((image: string, index: number) => {
                 return (
                   <Image
                     key={index}
-                    source={image}
+                    source={{uri: image}}
                     style={styles.reviewImages}
                   />
                 );
@@ -139,14 +141,14 @@ const ReviewDetails: React.FC<ReviewDetail> = ({route}) => {
       </View>
       <ScrollView>
         <Text style={styles.reviewTitle}>{t('user_reviews')}</Text>
-        {review.map((item: ReviewItems, index: number) => {
+        {reviews.map((item: ReviewItems, index: number) => {
           return pressStar === 0 ? (
             <Reviews
               item={item}
               index={index}
               key={index}
             />
-          ) : pressStar === item.reviews.star_rating ? (
+          ) : pressStar === item.star ? (
             <Reviews
               item={item}
               index={index}

@@ -10,4 +10,6 @@ userRouter.get('/user/:id', auth, userCtrl.getUser)
 
 userRouter.patch('/user', auth, userCtrl.updateUser)
 
+userRouter.get('/test', auth, userCtrl.testRecommend)
+
 export default userRouter

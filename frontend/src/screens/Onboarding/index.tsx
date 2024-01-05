@@ -27,7 +27,6 @@ import TabNavigator from '@/navigation/TabNavigator';
 
 const Onboarding: React.FC<OnboardingProps> = observer(() => {
   const {userToken} = useContext(AuthContext);
-  console.log(userToken);
 
   const {t} = useTranslation();
   const slides = [

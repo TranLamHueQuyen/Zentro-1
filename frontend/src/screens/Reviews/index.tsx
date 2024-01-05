@@ -7,143 +7,69 @@ import {screenWidth} from '@/themes/Responsive';
 import StarRating from '@/components/StarRating';
 import {push} from '@/navigation/NavigationUtils';
 
-const Reviews: React.FC<ReviewProps> = ({navigation, estate}) => {
+const Reviews: React.FC<ReviewProps> = ({estate}) => {
   const {t} = useTranslation();
-  const data = [
-    {
-      id: 1,
-      name: 'Hung',
-      avatar: getImages().picture_1,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      reviews: {
-        content:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        images: [
-          getImages().picture_4,
-          getImages().picture_5,
-          getImages().picture_3,
-          getImages().picture_4,
-          getImages().picture_5,
-          getImages().picture_3,
-        ],
-        star_rating: 5,
-      },
-    },
-    {
-      id: 2,
-      name: 'Tony',
-      avatar: getImages().picture_2,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      reviews: {
-        content:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        images: [getImages().picture_4, getImages().picture_5],
-        star_rating: 2,
-      },
-    },
-    {
-      id: 3,
-      name: 'Tony',
-      avatar: getImages().picture_2,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      reviews: {
-        content:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        images: [],
-        star_rating: 3,
-      },
-    },
-    {
-      id: 4,
-      name: 'Tony',
-      avatar: getImages().picture_2,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      reviews: {
-        content:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        images: [getImages().picture_4, getImages().picture_5],
-        star_rating: 2,
-      },
-    },
-    {
-      id: 5,
-      name: 'Tony',
-      avatar: getImages().picture_2,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      reviews: {
-        content:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        images: [getImages().picture_4, getImages().picture_5],
-        star_rating: 2,
-      },
-    },
-  ];
 
   return (
-    <View>
-      <Text style={styles.reviewTitle}>{t('reviews')}</Text>
-      {data.slice(0, 2).map((item: ReviewItems, index: number) => {
-        return (
-          <View
-            key={index}
-            style={styles.reviewView}
-          >
-            <View style={styles.reviewContent}>
-              <View style={styles.outsideAvatar}>
-                <Image
-                  source={item.avatar}
-                  style={styles.reviewAvatar}
-                />
-              </View>
-
-              <View
-                style={{
-                  width: screenWidth - 128,
-                  marginHorizontal: 10,
-                }}
-              >
-                <View style={styles.reviewStar}>
-                  <Text style={styles.reviewName}>{item.name}</Text>
-                  <View style={styles.star}>
-                    <StarRating star={item.reviews.star_rating} />
-                  </View>
+    estate.reviews.length > 0 && (
+      <View>
+        <Text style={styles.reviewTitle}>{t('reviews')}</Text>
+        {estate.reviews.slice(0, 2).map((item: ReviewItems, index: number) => {
+          return (
+            <View
+              key={index}
+              style={styles.reviewView}
+            >
+              <View style={styles.reviewContent}>
+                <View style={styles.outsideAvatar}>
+                  <Image
+                    source={{uri: item.user.avatar}}
+                    style={styles.reviewAvatar}
+                  />
                 </View>
-                <Text style={styles.reviewText}>{item.reviews.content}</Text>
-                <View style={styles.reviewImagesView}>
-                  {item.reviews.images.map((image: any, index: number) => {
-                    return (
-                      <Image
-                        key={index}
-                        source={image}
-                        style={styles.reviewImages}
-                      />
-                    );
-                  })}
+
+                <View
+                  style={{
+                    width: screenWidth - 128,
+                    marginHorizontal: 10,
+                  }}
+                >
+                  <View style={styles.reviewStar}>
+                    <Text style={styles.reviewName}>{item.user.full_name}</Text>
+                    <View style={styles.star}>
+                      <StarRating star={item.star} />
+                    </View>
+                  </View>
+                  <Text style={styles.reviewText}>{item.content}</Text>
+                  <View style={styles.reviewImagesView}>
+                    {item.images.map((image: string, index: number) => {
+                      return (
+                        <Image
+                          key={index}
+                          source={{uri: image}}
+                          style={styles.reviewImages}
+                        />
+                      );
+                    })}
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-        );
-      })}
-      <TouchableOpacity
-        style={styles.allReviewButton}
-        onPress={() =>
-          push({name: 'ReviewDetails', params: {estate, review: data}})
-        }
-      >
-        <Text style={styles.allReviewText}>{t('view_all_reviews')}</Text>
-      </TouchableOpacity>
-    </View>
+          );
+        })}
+        <TouchableOpacity
+          style={styles.allReviewButton}
+          onPress={() =>
+            push({
+              name: 'ReviewDetails',
+              params: {estate, reviews: estate.reviews},
+            })
+          }
+        >
+          <Text style={styles.allReviewText}>{t('view_all_reviews')}</Text>
+        </TouchableOpacity>
+      </View>
+    )
   );
 };
 

@@ -15,30 +15,36 @@ import {EstateDetailProps, FeaturedProps} from '@/utils/interface';
 import {push} from '@/navigation/NavigationUtils';
 import {Config} from '@/config';
 import {AuthContext} from '@/context/AuthContext';
+import Splash from '@/components/Splash';
 
 const FeaturedEstates: React.FC<FeaturedProps> = ({navigation}) => {
   const {t} = useTranslation();
   const [data, setData] = useState<EstateDetailProps[]>([]);
-  const {userToken} = useContext(AuthContext);
+  const {userToken, idUser} = useContext(AuthContext);
+  const [load, setLoad] = useState(true);
   useEffect(() => {
-    const loadPosts = async () => {
-      await fetch(`${Config.API_URL}/api/estates`, {
-        method: 'GET',
-        headers: {Authorization: userToken},
+    setLoad(true);
+    fetch(`${Config.API_URL}/api/estates`, {
+      method: 'GET',
+      headers: {Authorization: userToken},
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setData(res.estates);
       })
-        .then((res) => res.json())
-        .then((res) => {
-          setData(res.estates);
-        });
-    };
-    loadPosts();
+      .finally(() => setLoad(false));
   }, []);
 
   const RenderItems = ({item}: {item: EstateDetailProps}) => {
     return (
       <View style={styles.cardItem}>
         <View>
-          {/* <FavoriteButton favorite={item.assets.favorite} /> */}
+          <FavoriteButton
+            favorite={
+              item.likes.find((item: any) => item._id === idUser) ? true : false
+            }
+            id={item._id}
+          />
           <Image
             source={{uri: item.images[0]}}
             style={styles.images}
@@ -86,14 +92,18 @@ const FeaturedEstates: React.FC<FeaturedProps> = ({navigation}) => {
         <Text style={styles.textHeader}>{t('featured_estates')}</Text>
         <Text style={styles.textViewAll}>{t('view_all')}</Text>
       </View>
-      <View style={styles.listFeatured}>
-        <FlatList
-          data={data}
-          renderItem={(item) => RenderItems(item)}
-          keyExtractor={(item) => item._id.toString()}
-          horizontal
-        />
-      </View>
+      {load ? (
+        <Splash />
+      ) : (
+        <View style={styles.listFeatured}>
+          <FlatList
+            data={data}
+            renderItem={(item) => RenderItems(item)}
+            keyExtractor={(item) => item._id.toString()}
+            horizontal
+          />
+        </View>
+      )}
     </View>
   );
 };

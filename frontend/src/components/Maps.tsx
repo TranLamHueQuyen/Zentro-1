@@ -132,8 +132,8 @@ const Maps = ({user, estate}: any) => {
                 latitudeDelta: mapDelta?.mapLatDelta,
                 longitudeDelta: mapDelta?.mapLonDelta,
               }}
-              // scrollEnabled={false}
-              // zoomEnabled={false}
+              scrollEnabled={false}
+              zoomEnabled={false}
             >
               <Marker
                 coordinate={{

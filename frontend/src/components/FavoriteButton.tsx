@@ -1,10 +1,28 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {screenWidth} from '@/themes/Responsive';
+import {Config} from '@/config';
+import {AuthContext} from '@/context/AuthContext';
 
 const FavoriteButton = (item: any) => {
+  const {userToken} = useContext(AuthContext);
   const [status, setStatus] = useState(item.favorite);
+
+  const handleLike = (status: boolean) => {
+    if (status === false) {
+      fetch(`${Config.API_URL}/api/estate/${item.id}/like`, {
+        method: 'PATCH',
+        headers: {Authorization: userToken},
+      });
+    } else {
+      fetch(`${Config.API_URL}/api/estate/${item.id}/unlike`, {
+        method: 'PATCH',
+        headers: {Authorization: userToken},
+      });
+    }
+    setStatus(!status);
+  };
 
   return (
     <View>
@@ -19,7 +37,7 @@ const FavoriteButton = (item: any) => {
             left: item.size ? screenWidth - 74 : 7,
           },
         ]}
-        onPress={() => setStatus(!status)}
+        onPress={() => handleLike(status)}
         activeOpacity={0.5}
       >
         {status ? (
