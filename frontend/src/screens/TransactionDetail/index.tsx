@@ -14,28 +14,26 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {screenWidth} from '@/themes/Responsive';
 import {getImages} from '@/assets/Images';
 import {navigate} from '@/navigation/NavigationUtils';
+import {RouteTransaction} from '@/utils/interface';
+import moment from 'moment';
 
-const TransactionDetail = ({
-  route,
-  navigation,
-}: {
-  route: any;
-  navigation: any;
-}) => {
-  const {transaction} = route.params;
+const TransactionDetail = ({route}: RouteTransaction) => {
+  const {transaction, estate} = route.params;
   const {t} = useTranslation();
-
+  const fromDate = moment(transaction.checkIn, 'DD/MM/YYYY');
+  const toDate = moment(transaction.checkOut, 'DD/MM/YYYY');
+  const totalDate = toDate.diff(fromDate, 'days');
   const EstateView = () => {
     return (
       <View style={styles.estateView}>
         <View style={styles.estateContent}>
-          <FavoriteButton favorite={transaction.assets.favorite} />
+          {/* <FavoriteButton favorite={transaction.assets.favorite} /> */}
           <Image
-            source={{uri: transaction.assets.images[0]}}
+            source={{uri: estate.images[0]}}
             style={styles.estateImage}
           />
           <View style={styles.cardContent}>
-            <Text style={styles.cardName}>{transaction.assets.name}</Text>
+            <Text style={styles.cardName}>{estate.name}</Text>
 
             <View style={styles.ratingView}>
               <FontAwesome6
@@ -43,11 +41,14 @@ const TransactionDetail = ({
                 color={'#234F68'}
                 size={9}
               />
-              <Text style={styles.location}>{transaction.assets.location}</Text>
+              <Text style={styles.location}>
+                {estate.address.road}, {estate.address.city},{' '}
+                {estate.address.country}
+              </Text>
             </View>
           </View>
           <View style={styles.typeView}>
-            <Text style={styles.typeText}>{transaction.assets.type}</Text>
+            <Text style={styles.typeText}>{transaction.type}</Text>
           </View>
         </View>
       </View>
@@ -62,23 +63,19 @@ const TransactionDetail = ({
           <View style={styles.tranView}>
             <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('check_in')}</Text>
-              <Text style={styles.tranText}>{transaction.assets.check_in}</Text>
+              <Text style={styles.tranText}>{transaction.checkIn}</Text>
             </View>
             <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('check_out')}</Text>
-              <Text style={styles.tranText}>
-                {transaction.assets.check_out}
-              </Text>
+              <Text style={styles.tranText}>{transaction.checkOut}</Text>
             </View>
             <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('owner_name')}</Text>
-              <Text style={styles.tranText}>
-                {transaction.assets.owner_name}
-              </Text>
+              <Text style={styles.tranText}>{transaction.user.full_name}</Text>
             </View>
             <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('transaction_type')}</Text>
-              <Text style={styles.tranText}>{transaction.assets.type}</Text>
+              <Text style={styles.tranText}>{transaction.type}</Text>
             </View>
           </View>
         </View>
@@ -94,28 +91,22 @@ const TransactionDetail = ({
           <View style={styles.tranView}>
             <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('period_time')}</Text>
-              <Text style={styles.tranText}>
-                {transaction.assets.period_time}
-              </Text>
+              <Text style={styles.tranText}>{totalDate} Days</Text>
             </View>
             <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('monthly_payment')}</Text>
-              <Text style={styles.tranText}>
-                {transaction.assets.check_out}
-              </Text>
+              <Text style={styles.tranText}>{transaction.checkOut}</Text>
             </View>
             <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('discount')}</Text>
-              <Text style={styles.tranText}>
-                -$ {transaction.assets.discount}
-              </Text>
+              <Text style={styles.tranText}>-$ {transaction.discount}</Text>
             </View>
           </View>
         </View>
         <View style={styles.payView}>
           <View style={styles.payContent}>
             <Text style={styles.payText}>{t('total')}</Text>
-            <Text style={styles.payText}>$ {transaction.assets.total}</Text>
+            <Text style={styles.payText}>$ {transaction.price}</Text>
           </View>
         </View>
       </View>

@@ -8,7 +8,9 @@ const paymentSchema = new Schema({
     discount: Number,
     paymentMethod: String,
     price: Number,
+    note: String,
     user: { type: Types.ObjectId, ref: 'user' },
+    estate: { type: Types.ObjectId, ref: 'user' },
     estateId: Types.ObjectId,
     estateUserId: Types.ObjectId
 });

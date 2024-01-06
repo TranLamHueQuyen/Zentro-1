@@ -13,6 +13,7 @@ import userRouter from './routes/userRouter.js'
 import reviewRouter from './routes/reviewRouter.js'
 import notifyRouter from './routes/notifyRouter.js';
 import messageRouter from './routes/messageRouter.js';
+import paymentRouter from './routes/paymentRouter.js';
 
 const app = express();
 const { connect } = mongoose;
@@ -39,6 +40,7 @@ app.use("/api", estateRouter);
 app.use("/api", reviewRouter);
 app.use("/api", notifyRouter);
 app.use("/api", messageRouter);
+app.use("/api", paymentRouter);
 
 const URI = process.env.MONGODB_URL;
 connect(

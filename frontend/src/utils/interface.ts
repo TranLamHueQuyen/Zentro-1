@@ -33,6 +33,12 @@ export interface ReviewDetail {
   route: RouteProp<RootStackParams, 'ReviewDetails'>;
 }
 
+export interface RouteTransaction {
+  route: {
+    params: {transaction: TranSactionProps; estate: EstateDetailProps};
+  };
+}
+
 export interface Users {
   avatar: string;
   _id: string;
@@ -106,4 +112,16 @@ export interface EstateDetailProps {
   name: string;
   reviews: Array<ReviewItems>;
   user: Users;
+}
+export interface TranSactionProps {
+  type: string;
+  checkIn: string;
+  checkOut: string;
+  discount: number;
+  paymentMethod: string;
+  price: number;
+  note: string;
+  user: Users;
+  estateId: string;
+  estateUserId: string;
 }

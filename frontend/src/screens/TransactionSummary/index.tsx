@@ -1,5 +1,5 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useMemo, useRef, useState} from 'react';
+import React, {useContext, useMemo, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import FavoriteButton from '@/components/FavoriteButton';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
@@ -9,22 +9,60 @@ import {navigate, push} from '@/navigation/NavigationUtils';
 import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import {Error, Success} from '@/assets/Svg';
 import Loading from '@/components/Loading';
+import moment from 'moment';
+import axios from 'axios';
+import {AuthContext} from '@/context/AuthContext';
+import {Config} from '@/config';
 
 const TransactionSummary = ({route}: any) => {
   const {data, checkIn, checkOut, note} = route.params;
+  const {userToken, idUser} = useContext(AuthContext);
+  const fromDate = moment(checkIn, 'DD/MM/YYYY');
+  const toDate = moment(checkOut, 'DD/MM/YYYY');
+  const dateInMonth = toDate.daysInMonth();
+  const totalDate = toDate.diff(fromDate, 'days');
+  const totalMoney = ((data.price.rent / dateInMonth) * totalDate).toFixed(2);
   const {t} = useTranslation();
   const [success, setSuccess] = useState(true);
   const [loading, setLoading] = useState(false);
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ['50%'], []);
-  const handleOpenPress = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      bottomSheetRef.current?.expand();
-    }, 2000);
-  };
+
   const handleClosePress = () => bottomSheetRef.current?.close();
+
+  const handleBookRoom = () => {
+    setLoading(true);
+    axios
+      .post(
+        `${Config.API_URL}/api/payment`,
+        {
+          checkIn,
+          checkOut,
+          price: totalMoney,
+          note,
+          type: 'rent',
+          discount: 0,
+          paymentMethod: 'Direct Transaction',
+          estateId: data._id,
+          estateUserId: data.user._id,
+        },
+        {
+          headers: {Authorization: userToken},
+        },
+      )
+      .then((res) => {
+        console.log(res);
+        setLoading(false);
+        setSuccess(true);
+      })
+      .catch((e) => {
+        console.log(e);
+        setLoading(false);
+        setSuccess(false);
+      })
+      .finally(() => bottomSheetRef.current?.expand());
+  };
+
   const EstateView = () => {
     return (
       <View style={styles.estateView}>
@@ -63,11 +101,11 @@ const TransactionSummary = ({route}: any) => {
           <View style={styles.tranView}>
             <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('period_time')}</Text>
-              <Text style={styles.tranText}>1 Month</Text>
+              <Text style={styles.tranText}>{totalDate} Day</Text>
             </View>
             <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('monthly_payment')}</Text>
-              <Text style={styles.tranText}>$ 520</Text>
+              <Text style={styles.tranText}>{checkOut}</Text>
             </View>
             <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('discount')}</Text>
@@ -78,7 +116,7 @@ const TransactionSummary = ({route}: any) => {
         <View style={styles.payView}>
           <View style={styles.payContent}>
             <Text style={styles.payText}>{t('total')}</Text>
-            <Text style={styles.payText}>$ 520</Text>
+            <Text style={styles.payText}>$ {totalMoney}</Text>
           </View>
         </View>
         <View style={{marginTop: 35}}>
@@ -111,7 +149,7 @@ const TransactionSummary = ({route}: any) => {
         }}
       >
         <TouchableOpacity
-          onPress={handleOpenPress}
+          onPress={handleBookRoom}
           style={styles.btnNext}
           activeOpacity={0.7}
         >
@@ -163,7 +201,7 @@ const TransactionSummary = ({route}: any) => {
               >
                 <Text style={styles.txtAddMoreModal}>{t('close')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.btnFinishModal}>
+              <TouchableOpacity style={styles.btnRetry}>
                 <Text style={styles.txtFinishModal}>{t('retry')}</Text>
               </TouchableOpacity>
             </View>
@@ -347,6 +385,15 @@ const styles = StyleSheet.create({
     width: screenWidth / 2 - 29,
     height: 70,
     backgroundColor: '#F5F4F8',
+    borderRadius: 10,
+    marginRight: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  btnRetry: {
+    width: screenWidth / 2 - 29,
+    height: 70,
+    backgroundColor: '#8BC83F',
     borderRadius: 10,
     marginRight: 5,
     justifyContent: 'center',

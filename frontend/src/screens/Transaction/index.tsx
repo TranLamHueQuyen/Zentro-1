@@ -24,9 +24,9 @@ import {navigate, push} from '@/navigation/NavigationUtils';
 
 const Transaction = ({route}: any) => {
   const {data} = route.params;
-  console.log(data);
-
   const {t} = useTranslation();
+  const date = new Date();
+
   const [modalVisible, setModalVisible] = useState(false);
   const [check, setCheck] = useState(false);
   const [note, setNote] = useState<string>('');
@@ -34,6 +34,8 @@ const Transaction = ({route}: any) => {
   const [selectedOut, setSelectedOut] = useState('');
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
+  const currentDate =
+    date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
 
   const handleCheckIn = (day: any) => {
     setSelectedIn(day.dateString);
@@ -45,6 +47,9 @@ const Transaction = ({route}: any) => {
     setCheckOut(moment(day.dateString).format('DD/MM/YYYY'));
     setModalVisible(false);
   };
+  const fromDate = moment(checkIn, 'DD/MM/YYYY');
+  const toDate = moment(checkOut, 'DD/MM/YYYY');
+  const totalDate = toDate.diff(fromDate, 'days');
 
   const EstateView = () => {
     return (
@@ -213,18 +218,27 @@ const Transaction = ({route}: any) => {
           left: 48,
         }}
       >
-        <TouchableOpacity
-          onPress={() =>
-            push({
-              name: 'TransactionSummary',
-              params: {data, checkIn, checkOut, note},
-            })
-          }
-          style={styles.btnNext}
-          activeOpacity={0.7}
-        >
-          <Text style={styles.txtNext}>{t('next')}</Text>
-        </TouchableOpacity>
+        {totalDate > 0 ? (
+          <TouchableOpacity
+            onPress={() =>
+              push({
+                name: 'TransactionSummary',
+                params: {data, checkIn, checkOut, note},
+              })
+            }
+            style={styles.btnNext}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.txtNext}>{t('next')}</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={[styles.btnNext, {backgroundColor: '#F5F4F8'}]}
+            activeOpacity={1}
+          >
+            <Text style={styles.txtButtonHide}>{t('next')}</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -365,5 +379,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Lato-Bold',
     padding: 6,
+  },
+  txtButtonHide: {
+    color: '#252B5C',
+    fontFamily: 'Lato-Bold',
+    fontSize: 16,
   },
 });

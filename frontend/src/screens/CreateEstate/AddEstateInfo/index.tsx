@@ -39,70 +39,48 @@ const AddEstateInfo = ({route}: any) => {
 
   const handleOpenPress = () => {
     setLoading(true);
-    setTimeout(async () => {
-      setLoading(false);
-      if (data && sell | rent && bedroom && bathroom && floors) {
-        await axios
-          .post(
-            `${Config.API_URL}/api/estates`,
-            {
-              name: data.name,
-              listType: data.listType,
-              address: {
-                road: data.address.road,
-                quarter: data.address.quarter,
-                city: data.address.city,
-                country: data.address.country,
-                lat: data.address.lat,
-                lng: data.address.lng,
-              },
-              images: data.images,
-              price: {
-                sell: sell,
-                rent: rent,
-              },
-              property: {
-                bedroom: bedroom,
-                bathroom: bathroom,
-                floors: floors,
-              },
+    if (data && sell | rent && bedroom && bathroom && floors) {
+      axios
+        .post(
+          `${Config.API_URL}/api/estates`,
+          {
+            name: data.name,
+            listType: data.listType,
+            address: {
+              road: data.address.road,
+              quarter: data.address.quarter,
+              city: data.address.city,
+              country: data.address.country,
+              lat: data.address.lat,
+              lng: data.address.lng,
             },
-            {
-              headers: {Authorization: userToken},
+            images: data.images,
+            price: {
+              sell: sell,
+              rent: rent,
             },
-          )
-          .then((res) => {
-            setSuccess(true);
-          })
-          .catch((e) => {
-            setSuccess(false);
-            console.log({
-              name: data.name,
-              listType: data.listType,
-              address: {
-                road: data.address.road,
-                quarter: data.address.quarter,
-                city: data.address.city,
-                country: data.address.country,
-                lat: data.address.lat,
-                lng: data.address.lng,
-              },
-              images: data.images,
-              price: {
-                sell: sell,
-                rent: rent,
-              },
-              property: {
-                bedroom: bedroom,
-                bathroom: bathroom,
-                floors: floors,
-              },
-            });
-          });
-      }
-
-      bottomSheetRef.current?.expand();
-    }, 2000);
+            property: {
+              bedroom: bedroom,
+              bathroom: bathroom,
+              floors: floors,
+            },
+          },
+          {
+            headers: {Authorization: userToken},
+          },
+        )
+        .then((res) => {
+          setSuccess(true);
+          bottomSheetRef.current?.expand();
+        })
+        .catch((e) => {
+          setSuccess(false);
+          bottomSheetRef.current?.expand();
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   };
   const handleClosePress = () => bottomSheetRef.current?.close();
 
