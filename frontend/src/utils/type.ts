@@ -24,4 +24,5 @@ export type RootStackParams = {
   Notification: any;
   MessagesDetail: any;
   TransactionSummary: any;
+  Setting: any;
 };

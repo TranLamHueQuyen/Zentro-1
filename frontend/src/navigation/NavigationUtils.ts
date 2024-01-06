@@ -31,7 +31,7 @@ export const goBack = async () => {
   navigated = false;
 };
 
-export const replace = ({name, params}: {name: any; params: any}) => {
+export const replace = ({name, params}: {name: any; params?: any}) => {
   if (navigationRef.isReady()) {
     navigationRef.dispatch(StackActions.replace(name, params));
   }

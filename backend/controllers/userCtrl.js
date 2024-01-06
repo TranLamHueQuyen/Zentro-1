@@ -44,7 +44,9 @@ const userCtrl = {
     updateUser: async (req, res) => {
         try {
             const { avatar, full_name, mobile, address } = req.body
+            if (!avatar) return res.status(400).json({ msg: "Please add your avatar." })
             if (!full_name) return res.status(400).json({ msg: "Please add your full name." })
+            if (!address) return res.status(400).json({ msg: "Please add your address." })
 
             await Users.findOneAndUpdate({ _id: req.user._id }, {
                 avatar, full_name, mobile, address
@@ -52,23 +54,6 @@ const userCtrl = {
 
             res.json({ msg: "Update Success!" })
 
-        } catch (err) {
-            return res.status(500).json({ msg: err.message })
-        }
-    },
-    testRecommend: async (req, res) => {
-        //         const distanceInKm = calculateDistance(lat1, lon1, lat2, lon2);
-        //   console.log('Khoảng cách giữa hai vị trí là:', distanceInKm.toFixed(1), 'km');
-        try {
-            const estate = await Estates.find(req.params)
-            const user = await Users.find(req.params)
-            if (!estate) return res.status(400).json({ msg: 'This estate does not exist.' })
-            console.log(estate);
-            res.json({
-                length: estate.length,
-                estate,
-                user
-            })
         } catch (err) {
             return res.status(500).json({ msg: err.message })
         }

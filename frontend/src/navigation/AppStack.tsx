@@ -27,6 +27,7 @@ import Notification from '@/screens/Home/Header/Notification';
 import Message from '@/screens/Home/Header/Message';
 import MessagesDetail from '@/screens/Home/Header/MessagesDetail';
 import TransactionSummary from '@/screens/TransactionSummary';
+import Setting from '@/screens/Profile/Setting';
 
 const AppStack = ({name}: any) => {
   const Stack = createStackNavigator<RootStackParams>();
@@ -191,6 +192,13 @@ const AppStack = ({name}: any) => {
       <Stack.Screen
         name="TransactionSummary"
         component={TransactionSummary}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="Setting"
+        component={Setting}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}

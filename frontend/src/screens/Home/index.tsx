@@ -20,7 +20,10 @@ const Home: React.FC<HomeProps> = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Header navigation={navigation} />
+      <Header
+        navigation={navigation}
+        load={refreshing}
+      />
       <ScrollView
         refreshControl={
           <RefreshControl

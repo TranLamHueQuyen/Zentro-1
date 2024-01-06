@@ -1,12 +1,39 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
 import {getImages} from '@/assets/Images';
 import Feather from 'react-native-vector-icons/Feather';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {navigate} from '@/navigation/NavigationUtils';
+import {Config} from '@/config';
+import {AuthContext} from '@/context/AuthContext';
+import Splash from '@/components/Splash';
+import {screenWidth} from '@/themes/Responsive';
 
-const Header = ({navigation}: any) => {
+const Header = ({navigation, load}: any) => {
+  const {idUser, userToken} = useContext(AuthContext);
+  const [isLoad, setIsLoad] = useState(true);
+  const [road, setRoad] = useState();
+  const [city, setCity] = useState();
+  useEffect(() => {
+    fetch(`${Config.API_URL}/api/user/${idUser}`, {
+      method: 'GET',
+      headers: {Authorization: userToken},
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setRoad(res.user.address.road);
+        setCity(res.user.address.city);
+      })
+      .finally(() => setIsLoad(false));
+  }, [load]);
   return (
     <View style={styles.header}>
       <TouchableOpacity
@@ -19,7 +46,16 @@ const Header = ({navigation}: any) => {
           size={12.5}
           color={'#234F68'}
         />
-        <Text style={styles.textLocation}>Đà Nẵng, Việt Nam</Text>
+        <Text style={styles.textLocation}>
+          {isLoad ? (
+            <ActivityIndicator
+              size="small"
+              color="#8BC83F"
+            />
+          ) : (
+            road
+          )}
+        </Text>
         <Feather
           name="chevron-down"
           size={12.5}
@@ -118,6 +154,7 @@ const styles = StyleSheet.create({
     borderColor: '#ECEDF3',
     padding: 16,
     borderRadius: 25,
+    maxWidth: screenWidth / 2,
   },
   notification: {
     justifyContent: 'center',

@@ -140,7 +140,13 @@ const Maps = ({user, estate}: any) => {
                   latitude: parseFloat(user.address.lat),
                   longitude: parseFloat(user.address.lng),
                 }}
-                // title={currentAddress}
+                title={
+                  user.address?.road +
+                  ', ' +
+                  user.address?.city +
+                  ', ' +
+                  user.address?.country
+                }
               >
                 <View style={{top: 9, position: 'absolute'}}>
                   <Marker_Icon />
@@ -156,7 +162,13 @@ const Maps = ({user, estate}: any) => {
                   latitude: parseFloat(estate.address.lat),
                   longitude: parseFloat(estate.address.lng),
                 }}
-                // title={address}
+                title={
+                  estate.address?.road +
+                  ', ' +
+                  estate.address?.city +
+                  ', ' +
+                  estate.address?.country
+                }
               >
                 <View style={{marginTop: 9}}>
                   <Marker_Icon />

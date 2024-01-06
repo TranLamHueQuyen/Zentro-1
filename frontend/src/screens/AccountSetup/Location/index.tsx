@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Image,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {screenHeight, screenWidth} from '@/themes/Responsive';
 import BackButton from '@/components/BackButton';
@@ -17,66 +17,103 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import axios from 'axios';
 import {useTranslation} from 'react-i18next';
 import Geolocation from 'react-native-geolocation-service';
-import {Marker_Icon} from '@/assets/Svg';
+import {ButtonCenter, Marker_Icon} from '@/assets/Svg';
 import {getImages} from '@/assets/Images';
+import {AuthContext} from '@/context/AuthContext';
+import {Config} from '@/config';
+import {goBack} from '@/navigation/NavigationUtils';
 
 const Location = () => {
   const {t} = useTranslation();
+  const {userToken, avatarUser, idUser, fullName} = useContext(AuthContext);
   const [search, setSearch] = useState('');
-  const [showView, setShowView] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentAddress, setCurrentAddress] = useState('');
+  const [lat, setLat] = useState('');
+  const [lng, setLng] = useState('');
+  const [road, setRoad] = useState('');
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
   const [currentLocation, setCurrentLocation] = useState<{
     latitude: number;
     longitude: number;
-  } | null>(null);
+  } | null>({
+    latitude: parseFloat(lat as string) || 16.055061228490178,
+    longitude: parseFloat(lng as string) || 108.20310270503711,
+  });
   const [changeLocation, setChangeLocation] = useState({
-    latitude: currentLocation?.latitude || 0,
-    longitude: currentLocation?.longitude || 0,
+    latitude: 0,
+    longitude: 0,
   });
 
-  const handleTextInputPress = () => {
-    setShowView(true);
+  useEffect(() => {
+    fetch(`${Config.API_URL}/api/user/${idUser}`, {
+      method: 'GET',
+      headers: {Authorization: userToken},
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setLat(res.user.address.lat);
+        setLng(res.user.address.lng);
+        setRoad(res.user.address.road);
+        setCity(res.user.address.city);
+        setCountry(res.user.address.country);
+      })
+      .finally(() => setIsLoading(false));
+  }, []);
+  const handleChooseLocation = (lat: any, lng: any) => {
+    console.log(lat, lng, road, city, country);
+
+    const address = {
+      lat,
+      lng,
+      road,
+      city,
+      country,
+    };
+    axios
+      .patch(
+        `${Config.API_URL}/api/user`,
+        {
+          address,
+          avatar: avatarUser,
+          full_name: fullName,
+        },
+        {headers: {Authorization: userToken}},
+      )
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => goBack());
   };
 
-  useEffect(() => {
-    requestCameraPermission();
-  }, [changeLocation]);
-
-  const requestCameraPermission = async () => {
+  const getChooseLocation = async () => {
+    const URL = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${changeLocation.latitude}&lon=${changeLocation.longitude}`;
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        getCurrentLocation();
-      } else {
-        console.log('Camera permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
+      const response = await axios.get(URL);
+      const road = response.data.address.road;
+      const city = response.data.address.city;
+      const country = response.data.address.country;
+      setRoad(road), setCity(city), setCountry(country);
+    } catch (error) {
+      console.error('Lỗi:', error);
     }
   };
   const getCurrentLocation = () => {
     Geolocation.getCurrentPosition(
       async (position) => {
         const {latitude, longitude} = position.coords;
-
-        let URL = '';
-        if (changeLocation.latitude !== 0 && changeLocation.longitude !== 0) {
-          URL = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${changeLocation.latitude}&lon=${changeLocation.longitude}`;
-        } else {
-          URL = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
-        }
+        const URL = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
         try {
           const response = await axios.get(URL);
-          const current = `${response.data.address.road},  ${response.data.address.city_district}, ${response.data.address.city}`;
-
-          setCurrentAddress(current);
+          const road = response.data.address.road;
+          const city = response.data.address.city;
+          const country = response.data.address.country;
+          setRoad(road), setCity(city), setCountry(country);
         } catch (error) {
           console.error('Lỗi:', error);
         }
-        setCurrentLocation({latitude, longitude});
+        setChangeLocation({latitude, longitude});
+
         setIsLoading(false);
       },
       (error) => {
@@ -94,49 +131,65 @@ const Location = () => {
       />
     </View>
   ) : (
-    <View style={styles.container}>
-      <View style={styles.borderRadiusMap}>
-        {currentLocation !== null && (
-          <MapView
-            style={styles.map}
-            region={{
-              latitude:
-                changeLocation.latitude !== 0
-                  ? changeLocation?.latitude
-                  : currentLocation.latitude,
-              longitude:
-                changeLocation.longitude !== 0
-                  ? changeLocation?.longitude
-                  : currentLocation.longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }}
-            onPress={(e) => {
-              setChangeLocation({
-                latitude: e.nativeEvent.coordinate.latitude,
-                longitude: e.nativeEvent.coordinate.longitude,
-              });
-            }}
-          >
-            <Marker
-              coordinate={
-                changeLocation.latitude !== 0 ? changeLocation : currentLocation
-              }
-              title={currentAddress}
+    lat && lng && (
+      <View style={styles.container}>
+        <View style={styles.borderRadiusMap}>
+          {currentLocation !== null && (
+            <MapView
+              style={styles.map}
+              initialRegion={{
+                latitude:
+                  changeLocation.latitude !== 0
+                    ? changeLocation?.latitude
+                    : lat
+                    ? parseFloat(lat)
+                    : currentLocation.latitude,
+                longitude:
+                  changeLocation.longitude !== 0
+                    ? changeLocation?.longitude
+                    : lng
+                    ? parseFloat(lng)
+                    : currentLocation.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              }}
+              zoomEnabled={false}
+              // onPress={(e) => {
+              //   setChangeLocation({
+              //     latitude: e.nativeEvent.coordinate.latitude,
+              //     longitude: e.nativeEvent.coordinate.longitude,
+              //   });
+              // }}
+              onRegionChange={(e) => {
+                setChangeLocation({
+                  latitude: e.latitude,
+                  longitude: e.longitude,
+                });
+              }}
             >
-              <View style={{top: 9, position: 'absolute'}}>
-                <Marker_Icon />
-                <Image
-                  source={getImages().picture_1}
-                  style={styles.markerImage}
-                />
-              </View>
-            </Marker>
-          </MapView>
-        )}
-      </View>
+              <Marker
+                coordinate={
+                  changeLocation.latitude !== 0
+                    ? changeLocation
+                    : {
+                        latitude: parseFloat(lat as string),
+                        longitude: parseFloat(lng as string),
+                      }
+                }
+                title={road + city + country}
+              >
+                <View style={{top: 9, position: 'absolute'}}>
+                  <Marker_Icon />
+                  <Image
+                    source={{uri: avatarUser as string}}
+                    style={styles.markerImage}
+                  />
+                </View>
+              </Marker>
+            </MapView>
+          )}
+        </View>
 
-      {!showView ? (
         <View style={styles.view2}>
           <BackButton />
           <View style={{position: 'absolute', zIndex: 1, top: 89}}>
@@ -147,6 +200,7 @@ const Location = () => {
                 color={'#252B5C'}
               />
             </View>
+
             <TextInput
               placeholder="Find location"
               style={[
@@ -155,10 +209,13 @@ const Location = () => {
               ]}
               placeholderTextColor={'#A1A5C1'}
               onChangeText={(text) => setSearch(text)}
-              onPressIn={handleTextInputPress}
               value={search}
             />
+            {/* <TouchableOpacity onPress={getCurrentLocation}>
+              <ButtonCenter />
+            </TouchableOpacity> */}
           </View>
+
           <View style={styles.locView}>
             <Text style={styles.addressTitle}>Location detail</Text>
             <View
@@ -177,52 +234,35 @@ const Location = () => {
                   size={14}
                 />
               </View>
-              <Text style={styles.addressText}>{currentAddress}</Text>
+              <Text style={styles.addressText}>
+                {road}, {city}, {country}
+              </Text>
             </View>
           </View>
-          <TouchableOpacity
-            style={styles.chooseLocBtn}
-            activeOpacity={0.8}
-          >
-            <Text
-              style={{fontFamily: 'Lato-Bold', color: '#FFF', fontSize: 16}}
+          <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity
+              style={styles.chooseLocBtn}
+              activeOpacity={0.8}
+              onPress={getChooseLocation}
             >
-              {t('choose_location')}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <TouchableOpacity
-          style={styles.activeInput}
-          onPress={() => setShowView(false)}
-          activeOpacity={0}
-        >
-          <View style={{position: 'absolute', zIndex: 1, top: 89}}>
-            <View style={{position: 'absolute', top: 25, right: 40, zIndex: 2}}>
-              <Feather
-                name="search"
-                size={20}
-                color={'#252B5C'}
-              />
-            </View>
-            <TextInput
-              placeholder="Find location"
-              style={[
-                styles.input,
-                {
-                  fontFamily: search ? 'Lato-Bold' : 'Lato-Regular',
-                  paddingHorizontal: 24,
-                },
-              ]}
-              placeholderTextColor={'#A1A5C1'}
-              onChangeText={(text) => setSearch(text)}
-              value={search}
-              autoFocus
-            />
+              <Text style={styles.locationTxtBtn}>{t('choose_location')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.chooseLocBtn}
+              activeOpacity={0.8}
+              onPress={() =>
+                handleChooseLocation(
+                  changeLocation.latitude,
+                  changeLocation.longitude,
+                )
+              }
+            >
+              <Text style={styles.locationTxtBtn}>{t('next')}</Text>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-      )}
-    </View>
+        </View>
+      </View>
+    )
   );
 };
 
@@ -295,16 +335,18 @@ const styles = StyleSheet.create({
     top: screenHeight - 238,
   },
   chooseLocBtn: {
-    position: 'absolute',
     top: screenHeight - 95,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
-    marginLeft: 45,
-    width: screenWidth - 90,
+    marginLeft: 20,
+    left: 10,
+    width: screenWidth / 2 - 40,
     height: 65,
     backgroundColor: '#8BC83F',
+    zIndex: 10,
   },
+  locationTxtBtn: {fontFamily: 'Lato-Bold', color: '#FFF', fontSize: 16},
   addressTitle: {
     color: '#252B5C',
     fontFamily: 'Lato-Bold',

@@ -45,7 +45,10 @@ const Profile: React.FC<ProfileProps> = () => {
   return (
     <View style={styles.component}>
       <Text style={styles.profileTitle}>{t('profile')}</Text>
-      <TouchableOpacity style={styles.btnSetting}>
+      <TouchableOpacity
+        style={styles.btnSetting}
+        onPress={() => navigate({name: 'Setting'})}
+      >
         <Setting_Icon />
       </TouchableOpacity>
       {!data ? (
