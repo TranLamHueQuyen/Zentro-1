@@ -3,7 +3,7 @@ import estateCtrl from '../controllers/estateCtrl.js'
 import auth from '../middleware/auth.js'
 
 const estateRouter = express.Router()
-
+estateRouter.get('/searchEstates', auth, estateCtrl.searchEstates)
 estateRouter.route('/estates')
     .post(auth, estateCtrl.createEstate)
     .get(auth, estateCtrl.getEstates)

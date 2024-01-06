@@ -111,7 +111,9 @@ const Transaction = () => {
   return (
     <ScrollView style={styles.container}>
       <View>
-        <Text style={styles.textTitle}>1 {t('transactions')}</Text>
+        <Text style={styles.textTitle}>
+          {data && data.length} {t('transactions')}
+        </Text>
         <View style={styles.viewRender}>
           {load ? (
             <Splash />

@@ -6,18 +6,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {FunctionComponent} from 'react';
 import {useTranslation} from 'react-i18next';
 import BackButton from '../../components/BackButton';
 import FavoriteButton from '../../components/FavoriteButton';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {screenWidth} from '@/themes/Responsive';
-import {getImages} from '@/assets/Images';
-import {navigate} from '@/navigation/NavigationUtils';
+import {navigate, push} from '@/navigation/NavigationUtils';
 import {RouteTransaction} from '@/utils/interface';
 import moment from 'moment';
 
-const TransactionDetail = ({route}: RouteTransaction) => {
+const TransactionDetail: React.FC<RouteTransaction> = ({route}) => {
   const {transaction, estate} = route.params;
   const {t} = useTranslation();
   const fromDate = moment(transaction.checkIn, 'DD/MM/YYYY');
@@ -131,7 +130,7 @@ const TransactionDetail = ({route}: RouteTransaction) => {
         </View>
         <TouchableOpacity
           style={styles.btnReview}
-          onPress={() => navigate({name: 'AddReview'})}
+          onPress={() => push({name: 'AddReview', params: {id: estate._id}})}
         >
           <Text style={styles.textReview}>{t('add_review')}</Text>
         </TouchableOpacity>

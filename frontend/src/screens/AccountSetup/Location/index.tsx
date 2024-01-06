@@ -7,6 +7,7 @@ import {
   TextInput,
   ActivityIndicator,
   Image,
+  ScrollView,
 } from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
@@ -33,6 +34,8 @@ const Location = () => {
   const [road, setRoad] = useState('');
   const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
+  const [address, setAddress] = useState<any>([]);
+
   const [currentLocation, setCurrentLocation] = useState<{
     latitude: number;
     longitude: number;
@@ -108,6 +111,7 @@ const Location = () => {
           const road = response.data.address.road;
           const city = response.data.address.city;
           const country = response.data.address.country;
+
           setRoad(road), setCity(city), setCountry(country);
         } catch (error) {
           console.error('Lỗi:', error);
@@ -121,6 +125,43 @@ const Location = () => {
       },
       {enableHighAccuracy: false},
     );
+  };
+
+  useEffect(() => {
+    const getLocation = async () => {
+      if (search) {
+        const URL = `https://nominatim.openstreetmap.org/search?format=json&countrycodes=vn&q=${search}`;
+        try {
+          const response = await axios.get(URL);
+          const address = response.data;
+          setAddress(address);
+        } catch (error) {
+          console.error('Lỗi:', error);
+        }
+      }
+    };
+    getLocation();
+  }, [search]);
+
+  const handleChangeLocation = (item: any) => {
+    const addressComponents = item.display_name.split(',');
+    if (item.display_name.startsWith('K')) {
+      setRoad(addressComponents[0].trim());
+      setChangeLocation({
+        latitude: parseFloat(item.lat),
+        longitude: parseFloat(item.lon),
+      });
+      setCity(addressComponents[addressComponents.length - 3].trim());
+      setCountry(addressComponents[addressComponents.length - 1].trim());
+    } else {
+      setRoad(addressComponents[0].trim() + ' ' + addressComponents[1].trim());
+      setChangeLocation({
+        latitude: parseFloat(item.lat),
+        longitude: parseFloat(item.lon),
+      });
+      setCity(addressComponents[addressComponents.length - 3].trim());
+      setCountry(addressComponents[addressComponents.length - 1].trim());
+    }
   };
 
   return isLoading ? (
@@ -137,7 +178,7 @@ const Location = () => {
           {currentLocation !== null && (
             <MapView
               style={styles.map}
-              initialRegion={{
+              region={{
                 latitude:
                   changeLocation.latitude !== 0
                     ? changeLocation?.latitude
@@ -153,19 +194,18 @@ const Location = () => {
                 latitudeDelta: 0.01,
                 longitudeDelta: 0.01,
               }}
-              zoomEnabled={false}
-              // onPress={(e) => {
-              //   setChangeLocation({
-              //     latitude: e.nativeEvent.coordinate.latitude,
-              //     longitude: e.nativeEvent.coordinate.longitude,
-              //   });
-              // }}
-              onRegionChange={(e) => {
+              onLongPress={(e) => {
                 setChangeLocation({
-                  latitude: e.latitude,
-                  longitude: e.longitude,
+                  latitude: e.nativeEvent.coordinate.latitude,
+                  longitude: e.nativeEvent.coordinate.longitude,
                 });
               }}
+              // onRegionChange={(e) => {
+              //   setChangeLocation({
+              //     latitude: e.latitude,
+              //     longitude: e.longitude,
+              //   });
+              // }}
             >
               <Marker
                 coordinate={
@@ -189,7 +229,33 @@ const Location = () => {
             </MapView>
           )}
         </View>
-
+        {search && (
+          <View style={styles.viewSearch}>
+            <Text style={styles.titleSearch}>{t('location')}</Text>
+            <ScrollView>
+              {address &&
+                address?.map((item: any, index: any) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}
+                    onPress={() => handleChangeLocation(item)}
+                  >
+                    <View style={styles.iconLocation}>
+                      <Octicons
+                        name="location"
+                        color={'#53587A'}
+                        size={8}
+                      />
+                    </View>
+                    <Text style={styles.txtLocation}>{item.display_name}</Text>
+                  </TouchableOpacity>
+                ))}
+            </ScrollView>
+          </View>
+        )}
         <View style={styles.view2}>
           <BackButton />
           <View style={{position: 'absolute', zIndex: 1, top: 89}}>
@@ -211,11 +277,13 @@ const Location = () => {
               onChangeText={(text) => setSearch(text)}
               value={search}
             />
-            {/* <TouchableOpacity onPress={getCurrentLocation}>
-              <ButtonCenter />
-            </TouchableOpacity> */}
           </View>
-
+          <TouchableOpacity
+            style={styles.currentLocation}
+            onPress={getCurrentLocation}
+          >
+            <ButtonCenter />
+          </TouchableOpacity>
           <View style={styles.locView}>
             <Text style={styles.addressTitle}>Location detail</Text>
             <View
@@ -368,5 +436,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ECEDF3',
     borderRadius: 50,
+  },
+  viewSearch: {
+    top: 180,
+    maxHeight: 200,
+    width: screenWidth - 48,
+    marginHorizontal: 24,
+    paddingHorizontal: 15,
+    borderRadius: 25,
+    backgroundColor: '#FFFFFF',
+    zIndex: 1,
+    position: 'absolute',
+  },
+  titleSearch: {
+    color: '#252B5C',
+    fontFamily: 'Lato-Bold',
+    fontSize: 18,
+    marginVertical: 20,
+  },
+  iconLocation: {
+    width: 25,
+    height: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ECEDF3',
+    borderRadius: 50,
+    marginRight: 10,
+  },
+  txtLocation: {
+    color: '#53587A',
+    fontSize: 16,
+    marginBottom: 15,
+    width: screenWidth - 100,
+  },
+  currentLocation: {
+    position: 'absolute',
+    top: screenHeight - 300,
+    right: -14,
   },
 });

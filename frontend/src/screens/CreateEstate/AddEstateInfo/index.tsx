@@ -35,11 +35,10 @@ const AddEstateInfo = ({route}: any) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const snapPoints = useMemo(() => ['50%'], []);
-  console.log(data.images);
 
   const handleOpenPress = () => {
-    setLoading(true);
     if (data && sell | rent && bedroom && bathroom && floors) {
+      setLoading(true);
       axios
         .post(
           `${Config.API_URL}/api/estates`,

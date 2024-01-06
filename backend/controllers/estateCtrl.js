@@ -22,6 +22,15 @@ function compareObjects(obj1, obj2) {
 }
 
 const estateCtrl = {
+    searchEstates: async (req, res) => {
+        try {
+            const estates = await Estates.find({ name: { $regex: req.query.name } })
+                .limit(10)
+            res.json({ estates })
+        } catch (err) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
     createEstate: async (req, res) => {
         try {
             const { name, listType, images, address, price, property } = req.body

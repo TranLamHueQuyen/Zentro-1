@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useMemo, useRef, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {BackButton} from '@/components';
 import {useTranslation} from 'react-i18next';
 import {screenWidth} from '@/themes/Responsive';
@@ -20,141 +20,31 @@ import {push} from '@/navigation/NavigationUtils';
 import FavoriteButton from '@/components/FavoriteButton';
 import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import Slider from '@react-native-community/slider';
+import {Config} from '@/config';
+import {AuthContext} from '@/context/AuthContext';
+import {EstateItems} from '@/utils/interface';
+import Splash from '@/components/Splash';
 
 const SearchResult = ({route}: any) => {
   const {result} = route.params;
   const {t} = useTranslation();
   const [search, setSearch] = useState(result);
   const [location, setLocation] = useState('');
-  const [num, setNum] = useState(1);
-  const data = [
-    {
-      id: 1,
-      name: 'Hung',
-      avatar: getImages().picture_1,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_1,
-          getImages().picture_2,
-          getImages().picture_3,
-          getImages().picture_4,
-          getImages().picture_5,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.5,
-        price: 290,
-        bathroom: 2,
-        bedroom: 2,
-        floors: 2,
-        time: 'month',
-        favorite: true,
-      },
-    },
-    {
-      id: 2,
-      name: 'Tony',
-      avatar: getImages().picture_2,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_4,
-          getImages().picture_5,
-          getImages().picture_3,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.7,
-        price: 160,
-        bathroom: 2,
-        bedroom: 3,
-        floors: 2,
-        time: 'month',
-        favorite: false,
-      },
-    },
-    {
-      id: 3,
-      name: 'Tony',
-      avatar: getImages().picture_2,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_4,
-          getImages().picture_5,
-          getImages().picture_3,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.7,
-        price: 160,
-        bathroom: 2,
-        bedroom: 3,
-        floors: 2,
-        time: 'month',
-        favorite: false,
-      },
-    },
-    {
-      id: 4,
-      name: 'Hung',
-      avatar: getImages().picture_1,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_1,
-          getImages().picture_2,
-          getImages().picture_3,
-          getImages().picture_4,
-          getImages().picture_5,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.5,
-        price: 290,
-        bathroom: 2,
-        bedroom: 2,
-        floors: 2,
-        time: 'month',
-        favorite: true,
-      },
-    },
-    {
-      id: 5,
-      name: 'Hung',
-      avatar: getImages().picture_1,
-      address: 'Việt Nam',
-      phone: '123456789',
-      email: 'admin@gmail.com',
-      assets: {
-        images: [
-          getImages().picture_1,
-          getImages().picture_2,
-          getImages().picture_3,
-          getImages().picture_4,
-          getImages().picture_5,
-        ],
-        name: 'Sky Dandelions Apartment',
-        location: 'K814 Tran Cao Van,TP.Đà Nẵng, Việt Nam',
-        star_rating: 4.5,
-        price: 290,
-        bathroom: 2,
-        bedroom: 2,
-        floors: 2,
-        time: 'month',
-        favorite: true,
-      },
-    },
-  ];
+  const {userToken, idUser} = useContext(AuthContext);
+  const [data, setData] = useState<EstateItems[]>([]);
+  const [load, setLoad] = useState(false);
+  useEffect(() => {
+    setLoad(true);
+    fetch(`${Config.API_URL}/api/searchEstates?name=${search}`, {
+      method: 'GET',
+      headers: {Authorization: userToken},
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setData(res.estates);
+      })
+      .finally(() => setLoad(false));
+  }, [search]);
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const snapPoints = useMemo(() => ['50%'], []);
@@ -162,34 +52,34 @@ const SearchResult = ({route}: any) => {
   const handleOpenPress = () => bottomSheetRef.current?.expand();
   const handleClosePress = () => bottomSheetRef.current?.close();
 
-  const RenderItems = ({item}: {item: any}) => {
+  const RenderItems = ({item}: {item: EstateItems}) => {
     return (
       <View style={styles.cardItem}>
         <View style={styles.btnFavorite}>
-          <FavoriteButton favorite={item.assets.favorite} />
+          {/* <FavoriteButton favorite={item.assets.favorite} /> */}
         </View>
 
         <View style={styles.priceView}>
           <View style={styles.priceContent}>
             <Text style={styles.price}>$ </Text>
-            <Text style={styles.price}>{item.assets.price}</Text>
+            <Text style={styles.price}>{item.price.rent}</Text>
             <Text style={styles.stay}> /</Text>
-            <Text style={styles.stay}>{item.assets.time}</Text>
+            <Text style={styles.stay}>month</Text>
           </View>
         </View>
 
         <Image
-          source={item.assets.images[0]}
+          source={{uri: item.images[0]}}
           style={styles.images}
         />
 
         <TouchableOpacity
           style={styles.cardContent}
           onPress={() =>
-            push({name: 'EstateDetail', params: {estate: item, nearby: true}})
+            push({name: 'EstateDetail', params: {id: item._id, nearby: true}})
           }
         >
-          <Text style={styles.cardName}>{item.assets.name}</Text>
+          <Text style={styles.cardName}>{item.name}</Text>
           <View style={{flexDirection: 'row'}}>
             <View style={styles.ratingView}>
               <Entypo
@@ -197,7 +87,7 @@ const SearchResult = ({route}: any) => {
                 color={'#FFC42D'}
                 size={10}
               />
-              <Text style={styles.rating}>{item.assets.star_rating}</Text>
+              <Text style={styles.rating}>3</Text>
             </View>
             <View style={styles.locationView}>
               <FontAwesome6
@@ -205,7 +95,9 @@ const SearchResult = ({route}: any) => {
                 color={'#234F68'}
                 size={9}
               />
-              <Text style={styles.location}>{item.assets.location}</Text>
+              <Text style={styles.location}>
+                {item.address.road}, {item.address.city}, {item.address.country}
+              </Text>
             </View>
           </View>
         </TouchableOpacity>
@@ -250,10 +142,12 @@ const SearchResult = ({route}: any) => {
       </View>
       <View style={styles.viewFound}>
         <Text style={styles.textFound}>Found</Text>
-        <Text style={styles.numFound}> {num} </Text>
+        <Text style={styles.numFound}> {data.length} </Text>
         <Text style={styles.textFound}>estates</Text>
       </View>
-      {num === 0 ? (
+      {load ? (
+        <Splash />
+      ) : data.length === 0 ? (
         <View style={{marginTop: 124}}>
           <View style={styles.viewSearch}>
             <Error color={true} />
@@ -266,7 +160,7 @@ const SearchResult = ({route}: any) => {
       ) : (
         <ScrollView>
           <View style={styles.viewRender}>
-            {data.map((item: any, index: number) => {
+            {data.map((item: EstateItems, index: number) => {
               return (
                 <RenderItems
                   item={item}
@@ -277,6 +171,7 @@ const SearchResult = ({route}: any) => {
           </View>
         </ScrollView>
       )}
+
       <BottomSheet
         ref={bottomSheetRef}
         index={-1}

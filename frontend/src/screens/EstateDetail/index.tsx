@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import React, {useContext, useRef, useEffect, useState} from 'react';
-import {EstateDetailProps, Featured, Likes} from '@/utils/interface';
+import {EstateDetailProps, Featured, Likes, UserData} from '@/utils/interface';
 import {screenWidth} from '@/themes/Responsive';
 import {BackButton} from '@/components';
 import FavoriteButton from '@/components/FavoriteButton';
@@ -30,6 +30,7 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
   const {id, nearby} = route.params;
   const {userToken, idUser} = useContext(AuthContext);
   const [data, setData] = useState<EstateDetailProps | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const [load, setLoad] = useState(true);
 
   useEffect(() => {
@@ -41,6 +42,19 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
       .then((res) => res.json())
       .then((res) => {
         setData(res.estate);
+      })
+      .finally(() => setLoad(false));
+  }, []);
+
+  useEffect(() => {
+    setLoad(true);
+    fetch(`${Config.API_URL}/api/user/${idUser}`, {
+      method: 'GET',
+      headers: {Authorization: userToken},
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setUser(res.user);
       })
       .finally(() => setLoad(false));
   }, []);
@@ -62,7 +76,7 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
   return load ? (
     <Splash />
   ) : (
-    data && (
+    data && user && (
       <View style={styles.component}>
         <DynamicHeader value={scrollOffsetY} />
 
@@ -218,7 +232,7 @@ const EstateDetail: React.FC<Featured> = ({route, navigation}) => {
             </View>
             <View style={styles.maps}>
               <Maps
-                user={data.user}
+                user={user}
                 estate={data}
               />
             </View>

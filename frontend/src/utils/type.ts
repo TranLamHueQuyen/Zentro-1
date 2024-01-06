@@ -1,4 +1,9 @@
-import {EstateDetailProps, EstateItems, ReviewItems} from './interface';
+import {
+  EstateDetailProps,
+  EstateItems,
+  ReviewItems,
+  TranSactionProps,
+} from './interface';
 
 export type RootStackParams = {
   Login: any;
@@ -12,7 +17,7 @@ export type RootStackParams = {
   ReviewDetails: {estate: EstateItems; reviews: [ReviewItems]};
   AllReview: any;
   TabMenu: any;
-  TransactionDetail: any;
+  TransactionDetail: {route: TranSactionProps};
   AddReview: any;
   CreateEstate: any;
   AddEstateLocation: any;
