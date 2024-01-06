@@ -26,36 +26,6 @@ import {AuthContext} from '@/context/AuthContext';
 import {Config} from '@/config';
 import Splash from '@/components/Splash';
 
-// const data = [
-//   {
-//     id: 1,
-//     name: 'HuynhHung',
-//     avatar:
-//       'https://toigingiuvedep.vn/wp-content/uploads/2022/01/hinh-avatar-cute-nu.jpg',
-//     address: '40 Nguyễn Như Hạnh',
-//     phone: '123456789',
-//     email: 'admin@gmail.com',
-//     assets: {
-//       images: [
-//         'https://cf.bstatic.com/xdata/images/hotel/max1024x768/445509855.jpg?k=23bd8940c66fe2edbead9c8eecfe47e3b40b9c04361f49db73dd849aa1c86d76&o=&hp=1',
-//       ],
-//       name: 'Nhà của Te',
-//       location: '40 Nguyễn Như Hạnh, Đà Nẵng',
-//       check_in: '12/25/2023',
-//       check_out: '01/25/2024',
-//       owner_name: 'CamQuyen',
-//       type: 'Rent',
-//       period_time: '1 month',
-//       deposit: 520,
-//       discount: 0,
-//       payment_method: 'hung9654147@gmail.com',
-//       method_image: getImages().picture_1,
-//       total: 520,
-
-//       favorite: true,
-//     },
-//   },
-// ];
 const RenderItems = ({item}: {item: TranSactionProps}) => {
   const {userToken, idUser} = useContext(AuthContext);
   const [data, setData] = useState<EstateDetailProps | null>(null);
