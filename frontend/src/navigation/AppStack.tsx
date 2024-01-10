@@ -15,7 +15,7 @@ import EstateDetail from '@/screens/EstateDetail';
 import ReviewDetails from '@/screens/Reviews/ReviewDetails';
 import AllReview from '@/screens/Profile/AllReview';
 import TabMenu from '@/screens/Profile/TabMenu';
-import TransactionDetail from '@/screens/TransactionDetail';
+import TransactionDetail from '@/screens/Profile/TabMenu/Transaction/TransactionDetail';
 import AddReview from '@/screens/Reviews/AddReview';
 import CreateEstate from '@/screens/CreateEstate';
 import AddEstateLocation from '@/screens/CreateEstate/AddEstateLocation';
@@ -28,6 +28,8 @@ import Message from '@/screens/Home/Header/Message';
 import MessagesDetail from '@/screens/Home/Header/MessagesDetail';
 import TransactionSummary from '@/screens/TransactionSummary';
 import Setting from '@/screens/Profile/Setting';
+import ConfirmDetail from '@/screens/Profile/TabMenu/Confirm/ConfirmDetail';
+import EditListing from '@/screens/Profile/TabMenu/Listing/EditListing';
 
 const AppStack = ({name}: any) => {
   const Stack = createStackNavigator<RootStackParams>();
@@ -199,6 +201,20 @@ const AppStack = ({name}: any) => {
       <Stack.Screen
         name="Setting"
         component={Setting}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="ConfirmDetail"
+        component={ConfirmDetail}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="EditListing"
+        component={EditListing}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}

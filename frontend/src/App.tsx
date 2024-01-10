@@ -3,6 +3,7 @@ import AppNavigation from './navigation/AppNavigation';
 import '@/Translations/i18n';
 import {languageStore} from './stores';
 import {AuthProvider} from './context/AuthContext';
+import {PaperProvider} from 'react-native-paper';
 
 const App = () => {
   useEffect(() => {
@@ -11,7 +12,9 @@ const App = () => {
 
   return (
     <AuthProvider>
-      <AppNavigation />
+      <PaperProvider>
+        <AppNavigation />
+      </PaperProvider>
     </AuthProvider>
   );
 };

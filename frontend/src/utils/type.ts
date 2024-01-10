@@ -17,7 +17,8 @@ export type RootStackParams = {
   ReviewDetails: {estate: EstateItems; reviews: [ReviewItems]};
   AllReview: any;
   TabMenu: any;
-  TransactionDetail: {route: TranSactionProps};
+  TransactionDetail: {transaction: TranSactionProps; estate: EstateDetailProps};
+  ConfirmDetail: {transaction: TranSactionProps; estate: EstateDetailProps};
   AddReview: any;
   CreateEstate: any;
   AddEstateLocation: any;
@@ -30,4 +31,5 @@ export type RootStackParams = {
   MessagesDetail: any;
   TransactionSummary: any;
   Setting: any;
+  EditListing: () => void;
 };

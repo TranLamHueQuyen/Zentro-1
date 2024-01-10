@@ -41,6 +41,18 @@ const userCtrl = {
             return res.status(500).json({ msg: err.message })
         }
     },
+    getAllUser: async (req, res) => {
+        try {
+            const user = await Users.find()
+            const roleUsers = user.filter(u => u.role === 1);
+
+            if (!user) return res.status(400).json({ msg: "User does not exist." })
+
+            res.json({ user: roleUsers })
+        } catch (err) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
     updateUser: async (req, res) => {
         try {
             const { avatar, full_name, mobile, address } = req.body

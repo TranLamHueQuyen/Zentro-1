@@ -60,7 +60,8 @@ const estateSchema = new Schema({
     likes: [{ type: Types.ObjectId, ref: 'user' }],
     reviews: [{ type: Types.ObjectId, ref: 'review' }],
     user: { type: Types.ObjectId, ref: 'user' },
-    distance: Number
+    distance: Number,
+    status: Number
 
 }, {
     timestamps: true

@@ -69,6 +69,7 @@ const Listing = () => {
               },
             ]}
             activeOpacity={0.5}
+            onPress={() => push({name: 'EditListing', params: {id: item._id}})}
           >
             <Pencil_Icon />
           </TouchableOpacity>

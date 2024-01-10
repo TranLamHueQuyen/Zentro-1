@@ -6,126 +6,110 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
+import RadioGroup from 'react-native-radio-buttons-group';
+import Splash from '@/components/Splash';
+import {EstateDetailProps, TranSactionProps} from '@/utils/interface';
 import {useTranslation} from 'react-i18next';
-import FavoriteButton from '@/components/FavoriteButton';
-import Entypo from 'react-native-vector-icons/Entypo';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import {
-  EstateDetailProps,
-  EstateItems,
-  TranSactionProps,
-} from '@/utils/interface';
-import {screenHeight, screenWidth} from '@/themes/Responsive';
-import {push} from '@/navigation/NavigationUtils';
-import {getImages} from '@/assets/Images';
-import {Pencil_Icon} from '@/assets/Svg';
-import {t} from 'i18next';
 import {AuthContext} from '@/context/AuthContext';
 import {Config} from '@/config';
-import Splash from '@/components/Splash';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {push} from '@/navigation/NavigationUtils';
+import {screenHeight, screenWidth} from '@/themes/Responsive';
 
-const RenderItems = ({item}: {item: TranSactionProps}) => {
-  const {userToken, idUser} = useContext(AuthContext);
-  const [data, setData] = useState<EstateDetailProps | null>(null);
-  const [load, setLoad] = useState(true);
-  useEffect(() => {
-    setLoad(true);
-    fetch(`${Config.API_URL}/api/estate/${item.estateId}`, {
-      method: 'GET',
-      headers: {Authorization: userToken},
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setData(res.estate);
+const Confirm = () => {
+  const RenderItems = ({item}: {item: TranSactionProps}) => {
+    const {userToken, idUser} = useContext(AuthContext);
+    const [data, setData] = useState<EstateDetailProps | null>(null);
+    const [load, setLoad] = useState(true);
+    useEffect(() => {
+      setLoad(true);
+      fetch(`${Config.API_URL}/api/estate/${item.estateId}`, {
+        method: 'GET',
+        headers: {Authorization: userToken},
       })
-      .finally(() => setLoad(false));
-  }, []);
-  const getStatus = (status: string) => {
-    switch (status) {
-      case '1':
-        return 'Processing';
-      case '2':
-        return 'Booked';
-      case '3':
-        return 'Cancel Booking';
-      default:
-        return 'Complete';
-    }
-  };
-  const getColorStatus = (status: string) => {
-    switch (status) {
-      case '1':
-        return '#fdd43f';
-      case '2':
-        return '#1a97f5';
-      case '3':
-        return '#fc4b6c';
-      default:
-        return '#39cb7f';
-    }
-  };
-  return (
-    data && (
-      <View style={styles.cardItem}>
-        {/* <View style={styles.btnFavorite}>
-          <FavoriteButton
-            favorite={
-              data.likes.find((item: any) => item._id === idUser) ? true : false
-            }
-            id={data._id}
-          />
-        </View> */}
-
-        <View style={styles.priceView}>
-          <View style={styles.priceContent}>
-            <Text style={styles.price}>{item.type}</Text>
-          </View>
-        </View>
-
-        <View
-          style={[
-            styles.statusView,
-            {backgroundColor: getColorStatus(item.status)},
-          ]}
-        >
-          <View style={styles.priceContent}>
-            <Text style={styles.price}>{getStatus(item.status)}</Text>
-          </View>
-        </View>
-
-        <Image
-          source={{uri: data?.images[0]}}
-          style={styles.images}
-        />
-
+        .then((res) => res.json())
+        .then((res) => {
+          setData(res.estate);
+        })
+        .finally(() => setLoad(false));
+    }, []);
+    const getStatus = (status: string) => {
+      switch (status) {
+        case '1':
+          return 'Processing';
+        case '2':
+          return 'Booked';
+        case '3':
+          return 'Cancel Booking';
+        default:
+          return 'Complete';
+      }
+    };
+    const getColorStatus = (status: string) => {
+      switch (status) {
+        case '1':
+          return '#fdd43f';
+        case '2':
+          return '#1a97f5';
+        case '3':
+          return '#fc4b6c';
+        default:
+          return '#39cb7f';
+      }
+    };
+    return (
+      data &&
+      data.user._id === idUser && (
         <TouchableOpacity
-          style={styles.cardContent}
+          style={styles.cardItem}
           onPress={() =>
             push({
-              name: 'TransactionDetail',
+              name: 'ConfirmDetail',
               params: {transaction: item, estate: data},
             })
           }
         >
-          <Text style={styles.cardName}>{data?.name}</Text>
-          <View style={{flexDirection: 'row'}}>
-            <View style={styles.locationView}>
-              <AntDesign
-                name="clockcircle"
-                color={'#8BC83F'}
-                size={10}
-              />
-              <Text style={styles.location}>{item.checkIn}</Text>
+          <View style={styles.priceView}>
+            <View style={styles.priceContent}>
+              <Text style={styles.price}>{item.type}</Text>
+            </View>
+          </View>
+
+          <View
+            style={[
+              styles.statusView,
+              {backgroundColor: getColorStatus(item.status)},
+            ]}
+          >
+            <View style={styles.priceContent}>
+              <Text style={styles.price}>{getStatus(item.status)}</Text>
+            </View>
+          </View>
+
+          <Image
+            source={{uri: data?.images[0]}}
+            style={styles.images}
+          />
+
+          <View style={styles.cardContent}>
+            <Text style={styles.cardName}>{data?.name}</Text>
+            <View style={{flexDirection: 'row'}}>
+              <View style={styles.locationView}>
+                <AntDesign
+                  name="clockcircle"
+                  color={'#8BC83F'}
+                  size={10}
+                />
+                <Text style={styles.location}>{item.checkIn}</Text>
+              </View>
             </View>
           </View>
         </TouchableOpacity>
-      </View>
-    )
-  );
-};
-const Transaction = () => {
+      )
+    );
+  };
+
   const {t} = useTranslation();
   const {userToken, idUser} = useContext(AuthContext);
   const [data, setData] = useState<[TranSactionProps] | null>(null);
@@ -133,7 +117,7 @@ const Transaction = () => {
 
   useEffect(() => {
     setLoad(true);
-    fetch(`${Config.API_URL}/api/payment/${idUser}`, {
+    fetch(`${Config.API_URL}/api/allPayment`, {
       method: 'GET',
       headers: {Authorization: userToken},
     })
@@ -169,11 +153,12 @@ const Transaction = () => {
   );
 };
 
-export default Transaction;
+export default Confirm;
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ffffff',
+    flex: 1,
     width: screenWidth,
     height: screenHeight,
     marginBottom: 332,

@@ -6,22 +6,45 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {FunctionComponent} from 'react';
+import React, {useContext, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import BackButton from '../../components/BackButton';
-import FavoriteButton from '../../components/FavoriteButton';
+import BackButton from '../../../../../components/BackButton';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {screenWidth} from '@/themes/Responsive';
-import {navigate, push} from '@/navigation/NavigationUtils';
-import {RouteTransaction} from '@/utils/interface';
+import {RouteConfirm} from '@/utils/interface';
 import moment from 'moment';
+import {RadioButton} from 'react-native-paper';
+import axios from 'axios';
+import {Config} from '@/config';
+import {AuthContext} from '@/context/AuthContext';
+import {goBack} from '@/navigation/NavigationUtils';
 
-const TransactionDetail: React.FC<RouteTransaction> = ({route}) => {
+const ConfirmDetail: React.FC<RouteConfirm> = ({route}) => {
   const {transaction, estate} = route.params;
+  const [checked, setChecked] = useState<string>(transaction.status);
+  const {userToken, idUser} = useContext(AuthContext);
   const {t} = useTranslation();
   const fromDate = moment(transaction.checkIn, 'DD/MM/YYYY');
   const toDate = moment(transaction.checkOut, 'DD/MM/YYYY');
   const totalDate = toDate.diff(fromDate, 'days');
+
+  const handleStatus = () => {
+    axios
+      .patch(
+        `${Config.API_URL}/api/payment/${transaction._id}`,
+        {
+          status: checked,
+        },
+        {
+          headers: {Authorization: userToken},
+        },
+      )
+      .then((res) => {})
+      .catch((e) => {
+        console.log(e);
+      })
+      .finally(() => goBack());
+  };
   const EstateView = () => {
     return (
       <View style={styles.estateView}>
@@ -54,11 +77,11 @@ const TransactionDetail: React.FC<RouteTransaction> = ({route}) => {
     );
   };
 
-  const TransactionDetail = () => {
+  const PaymentDetail = () => {
     return (
       <View style={styles.transactionView}>
-        <Text style={styles.transactionText}>{t('transaction_detail')}</Text>
-        <View style={styles.tranDetail}>
+        <Text style={styles.transactionText}>{t('booking_details')}</Text>
+        <View style={styles.payDetail}>
           <View style={styles.tranView}>
             <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('check_in')}</Text>
@@ -69,32 +92,16 @@ const TransactionDetail: React.FC<RouteTransaction> = ({route}) => {
               <Text style={styles.tranText}>{transaction.checkOut}</Text>
             </View>
             <View style={styles.tranContent}>
-              <Text style={styles.tranText}>{t('owner_name')}</Text>
-              <Text style={styles.tranText}>{transaction.user.full_name}</Text>
-            </View>
-            <View style={styles.tranContent}>
-              <Text style={styles.tranText}>{t('transaction_type')}</Text>
-              <Text style={styles.tranText}>{transaction.type}</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-    );
-  };
-
-  const PaymentDetail = () => {
-    return (
-      <View style={styles.transactionView}>
-        <Text style={styles.transactionText}>{t('payment_detail')}</Text>
-        <View style={styles.payDetail}>
-          <View style={styles.tranView}>
-            <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('period_time')}</Text>
               <Text style={styles.tranText}>{totalDate} Days</Text>
             </View>
             <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('monthly_payment')}</Text>
               <Text style={styles.tranText}>{transaction.checkOut}</Text>
+            </View>
+            <View style={styles.tranContent}>
+              <Text style={styles.tranText}>{t('note_customer')}</Text>
+              <Text style={styles.tranText}>{transaction.note}</Text>
             </View>
             <View style={styles.tranContent}>
               <Text style={styles.tranText}>{t('discount')}</Text>
@@ -111,16 +118,14 @@ const TransactionDetail: React.FC<RouteTransaction> = ({route}) => {
       </View>
     );
   };
-
   return (
     <View style={styles.component}>
       <BackButton />
       <View style={styles.titleView}>
-        <Text style={styles.transactionTitle}>{t('transaction_detail')}</Text>
+        <Text style={styles.transactionTitle}>{t('booking_details')}</Text>
       </View>
       <ScrollView>
         <EstateView />
-        <TransactionDetail />
         <PaymentDetail />
         <View style={styles.transactionView}>
           <Text style={styles.transactionText}>{t('payment_method')}</Text>
@@ -128,18 +133,110 @@ const TransactionDetail: React.FC<RouteTransaction> = ({route}) => {
             <Text style={styles.methodText}>{t('direct_transaction')}</Text>
           </View>
         </View>
-        <TouchableOpacity
-          style={styles.btnReview}
-          onPress={() => push({name: 'AddReview', params: {id: estate._id}})}
+        <RadioButton.Group
+          onValueChange={(newValue) => setChecked(newValue)}
+          value={checked}
         >
-          <Text style={styles.textReview}>{t('add_review')}</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={styles.radioView}
+            onPress={() => {
+              checked === '1' && setChecked('1');
+            }}
+          >
+            <RadioButton
+              value="1"
+              color="#8BC83F"
+              disabled={checked === '1' ? false : true}
+            />
+            <Text
+              style={{
+                color: checked === '1' ? '#8BC83F' : '#53587A',
+                opacity: checked === '1' ? 1 : 0.3,
+              }}
+            >
+              Processing
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={styles.radioView}
+            onPress={() => {
+              checked < '3' && setChecked('2');
+            }}
+          >
+            <RadioButton
+              value="2"
+              color="#8BC83F"
+              disabled={checked > '2' ? true : false}
+            />
+            <Text
+              style={{
+                color: checked === '2' ? '#8BC83F' : '#53587A',
+                opacity: checked > '2' ? 0.3 : 1,
+              }}
+            >
+              Booked
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={styles.radioView}
+            onPress={() => {
+              checked < '4' && setChecked('3');
+            }}
+          >
+            <RadioButton
+              value="3"
+              color="#8BC83F"
+              disabled={checked > '3' ? true : false}
+            />
+            <Text
+              style={{
+                color: checked === '3' ? '#8BC83F' : '#53587A',
+                opacity: checked > '3' ? 0.3 : 1,
+              }}
+            >
+              Cancel Booking
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={[styles.radioView, {marginBottom: 24}]}
+            onPress={() => {
+              checked !== '3' && checked < '5' && setChecked('4');
+            }}
+          >
+            <RadioButton
+              value="4"
+              color="#8BC83F"
+              disabled={checked !== '3' && checked < '5' ? false : true}
+            />
+            <Text
+              style={{
+                color: checked === '4' ? '#8BC83F' : '#53587A',
+                opacity: checked !== '3' && checked < '5' ? 1 : 0.3,
+              }}
+            >
+              Complete
+            </Text>
+          </TouchableOpacity>
+        </RadioButton.Group>
+
+        {transaction.status !== '4' && transaction.status !== '3' && (
+          <TouchableOpacity
+            style={styles.btnReview}
+            onPress={handleStatus}
+          >
+            <Text style={styles.textReview}>{t('Confirm')}</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </View>
   );
 };
 
-export default TransactionDetail;
+export default ConfirmDetail;
 
 const styles = StyleSheet.create({
   component: {
@@ -293,6 +390,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 50,
+    marginTop: 11,
+    marginBottom: 24,
+  },
+  btnCancel: {
+    width: screenWidth - 100,
+    height: 70,
+    backgroundColor: '#F5F4F8',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 50,
     marginTop: 35,
     marginBottom: 24,
   },
@@ -300,5 +408,16 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontFamily: 'Lato-Bold',
     fontSize: 16,
+  },
+  txtCancel: {
+    color: '#252B5C',
+    fontFamily: 'Lato-Bold',
+    fontSize: 16,
+  },
+  radioView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 24,
+    marginVertical: 5,
   },
 });

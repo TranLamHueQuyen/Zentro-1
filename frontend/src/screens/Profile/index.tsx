@@ -78,7 +78,7 @@ const Profile: React.FC<ProfileProps> = () => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.btnListing}>
               <Text style={styles.username}>0</Text>
-              <Text style={styles.listingText}>{t('sold')}</Text>
+              <Text style={styles.listingText}>{t('confirm')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.btnListing}

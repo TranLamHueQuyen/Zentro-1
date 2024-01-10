@@ -6,6 +6,10 @@ const paymentRouter = express.Router()
 
 paymentRouter.post('/payment', auth, paymentCtrl.createPayment)
 
-paymentRouter.get('/payment/:id', auth, paymentCtrl.getPayment)
+paymentRouter.route('/payment/:id')
+    .get(auth, paymentCtrl.getPayment)
+    .patch(auth, paymentCtrl.updateStatus)
+
+paymentRouter.get('/allPayment', auth, paymentCtrl.getAllPayment)
 
 export default paymentRouter

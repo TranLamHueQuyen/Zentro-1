@@ -23,7 +23,7 @@ const authCtrl = {
             const passwordHash = await hash(password, 12)
 
             const newUser = new Users({
-                full_name: newFullName, email, password: passwordHash
+                full_name: newFullName, email, status: 0, password: passwordHash, role: 1
             })
 
             const access_token = createAccessToken({ id: newUser._id })

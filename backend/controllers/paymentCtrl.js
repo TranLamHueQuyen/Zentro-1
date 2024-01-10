@@ -24,7 +24,7 @@ const paymentCtrl = {
             if (!estate) return res.status(400).json({ msg: "This estate does not exist." })
 
             const newPayment = new Payments({
-                user: req.user._id, type, checkIn, checkOut, price, note, discount, paymentMethod, estateUserId, estateId
+                user: req.user._id, type, checkIn, checkOut, price, note, discount, status: '1', paymentMethod, estateUserId, estateId
             })
             await Estates.findOneAndUpdate({ _id: estateId }, {
                 $push: { payments: newPayment._id }
@@ -49,6 +49,40 @@ const paymentCtrl = {
                 payments,
             })
 
+        } catch (err) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
+    getAllPayment: async (req, res) => {
+        try {
+            const pay = new APIfeatures(Payments.find(), req.query).paginating();
+
+            const payments = await pay.query.sort('-createdAt')
+                .populate("user ", "avatar full_name")
+            res.json({
+                result: payments.length,
+                payments,
+            })
+
+        } catch (err) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
+    updateStatus: async (req, res) => {
+        try {
+            const { status } = req.body
+
+            const payment = await Payments.findOneAndUpdate({ _id: req.params.id }, {
+                status
+            })
+
+            res.json({
+                msg: "Updated Estate!",
+                newPayment: {
+                    ...payment._doc,
+                    status
+                }
+            })
         } catch (err) {
             return res.status(500).json({ msg: err.message })
         }

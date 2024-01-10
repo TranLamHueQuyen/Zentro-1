@@ -34,9 +34,11 @@ export interface ReviewDetail {
 }
 
 export interface RouteTransaction {
-  route: {
-    params: {transaction: TranSactionProps; estate: EstateDetailProps};
-  };
+  route: RouteProp<RootStackParams, 'TransactionDetail'>;
+}
+
+export interface RouteConfirm {
+  route: RouteProp<RootStackParams, 'ConfirmDetail'>;
 }
 
 export interface Users {
@@ -114,6 +116,7 @@ export interface EstateDetailProps {
   user: Users;
 }
 export interface TranSactionProps {
+  _id: string;
   type: string;
   checkIn: string;
   checkOut: string;
@@ -121,6 +124,7 @@ export interface TranSactionProps {
   paymentMethod: string;
   price: number;
   note: string;
+  status: string;
   user: Users;
   estateId: string;
   estateUserId: string;

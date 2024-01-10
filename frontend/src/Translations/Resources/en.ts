@@ -51,7 +51,7 @@ export default {
   explore_nearby_estates: 'Explore Nearby Estates',
   nearby_location: 'Nearby From this Location',
   listings: 'Listings',
-  sold: 'Sold',
+  confirm: 'Confirm',
   profile: 'Profile',
   transactions: 'Transactions',
   transaction_detail: 'Transaction Detail',
@@ -103,4 +103,9 @@ export default {
   your_trans: 'Your transaction is',
   success: 'success',
   continue_exploring: 'Continue Exploring',
+  booking_details: 'Reservation details',
+  note_customer: 'Note from customers',
+  edit_listing: 'Edit Listing',
+  listing_name: 'Listing Name',
+  language: 'Language',
 };

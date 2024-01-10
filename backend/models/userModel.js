@@ -53,6 +53,8 @@ const userSchema = new Schema({
             default: ''
         },
     },
+    status: Number,
+    role: Number
 }, {
     timestamps: true
 })

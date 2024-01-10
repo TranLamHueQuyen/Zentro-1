@@ -3,8 +3,8 @@ import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Transaction from './Transaction';
 import Listing from './Listing';
-import Sold from './Sold';
 import {screenWidth} from '@/themes/Responsive';
+import Confirm from './Confirm';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -57,8 +57,8 @@ const TabMenu = () => {
         component={Listing}
       />
       <Tab.Screen
-        name="Sold"
-        component={Sold}
+        name="Confirm"
+        component={Confirm}
       />
     </Tab.Navigator>
   );
