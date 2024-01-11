@@ -21,6 +21,26 @@ function compareObjects(obj1, obj2) {
     return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
 
+function toRadians(degrees) {
+    return degrees * Math.PI / 180;
+}
+
+function haversine(lat1, lon1, lat2, lon2) {
+    const earthRadius = 6371;
+
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+
+    const a = Math.pow(Math.sin(dLat / 2), 2) +
+        Math.pow(Math.sin(dLon / 2), 2) *
+        Math.cos(toRadians(lat1)) *
+        Math.cos(toRadians(lat2))
+    const c = 2 * Math.asin(Math.sqrt(a));
+    const distance = earthRadius * c;
+
+    return distance;
+}
+
 const estateCtrl = {
     searchEstates: async (req, res) => {
         try {
@@ -39,7 +59,7 @@ const estateCtrl = {
                 return res.status(400).json({ msg: "Please add your photo." })
 
             const newEstate = new Estates({
-                name, listType, images, address, price, property, user: req.user._id
+                name, listType, images, address, price, property, status: 0, user: req.user._id
             })
             await newEstate.save()
 
@@ -173,6 +193,25 @@ const estateCtrl = {
             return res.status(500).json({ msg: err.message })
         }
     },
+    updateStatus: async (req, res) => {
+        try {
+            const { status } = req.body
+
+            const estate = await Estates.findOneAndUpdate({ _id: req.params.id }, {
+                status
+            }).populate("user likes", "avatar full_name")
+
+            res.json({
+                msg: "Updated Estate!",
+                newEstate: {
+                    ...estate._doc,
+                    status
+                }
+            })
+        } catch (err) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
     deleteEstate: async (req, res) => {
         try {
             const estate = await Estates.findOneAndDelete({ _id: req.params.id, user: req.user._id })
@@ -231,24 +270,7 @@ const estateCtrl = {
                             if (res.code === 'Ok') {
                                 totalDistance = 0;
                                 const coords = res.routes[0].geometry.coordinates
-                                function toRadians(degrees) {
-                                    return degrees * Math.PI / 180;
-                                }
 
-                                function haversine(lat1, lon1, lat2, lon2) {
-                                    const earthRadius = 6371;
-
-                                    const dLat = toRadians(lat2 - lat1);
-                                    const dLon = toRadians(lon2 - lon1);
-
-                                    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                                        Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
-                                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                                    const distance = earthRadius * c;
-
-                                    return distance;
-                                }
                                 for (let i = 0; i < coords.length - 1; i++) {
                                     let p1 = coords[i];
                                     let p2 = coords[i + 1];
@@ -268,7 +290,6 @@ const estateCtrl = {
                         .catch(function (err) {
                             console.log("Unable to fetch -", err);
                         })
-
                 }
             }
             arr.sort((a, b) => {

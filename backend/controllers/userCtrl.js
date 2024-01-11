@@ -69,6 +69,26 @@ const userCtrl = {
         } catch (err) {
             return res.status(500).json({ msg: err.message })
         }
+    },
+    updateStatusUser: async (req, res) => {
+        try {
+            const { status } = req.body
+
+            const user = await Users.findOneAndUpdate({ _id: req.params.id }, {
+                status
+            })
+
+            res.json({
+                msg: "Update Success!",
+                newUser: {
+                    ...user._doc,
+                    status
+                }
+            })
+
+        } catch (err) {
+            return res.status(500).json({ msg: err.message })
+        }
     }
 }
 

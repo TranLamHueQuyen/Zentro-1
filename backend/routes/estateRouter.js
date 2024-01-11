@@ -23,6 +23,9 @@ estateRouter.get('/getLikeEstates', auth, estateCtrl.getLikeEstates)
 
 estateRouter.get('/getRecommend/:id', auth, estateCtrl.getRecommend)
 
+estateRouter.patch('/updateStatusEstate/:id', auth, estateCtrl.updateStatus)
+
+
 
 
 export default estateRouter
