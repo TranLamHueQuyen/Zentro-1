@@ -75,6 +75,23 @@ const Listing = () => {
           </TouchableOpacity>
         </View>
 
+        {item.status === 0 && (
+          <View style={[styles.statusView, {backgroundColor: '#fdd43f'}]}>
+            <View style={styles.priceContent}>
+              <Text
+                style={{
+                  color: '#F5F4F8',
+                  fontSize: 12,
+                  fontFamily: 'Lato-Bold',
+                  marginLeft: 2,
+                }}
+              >
+                Wait
+              </Text>
+            </View>
+          </View>
+        )}
+
         <View style={styles.priceView}>
           <View style={styles.priceContent}>
             <Text style={styles.price}>$ </Text>
@@ -272,5 +289,13 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  statusView: {
+    top: 154,
+    left: 16,
+    position: 'absolute',
+    zIndex: 1,
+    backgroundColor: 'rgba(35,79,104,0.69)',
+    borderRadius: 8,
   },
 });
