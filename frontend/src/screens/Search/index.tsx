@@ -97,22 +97,24 @@ const Search = () => {
         >
           {data?.map((item: any, index: number) => {
             return (
-              <Marker
-                key={index}
-                coordinate={{
-                  latitude: parseFloat(item.address.lat),
-                  longitude: parseFloat(item.address.lng),
-                }}
-                onPress={() => setIdEstate(item._id)}
-              >
-                <View style={{marginTop: 9}}>
-                  <Marker_Icon />
-                  <Image
-                    source={{uri: item.images[0]}}
-                    style={styles.markerImage}
-                  />
-                </View>
-              </Marker>
+              item.status === 1 && (
+                <Marker
+                  key={index}
+                  coordinate={{
+                    latitude: parseFloat(item.address.lat),
+                    longitude: parseFloat(item.address.lng),
+                  }}
+                  onPress={() => setIdEstate(item._id)}
+                >
+                  <View style={{marginTop: 9}}>
+                    <Marker_Icon />
+                    <Image
+                      source={{uri: item.images[0]}}
+                      style={styles.markerImage}
+                    />
+                  </View>
+                </Marker>
+              )
             );
           })}
         </MapView>

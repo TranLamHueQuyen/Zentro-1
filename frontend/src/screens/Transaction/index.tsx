@@ -25,7 +25,7 @@ import {navigate, push} from '@/navigation/NavigationUtils';
 const Transaction = ({route}: any) => {
   const {data} = route.params;
   const {t} = useTranslation();
-  const date = new Date();
+  const minDate = new Date();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [check, setCheck] = useState(false);
@@ -34,8 +34,6 @@ const Transaction = ({route}: any) => {
   const [selectedOut, setSelectedOut] = useState('');
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
-  const currentDate =
-    date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
 
   const handleCheckIn = (day: any) => {
     setSelectedIn(day.dateString);
@@ -146,6 +144,7 @@ const Transaction = ({route}: any) => {
             >
               {check ? (
                 <Calendar
+                  minDate={minDate.toISOString()}
                   style={{
                     borderRadius: 25,
                   }}
@@ -159,6 +158,7 @@ const Transaction = ({route}: any) => {
                 />
               ) : (
                 <Calendar
+                  minDate={minDate.toISOString()}
                   style={{
                     borderRadius: 25,
                   }}

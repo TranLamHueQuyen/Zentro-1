@@ -36,7 +36,7 @@ const FeaturedEstates: React.FC<FeaturedProps> = ({navigation}) => {
   }, []);
 
   const RenderItems = ({item}: {item: EstateDetailProps}) => {
-    return (
+    return item.status === 1 ? (
       <View style={styles.cardItem}>
         <View>
           <FavoriteButton
@@ -84,7 +84,7 @@ const FeaturedEstates: React.FC<FeaturedProps> = ({navigation}) => {
           </View>
         </TouchableOpacity>
       </View>
-    );
+    ) : null;
   };
   return (
     <View>

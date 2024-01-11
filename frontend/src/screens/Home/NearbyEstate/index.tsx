@@ -38,61 +38,66 @@ const NearbyEstate = ({detail, id}: {detail: boolean; id: string}) => {
   }, []);
 
   const RenderItems = ({item}: {item: EstateItems}) => {
-    return item._id === id ? null : (
-      <View style={styles.cardItem}>
-        <View style={styles.btnFavorite}>
-          <FavoriteButton
-            favorite={
-              item.likes.find((item: any) => item === idUser) ? true : false
-            }
-            id={item._id}
-          />
-        </View>
-
-        <View style={styles.priceView}>
-          <View style={styles.priceContent}>
-            <Text style={styles.price}>$ </Text>
-            <Text style={styles.price}>{item.price.rent}</Text>
-            <Text style={styles.stay}> /</Text>
-            <Text style={styles.stay}>month</Text>
-          </View>
-        </View>
-
-        <Image
-          source={{uri: item.images[0]}}
-          style={styles.images}
-        />
-
-        <TouchableOpacity
-          style={styles.cardContent}
-          onPress={() =>
-            push({name: 'EstateDetail', params: {id: item._id, nearby: true}})
-          }
-        >
-          <Text style={styles.cardName}>{item.name}</Text>
-          <View style={{flexDirection: 'row'}}>
-            <View style={styles.ratingView}>
-              <Entypo
-                name="star"
-                color={'#FFC42D'}
-                size={10}
+    return item._id === id
+      ? null
+      : item.status === 1 && (
+          <View style={styles.cardItem}>
+            <View style={styles.btnFavorite}>
+              <FavoriteButton
+                favorite={
+                  item.likes.find((item: any) => item === idUser) ? true : false
+                }
+                id={item._id}
               />
-              <Text style={styles.rating}>{item.rating_star}</Text>
             </View>
-            <View style={styles.locationView}>
-              <FontAwesome6
-                name="location-dot"
-                color={'#234F68'}
-                size={9}
-              />
-              <Text style={styles.location}>
-                {item.address.road}, {item.address.city}
-              </Text>
+
+            <View style={styles.priceView}>
+              <View style={styles.priceContent}>
+                <Text style={styles.price}>$ </Text>
+                <Text style={styles.price}>{item.price.rent}</Text>
+                <Text style={styles.stay}> /</Text>
+                <Text style={styles.stay}>month</Text>
+              </View>
             </View>
+
+            <Image
+              source={{uri: item.images[0]}}
+              style={styles.images}
+            />
+
+            <TouchableOpacity
+              style={styles.cardContent}
+              onPress={() =>
+                push({
+                  name: 'EstateDetail',
+                  params: {id: item._id, nearby: true},
+                })
+              }
+            >
+              <Text style={styles.cardName}>{item.name}</Text>
+              <View style={{flexDirection: 'row'}}>
+                <View style={styles.ratingView}>
+                  <Entypo
+                    name="star"
+                    color={'#FFC42D'}
+                    size={10}
+                  />
+                  <Text style={styles.rating}>{item.rating_star}</Text>
+                </View>
+                <View style={styles.locationView}>
+                  <FontAwesome6
+                    name="location-dot"
+                    color={'#234F68'}
+                    size={9}
+                  />
+                  <Text style={styles.location}>
+                    {item.address.road}, {item.address.city}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-      </View>
-    );
+        );
   };
   return (
     <View>

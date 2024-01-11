@@ -60,6 +60,7 @@ export interface EstateItems {
   rating_star: number;
   images: Array<string>;
   user: string;
+  status: number;
 }
 
 export interface ReviewItems {
@@ -114,6 +115,7 @@ export interface EstateDetailProps {
   name: string;
   reviews: Array<ReviewItems>;
   user: Users;
+  status: number;
 }
 export interface TranSactionProps {
   _id: string;

@@ -54,54 +54,57 @@ const SearchResult = ({route}: any) => {
 
   const RenderItems = ({item}: {item: EstateItems}) => {
     return (
-      <View style={styles.cardItem}>
-        <View style={styles.btnFavorite}>
-          {/* <FavoriteButton favorite={item.assets.favorite} /> */}
-        </View>
-
-        <View style={styles.priceView}>
-          <View style={styles.priceContent}>
-            <Text style={styles.price}>$ </Text>
-            <Text style={styles.price}>{item.price.rent}</Text>
-            <Text style={styles.stay}> /</Text>
-            <Text style={styles.stay}>month</Text>
+      item.status === 1 && (
+        <View style={styles.cardItem}>
+          <View style={styles.btnFavorite}>
+            {/* <FavoriteButton favorite={item.assets.favorite} /> */}
           </View>
-        </View>
 
-        <Image
-          source={{uri: item.images[0]}}
-          style={styles.images}
-        />
-
-        <TouchableOpacity
-          style={styles.cardContent}
-          onPress={() =>
-            push({name: 'EstateDetail', params: {id: item._id, nearby: true}})
-          }
-        >
-          <Text style={styles.cardName}>{item.name}</Text>
-          <View style={{flexDirection: 'row'}}>
-            <View style={styles.ratingView}>
-              <Entypo
-                name="star"
-                color={'#FFC42D'}
-                size={10}
-              />
-              <Text style={styles.rating}>3</Text>
-            </View>
-            <View style={styles.locationView}>
-              <FontAwesome6
-                name="location-dot"
-                color={'#234F68'}
-                size={9}
-              />
-              <Text style={styles.location}>
-                {item.address.road}, {item.address.city}, {item.address.country}
-              </Text>
+          <View style={styles.priceView}>
+            <View style={styles.priceContent}>
+              <Text style={styles.price}>$ </Text>
+              <Text style={styles.price}>{item.price.rent}</Text>
+              <Text style={styles.stay}> /</Text>
+              <Text style={styles.stay}>month</Text>
             </View>
           </View>
-        </TouchableOpacity>
-      </View>
+
+          <Image
+            source={{uri: item.images[0]}}
+            style={styles.images}
+          />
+
+          <TouchableOpacity
+            style={styles.cardContent}
+            onPress={() =>
+              push({name: 'EstateDetail', params: {id: item._id, nearby: true}})
+            }
+          >
+            <Text style={styles.cardName}>{item.name}</Text>
+            <View style={{flexDirection: 'row'}}>
+              <View style={styles.ratingView}>
+                <Entypo
+                  name="star"
+                  color={'#FFC42D'}
+                  size={10}
+                />
+                <Text style={styles.rating}>3</Text>
+              </View>
+              <View style={styles.locationView}>
+                <FontAwesome6
+                  name="location-dot"
+                  color={'#234F68'}
+                  size={9}
+                />
+                <Text style={styles.location}>
+                  {item.address.road}, {item.address.city},{' '}
+                  {item.address.country}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )
     );
   };
 
