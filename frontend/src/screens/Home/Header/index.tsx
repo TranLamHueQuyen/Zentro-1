@@ -63,7 +63,7 @@ const Header = ({navigation, load}: any) => {
         />
       </TouchableOpacity>
       <View style={{flexDirection: 'row'}}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.notification}
           onPress={() =>
             navigate({
@@ -97,7 +97,7 @@ const Header = ({navigation, load}: any) => {
               }}
             />
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={styles.notification}
           onPress={() =>

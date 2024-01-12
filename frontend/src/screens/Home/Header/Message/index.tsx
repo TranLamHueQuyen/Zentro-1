@@ -1,5 +1,12 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import {BackButton} from '@/components';
 import {getImages} from '@/assets/Images';
@@ -7,91 +14,206 @@ import {Swipeable} from 'react-native-gesture-handler';
 import {Empty} from '@/assets/Svg';
 import {screenWidth} from '@/themes/Responsive';
 import {useTranslation} from 'react-i18next';
-import {navigate} from '@/navigation/NavigationUtils';
+import {navigate, push} from '@/navigation/NavigationUtils';
+import {AuthContext} from '@/context/AuthContext';
+import {Config} from '@/config';
 
 const Message = () => {
   const {t} = useTranslation();
   const [length, setLength] = useState(1);
   const [online, setOnline] = useState(true);
   const [seen, setSeen] = useState(true);
+  const {userToken, idUser} = useContext(AuthContext);
+  const [conversation, setConversation] = useState([]);
 
-  const FavoriteItems = () => {
+  useEffect(() => {
+    const getConversations = async () => {
+      await fetch(`${Config.API_URL}/api/conversations`, {
+        method: 'GET',
+        headers: {Authorization: userToken},
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          setConversation(
+            res.conversations.map((item: any) => {
+              return item;
+            }),
+          );
+        });
+    };
+    getConversations();
+  }, []);
+
+  // const FavoriteItems = () => {
+  //   return (
+  //     <View>
+  //       {conversation &&
+  //         conversation.recipients?.map((item: any, index: any) => {
+  //           return (
+  //             <Swipeable
+  //               renderRightActions={() => RightSwipe(1)}
+  //               overshootRight={false}
+  //               key={index}
+  //             >
+  //               <TouchableOpacity
+  //                 style={styles.itemView}
+  //                 onPress={() =>
+  //                   push({
+  //                     name: 'MessagesDetail',
+  //                     params: {
+  //                       avatar: item.avatar,
+  //                       _id: item._id,
+  //                       full_name: item.full_name,
+  //                     },
+  //                   })
+  //                 }
+  //               >
+  //                 <View style={styles.contentView}>
+  //                   <View>
+  //                     <View style={styles.viewAvatar}>
+  //                       <Image
+  //                         source={getImages().picture_1}
+  //                         style={styles.avatar}
+  //                       />
+  //                     </View>
+  //                     <View style={styles.viewIcon}>
+  //                       <View style={styles.iconOnline} />
+  //                     </View>
+  //                   </View>
+
+  //                   <View style={styles.rightView}>
+  //                     <Text style={styles.name}>Perry</Text>
+  //                     <Text style={styles.text}>
+  //                       tempor incididunt ut labore et dolore adssd asdffg asad
+  //                       asd
+  //                     </Text>
+  //                   </View>
+  //                   <View style={styles.viewTime}>
+  //                     <Text style={styles.time}>10.45</Text>
+  //                     <View style={styles.btnSeen}>
+  //                       <Text style={styles.btnSeenText}>2</Text>
+  //                     </View>
+  //                   </View>
+  //                 </View>
+  //               </TouchableOpacity>
+  //             </Swipeable>
+  //           );
+  //         })}
+
+  //       {/* <Swipeable
+  //         renderRightActions={() => RightSwipe(1)}
+  //         overshootRight={false}
+  //       >
+  //         <View style={styles.itemView}>
+  //           <View style={styles.contentView}>
+  //             <View>
+  //               <View style={styles.viewAvatar}>
+  //                 <Image
+  //                   source={getImages().picture_1}
+  //                   style={styles.avatar}
+  //                 />
+  //               </View>
+  //               {!online && (
+  //                 <View style={styles.viewIcon}>
+  //                   <View style={styles.iconOnline} />
+  //                 </View>
+  //               )}
+  //             </View>
+
+  //             <View style={styles.rightView}>
+  //               <Text style={styles.name}>Perry</Text>
+  //               <Text style={styles.textSeen}>
+  //                 tempor incididunt ut labore et dolore adssd asdffg asad asd
+  //               </Text>
+  //             </View>
+  //             <View style={styles.viewTime}>
+  //               <Text style={styles.time}>2 Day ago</Text>
+  //               {!seen && (
+  //                 <View style={styles.btnSeen}>
+  //                   <Text style={styles.btnSeenText}>2</Text>
+  //                 </View>
+  //               )}
+  //             </View>
+  //           </View>
+  //         </View>
+  //       </Swipeable> */}
+  //     </View>
+  //   );
+  // };
+  const renderChat = ({item}: any) => {
+    const dateTime = new Date(item.createdAt);
+    const hour = dateTime.getHours(); // Lấy giờ
+    const minute = dateTime.getMinutes(); // Lấy phút
+
     return (
-      <View>
-        <Swipeable
-          renderRightActions={() => RightSwipe(1)}
-          overshootRight={false}
+      <Swipeable
+        renderRightActions={() => RightSwipe(1)}
+        overshootRight={false}
+      >
+        <TouchableOpacity
+          style={styles.itemView}
+          onPress={() =>
+            item.recipients?.map((item: any) => {
+              item._id !== idUser &&
+                push({
+                  name: 'MessagesDetail',
+                  params: {
+                    avatar: item.avatar,
+                    _id: item._id,
+                    full_name: item.full_name,
+                  },
+                });
+            })
+          }
         >
-          <TouchableOpacity
-            style={styles.itemView}
-            onPress={() => navigate({name: 'MessagesDetail'})}
-          >
-            <View style={styles.contentView}>
-              <View>
-                <View style={styles.viewAvatar}>
-                  <Image
-                    source={getImages().picture_1}
-                    style={styles.avatar}
-                  />
-                </View>
-                <View style={styles.viewIcon}>
-                  <View style={styles.iconOnline} />
-                </View>
+          <View style={styles.contentView}>
+            <View>
+              <View style={styles.viewAvatar}>
+                {item.recipients?.map((item: any, index: any) => {
+                  return (
+                    item._id !== idUser && (
+                      <Image
+                        key={index}
+                        source={{uri: item.avatar}}
+                        style={styles.avatar}
+                      />
+                    )
+                  );
+                })}
               </View>
-
-              <View style={styles.rightView}>
-                <Text style={styles.name}>Perry</Text>
-                <Text style={styles.text}>
-                  tempor incididunt ut labore et dolore adssd asdffg asad asd
-                </Text>
-              </View>
-              <View style={styles.viewTime}>
-                <Text style={styles.time}>10.45</Text>
-                <View style={styles.btnSeen}>
-                  <Text style={styles.btnSeenText}>2</Text>
-                </View>
+              <View style={styles.viewIcon}>
+                <View style={styles.iconOnline} />
               </View>
             </View>
-          </TouchableOpacity>
-        </Swipeable>
-        <Swipeable
-          renderRightActions={() => RightSwipe(1)}
-          overshootRight={false}
-        >
-          <View style={styles.itemView}>
-            <View style={styles.contentView}>
-              <View>
-                <View style={styles.viewAvatar}>
-                  <Image
-                    source={getImages().picture_1}
-                    style={styles.avatar}
-                  />
-                </View>
-                {!online && (
-                  <View style={styles.viewIcon}>
-                    <View style={styles.iconOnline} />
-                  </View>
-                )}
-              </View>
 
-              <View style={styles.rightView}>
-                <Text style={styles.name}>Perry</Text>
-                <Text style={styles.textSeen}>
-                  tempor incididunt ut labore et dolore adssd asdffg asad asd
-                </Text>
-              </View>
-              <View style={styles.viewTime}>
-                <Text style={styles.time}>2 Day ago</Text>
-                {!seen && (
-                  <View style={styles.btnSeen}>
-                    <Text style={styles.btnSeenText}>2</Text>
-                  </View>
-                )}
-              </View>
+            <View style={styles.rightView}>
+              {item.recipients?.map((item: any, index: any) => {
+                return (
+                  item._id !== idUser && (
+                    <Text
+                      style={styles.name}
+                      key={index}
+                    >
+                      {item.full_name}
+                    </Text>
+                  )
+                );
+              })}
+              {item._id !== idUser && (
+                <Text style={styles.text}>{item.text}</Text>
+              )}
+            </View>
+            <View style={styles.viewTime}>
+              <Text style={styles.time}>
+                {hour}.{minute}
+              </Text>
+              {/* <View style={styles.btnSeen}>
+                <Text style={styles.btnSeenText}>2</Text>
+              </View> */}
             </View>
           </View>
-        </Swipeable>
-      </View>
+        </TouchableOpacity>
+      </Swipeable>
     );
   };
   const handleUnFavorite = (item: any) => {
@@ -132,7 +254,12 @@ const Message = () => {
           <Text style={styles.titleHighlight}>{t('empty')}</Text>
         </View>
       ) : (
-        <FavoriteItems />
+        <FlatList
+          data={conversation}
+          renderItem={(item: any) => renderChat(item)}
+          keyExtractor={(item: any, index: any) => String(index)}
+        />
+        // <FavoriteItems />
       )}
     </View>
   );

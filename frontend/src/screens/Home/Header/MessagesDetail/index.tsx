@@ -11,12 +11,16 @@ import {
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 import {BackButton} from '@/components';
 import {getImages} from '@/assets/Images';
 import {screenWidth} from '@/themes/Responsive';
 import {Seen} from '@/assets/Svg';
 
-const MessagesDetail = () => {
+const MessagesDetail = ({route}: any) => {
+  const {avatar, _id, full_name} = route.params;
+
   const [chat, setChat] = useState('');
   const [focusTime, setFocusTime] = useState(false);
   const showTime = useRef(new Animated.Value(0)).current;
@@ -44,7 +48,7 @@ const MessagesDetail = () => {
         <View>
           <View style={styles.viewAvatar}>
             <Image
-              source={getImages().picture_1}
+              source={{uri: avatar}}
               style={styles.avatar}
             />
           </View>
@@ -54,7 +58,7 @@ const MessagesDetail = () => {
         </View>
 
         <View style={styles.rightView}>
-          <Text style={styles.name}>Perry</Text>
+          <Text style={styles.name}>{full_name}</Text>
           <Text style={styles.text}>Online</Text>
         </View>
       </View>
@@ -91,7 +95,7 @@ const MessagesDetail = () => {
               </View>
               <Animated.View style={[styles.timeLeft, {height: showTime}]}>
                 <Text style={styles.textTime}>10.46</Text>
-                <Seen />
+                {/* <Seen /> */}
               </Animated.View>
             </TouchableOpacity>
 
@@ -107,7 +111,7 @@ const MessagesDetail = () => {
                 </Text>
               </View>
               <Animated.View style={[styles.timeRight, {height: showTime}]}>
-                <Seen />
+                {/* <Seen /> */}
                 <Text style={styles.textTime}>10.46</Text>
               </Animated.View>
             </TouchableOpacity>
@@ -121,7 +125,27 @@ const MessagesDetail = () => {
               ]}
               placeholderTextColor={'#A1A5C1'}
             />
-            <TouchableOpacity></TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                top: 30,
+                right: 30,
+                width: 50,
+                height: 50,
+                backgroundColor: '#8BC83F',
+                borderRadius: 50,
+                zIndex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              // onPress={}
+            >
+              <MaterialIcons
+                name="send"
+                size={25}
+                color={'#FFFFFF'}
+              />
+            </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
       </View>
